@@ -58,7 +58,7 @@ const useFeatureFlags = () => {
         ) {
           tmpHost = 'http://localhost:8000/';
         } else {
-          tmpHost = 'https://api.organized-app.com/';
+          tmpHost = 'https://api-organized-poc.koyeb.app/';
         }
       }
 
