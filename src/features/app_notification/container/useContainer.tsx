@@ -32,10 +32,10 @@ import { applicationsState } from '@states/persons';
 import { handleDeleteDatabase } from '@services/app';
 import { dbHandleIncomingReports } from '@services/dexie/cong_field_service_reports';
 import { apiUserGetUpdates } from '@services/api/user';
-import { apiFetchNotifications } from '@services/api/notification';
+//import { apiFetchNotifications } from '@services/api/notification';
 import useJoinRequests from './useJoinRequests';
 import usePendingRequests from './usePendingRequests';
-import useRemoteNotifications from './useRemoteNotifications';
+//import useRemoteNotifications from './useRemoteNotifications';
 import useUnverifiedReports from './useUnverifiedReports';
 import appDb from '@db/appDb';
 
@@ -48,7 +48,7 @@ const useContainer = () => {
 
   const { checkUnverifiedReports } = useUnverifiedReports();
 
-  const { handleRemoteNotifications } = useRemoteNotifications();
+  //const { handleRemoteNotifications } = useRemoteNotifications();
 
   const { setJoinRequests } = useJoinRequests();
 
@@ -84,12 +84,12 @@ const useContainer = () => {
     refetchOnWindowFocus: 'always',
   });
 
-  const { data: appNotifications } = useQuery({
-    queryKey: ['app_notifications'],
-    queryFn: apiFetchNotifications,
-    refetchInterval: 60 * 1000,
-    refetchOnWindowFocus: 'always',
-  });
+  // const { data: appNotifications } = useQuery({
+  //   queryKey: ['app_notifications'],
+  //   queryFn: apiFetchNotifications,
+  //   refetchInterval: 60 * 1000,
+  //   refetchOnWindowFocus: 'always',
+  // });
 
   const indices = Array.from({ length: notifications.length }, (_, i) => i);
 
@@ -443,11 +443,11 @@ const useContainer = () => {
     }
   }, [FEATURE_FLAGS, data, setJoinRequests]);
 
-  useEffect(() => {
-    if (appNotifications && Array.isArray(appNotifications)) {
-      handleRemoteNotifications(appNotifications);
-    }
-  }, [appNotifications, handleRemoteNotifications]);
+  // useEffect(() => {
+  //   if (appNotifications && Array.isArray(appNotifications)) {
+  //     handleRemoteNotifications(appNotifications);
+  //   }
+  // }, [appNotifications, handleRemoteNotifications]);
 
   useEffect(() => {
     if (navigator.setAppBadge) {
