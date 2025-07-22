@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && workbox generateSW workbox.config.ts",
-    "preview": "serve -l 4050 -s dist",
+    "preview": "serve -l 4051 -s dist",
     "test": "npm run cypress:test",
     "cypress:open": "cypress open",
     "cypress:test": "cypress run --browser chrome",
@@ -38,6 +38,7 @@
     "@smakss/random-string": "^2.0.2",
     "@sws2apps/react-sw-helper": "^1.28.0",
     "@tanstack/react-query": "^5.83.0",
+    "@vercel/analytics": "^1.5.0",
     "comlink": "^4.4.2",
     "crypto-es": "^2.1.0",
     "date-fns": "^4.0.0",
