@@ -1,12 +1,16 @@
 {
-  "2025-02-26T00:00": {
-    "improvements": {
-      "tr_note_01": "Määritä kenttäpalveluryhmä apuluokkahuoneeseen"
-    }
-  },
   "2025-03-09T00:00": {
     "improvements": {
       "tr_note_01": "Uusi pääsypyyntö liittyä seurakuntaan"
+    }
+  },
+  "2025-07-17T00:00": {
+    "images": {
+      "img_01": {
+        "tr_title": "Luo perheitä sovelluksessa",
+        "tr_desc": "Valitse perheen pää ja luo sitten perheen jäsenluettelo voidaksesi aikatauluttaa seurakuntakokouksia paremmin.",
+        "src": "https://raw.githubusercontent.com/sws2apps/organized-app/refs/heads/main/src/assets/img/whats-new-family.svg"
+      }
     }
   }
 }
