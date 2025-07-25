@@ -111,7 +111,6 @@ const App = ({ updatePwa }: { updatePwa: VoidFunction }) => {
             { path: '/user-profile', element: <MyProfile /> },
             { path: '/weekly-schedules', element: <WeeklySchedules /> },
             {
-              element: <RouteProtected flag="UPCOMING_EVENTS" />,
               children: [
                 {
                   path: '/activities/upcoming-events',

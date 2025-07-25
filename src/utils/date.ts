@@ -73,6 +73,11 @@ export const getWeekDate = (date: Date = new Date()) => {
   return monDay;
 };
 
+export const getDayDate = () => {
+  const day = new Date();
+  return day;
+};
+
 export const getOldestWeekDate = () => {
   const weekDate = getWeekDate();
   const validDate = weekDate.setMonth(weekDate.getMonth() - 12);

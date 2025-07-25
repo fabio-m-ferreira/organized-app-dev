@@ -15,7 +15,7 @@
   "tr_timeInService": "Tempo já em serviço",
   "tr_timeInServiceDesc": "O tempo será adicionado ao cronómetro do ministério",
   "tr_monthlyReport": "Relatório mensal",
-  "tr_sharedMinistry": "Compartilhado em qualquer forma de ministério durante este mês",
+  "tr_sharedMinistry": "Assinale a caixa se participou em alguma modalidade do ministério durante o mês",
   "tr_dailyHistory": "Histórico diário",
   "tr_btnAddRecord": "Adicionar registo",
   "tr_addRecordDesc": "Não tem nenhum registo de serviço diário. Adicione um aqui para preencher o seu relatório mensal.",
