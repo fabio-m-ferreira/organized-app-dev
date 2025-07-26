@@ -13,4 +13,5 @@ export type DashboardMenuProps = {
   actionComponent?: ReactElement;
   height?: string;
   small?: boolean;
+  isDisabled?: boolean;
 };

@@ -44,9 +44,10 @@ const MinistryCard = () => {
       {enable_AP_application && (
         <ListItem disablePadding>
           <DashboardMenu
-            icon={<IconPioneerForm color="var(--black)" />}
+            icon={<IconPioneerForm color="var(--grey-350)" />}
             primaryText={t('tr_applicationAuxiliaryPioneer')}
             path="/auxiliary-pioneer-application"
+            isDisabled
           />
         </ListItem>
       )}
