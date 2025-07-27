@@ -8,10 +8,6 @@ import {
 import useDashboard from './useDashboard';
 import ActivitiesCard from './activities';
 import CongregationCard from './congregation';
-<<<<<<< HEAD
-//import FeatureFlag from '@components/feature_flag';
-=======
->>>>>>> fork
 import LanguageGroupSelector from '@features/language_group_selector';
 import Markup from '@components/text_markup';
 import MinistryCard from './ministry';
@@ -87,13 +83,7 @@ const Dashboard = () => {
 
         <MeetingsCard assignmentCount={countFutureAssignments} />
 
-<<<<<<< HEAD
-        {/* <FeatureFlag flag="UPCOMING_EVENTS"> */}
         <ActivitiesCard />
-        {/* </FeatureFlag> */}
-=======
-        <ActivitiesCard />
->>>>>>> fork
 
         {isPersonViewer && <PersonsCard />}
 
