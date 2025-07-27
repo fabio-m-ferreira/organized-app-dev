@@ -1,5 +1,6 @@
 import {
   addDays as libAddDays,
+  addHours as libAddHours,
   formatDate as dateFormat,
   isValid,
   isAfter as libIsAfter,
@@ -472,4 +473,23 @@ export const formatLongDateWithShortVars = (date: Date | string) => {
     key: 'tr_longDateWithYearAndDayLocale',
     params: { day: dayV, date: dateV, month: monthV, year },
   });
+};
+
+export const formatDateShortMonth = (date: Date | string) => {
+  date = new Date(date);
+
+  const month = date.getMonth();
+  const dateV = date.getDate();
+
+  const monthNames = store.get(monthShortNamesState);
+  const monthV = monthNames[month];
+
+  return getTranslation({
+    key: 'tr_longDateNoYearLocale',
+    params: { date: dateV, month: monthV },
+  });
+};
+
+export const addHours = (amount: number, date: Date = new Date()) => {
+  return libAddHours(date, amount);
 };
