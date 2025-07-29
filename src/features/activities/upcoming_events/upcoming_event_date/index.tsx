@@ -1,23 +1,17 @@
 import { Box } from '@mui/material';
 import { UpcomingEventDateProps } from './index.types';
-import useUpcomingEventDate from './useUpcomingEventDate';
 import Typography from '@components/typography';
-import { Ref } from 'react';
 
 const UpcomingEventDate = ({
-  date,
-  title,
-  description,
   disabled,
   dayIndicatorRef,
   dayIndicatorSharedWidth,
-  datesRange,
-}: UpcomingEventDateProps & {
-  dayIndicatorSharedWidth?: number;
-  dayIndicatorRef?: Ref<unknown>;
-}) => {
-  const { eventDate, eventDay } = useUpcomingEventDate(date);
-
+  title,
+  description,
+  date,
+  day,
+  range,
+}: UpcomingEventDateProps) => {
   return (
     <Box
       sx={{
@@ -43,40 +37,26 @@ const UpcomingEventDate = ({
           backgroundColor: disabled ? `var(--accent-100)` : `var(--accent-150)`,
         }}
       >
-        {datesRange && (
-          <Typography
-            className="h4"
-            color={disabled ? 'var(--accent-400)' : 'var(--accent-dark)'}
-            sx={{
-              '&::first-letter': {
-                textTransform: 'capitalize',
-              },
-            }}
-          >
-            {datesRange}
-          </Typography>
-        )}
+        <Typography
+          className="h4"
+          color={disabled ? 'var(--accent-400)' : 'var(--accent-dark)'}
+          sx={{
+            textWrapMode: 'nowrap',
+            '&::first-letter': {
+              textTransform: 'capitalize',
+            },
+          }}
+        >
+          {range || date}
+        </Typography>
 
-        {!datesRange && (
-          <>
-            <Typography
-              className="h4"
-              color={disabled ? 'var(--accent-400)' : 'var(--accent-dark)'}
-              sx={{
-                '&::first-letter': {
-                  textTransform: 'capitalize',
-                },
-              }}
-            >
-              {eventDate}
-            </Typography>
-            <Typography
-              className="label-small-regular"
-              color={disabled ? 'var(--accent-400)' : 'var(--accent-dark)'}
-            >
-              {eventDay}
-            </Typography>
-          </>
+        {!range && (
+          <Typography
+            className="label-small-regular"
+            color={disabled ? 'var(--accent-400)' : 'var(--accent-dark)'}
+          >
+            {day}
+          </Typography>
         )}
       </Box>
 
