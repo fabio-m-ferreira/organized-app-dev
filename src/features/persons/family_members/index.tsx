@@ -1,15 +1,15 @@
 import { Box } from '@mui/material';
-
-import MemberSelector from './member_selector';
-import useFamilyMembers from './useFamilyMembers';
-import Switch from '@components/switch';
-import Typography from '@components/typography';
 import { IconInfo } from '@components/icons';
 import { useAppTranslation } from '@hooks/index';
+import useFamilyMembers from './useFamilyMembers';
+import MemberSelector from './member_selector';
 import Markup from '@components/text_markup';
+import Switch from '@components/switch';
+import Typography from '@components/typography';
 
 const FamilyMembers = () => {
   const { t } = useAppTranslation();
+
   const {
     isCurrentPersonMemberOfAFamily,
     onSetHead,
@@ -31,8 +31,11 @@ const FamilyMembers = () => {
         gap: '16px',
       }}
     >
-      <Typography className="h2">{t('tr_family')}</Typography>
-      {isCurrentPersonMemberOfAFamily ? (
+      <Typography className="h2" color="var(--black)">
+        {t('tr_family')}
+      </Typography>
+
+      {isCurrentPersonMemberOfAFamily && (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <IconInfo color="var(--grey-350)" />
           <Markup
@@ -43,15 +46,19 @@ const FamilyMembers = () => {
             })}
           />
         </Box>
-      ) : (
+      )}
+
+      {!isCurrentPersonMemberOfAFamily && (
         <>
-          <Typography className="body-small-regular">
+          <Typography color="var(--grey-400)">
             {t('tr_setPersonToFamilyHead')}
           </Typography>
+
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <Switch checked={isFamilyHead} onChange={onSetHead} />
-            <Typography className="h3">{t('tr_familyHead')}</Typography>
+            <Typography>{t('tr_familyHead')}</Typography>
           </Box>
+
           {isFamilyHead && <MemberSelector />}
         </>
       )}

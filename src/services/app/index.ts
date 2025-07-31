@@ -40,7 +40,10 @@ import {
 } from '@services/dexie/settings';
 import { dbRemoveDuplicateReports } from '@services/dexie/cong_field_service_reports';
 import { LanguageItem } from '@definition/app';
-import { dbPersonsUpdateAssignments } from '@services/dexie/persons';
+import {
+  dbPersonsCleanUp,
+  dbPersonsUpdateAssignments,
+} from '@services/dexie/persons';
 import {
   dbUserFieldServiceReportsRemoveEmpty,
   dbUserSaveTimerToStorage,
@@ -58,6 +61,7 @@ import {
 import { apiPocketValidateMe } from '@services/api/pocket';
 import { UserLoginResponseType } from '@definition/api';
 import { settingSchema } from '@services/dexie/schema';
+import { dbUpcomingEventsCleanup } from '@services/dexie/upcoming_events';
 import appDb from '@db/appDb';
 
 export const loadApp = () => {
@@ -76,6 +80,7 @@ export const runUpdater = async () => {
   await dbWeekTypeUpdate();
   await dbAssignmentUpdate();
   await dbPersonsUpdateAssignments();
+  await dbPersonsCleanUp();
   await dbSchedAuxClassUpdate();
   await dbRemoveDuplicateReports();
   await dbMetadataDefault();
@@ -85,6 +90,7 @@ export const runUpdater = async () => {
   await dbUserFieldServiceReportsRemoveEmpty();
   await dbSourcesUpdateEventsName();
   await dbUserSaveTimerToStorage();
+  await dbUpcomingEventsCleanup();
 };
 
 export const userLogoutSuccess = async () => {

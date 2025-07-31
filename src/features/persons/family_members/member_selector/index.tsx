@@ -1,15 +1,16 @@
 import { Box } from '@mui/material';
+import { useAppTranslation } from '@hooks/index';
 import { UsersOption } from './index.type';
-import Typography from '@components/typography';
+import useFamilyMembers from '../useFamilyMembers';
 import AutocompleteMultiple from '@components/autocomplete_multiple';
 import MiniChip from '@components/mini_chip';
-import useFamilyMembers from '../useFamilyMembers';
-import { useAppTranslation } from '@hooks/index';
+import Typography from '@components/typography';
 
 const MemberSelector = () => {
+  const { t } = useAppTranslation();
+
   const { onRemovePerson, handleAddFamilyMembers, familyMembers, options } =
     useFamilyMembers();
-  const { t } = useAppTranslation();
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
