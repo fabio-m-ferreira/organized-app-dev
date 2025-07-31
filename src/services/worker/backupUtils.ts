@@ -652,6 +652,14 @@ const dbRestorePersons = async (
         // remove old key
         delete person.person_data.categories;
 
+        // clean up keys
+        if (
+          person.person_data.family_members &&
+          typeof person.person_data.family_members === 'string'
+        ) {
+          delete person.person_data.family_members;
+        }
+
         return person;
       }
     );
@@ -737,6 +745,15 @@ const dbRestoreUpcomingEvents = async (
         table: 'upcoming_events',
         accessCode,
       });
+
+      // clean up keys
+      if (event.updatedAt) {
+        event.event_data._deleted = event._deleted;
+        event.event_data.updatedAt = event.updatedAt;
+
+        delete event._deleted;
+        delete event.updatedAt;
+      }
 
       return event;
     });

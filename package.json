@@ -1,7 +1,7 @@
 {
   "name": "organized",
   "private": true,
-  "version": "3.31.4",
+  "version": "3.32.2",
   "license": "MIT",
   "type": "module",
   "repository": {
@@ -70,7 +70,7 @@
     "validator": "^13.15.15",
     "vite": "^7.0.6",
     "vite-plugin-comlink": "^5.1.0",
-    "write-excel-file": "^2.3.3"
+    "write-excel-file": "^2.3.4"
   },
   "devDependencies": {
     "@babel/plugin-transform-private-property-in-object": "^7.27.1",
@@ -104,7 +104,7 @@
     "lint-staged": "^16.1.2",
     "prettier": "^3.6.2",
     "react-refresh": "^0.17.0",
-    "rollup": "^4.46.1",
+    "rollup": "^4.46.2",
     "semantic-release": "^24.2.7",
     "serve": "^14.2.4",
     "tsx": "^4.20.3",
