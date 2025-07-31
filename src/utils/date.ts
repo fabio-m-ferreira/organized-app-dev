@@ -17,14 +17,59 @@ import { dayNamesShortState, monthShortNamesState } from '@states/app';
 
 export const MAX_DATE = new Date(9999, 11, 31);
 
-export const formatDate = (date: Date, format: string) => {
-  return dateFormat(date, format);
+/**
+ * Formats a date using the specified format string
+ * @param date - Date object or date string to format
+ * @param format - Format string according to date-fns format
+ * @returns Formatted date string or 'Invalid Date' if date is invalid
+ */
+/**
+ * Safely parses a date string or returns null if invalid
+ * @param dateString - Date string or Date object to parse
+ * @returns Date object if valid, null otherwise
+ */
+export const safeParseDate = (dateString: string | Date): Date | null => {
+  try {
+    const date =
+      typeof dateString === 'string' ? new Date(dateString) : dateString;
+    return isValid(date) ? date : null;
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Formats a date using the specified format string
+ * @param date - Date object or date string to format
+ * @param format - Format string according to date-fns format
+ * @returns Formatted date string or 'Invalid Date' if date is invalid
+ */
+export const formatDate = (date: Date | string, format: string): string => {
+  try {
+    // Guard against literal 'Invalid Date' string
+    if (date === 'Invalid Date') {
+      // Only log once if needed, or silently return
+      return 'Invalid Date';
+    }
+    // If it's a string, try to parse it
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+
+    // Check if the date is valid
+    if (!isValid(dateObj)) {
+      console.error('Invalid date provided to formatDate:', date);
+      return 'Invalid Date';
+    }
+
+    return dateFormat(dateObj, format);
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return 'Invalid Date';
+  }
 };
 
 export const formatLongDate = (date: Date, format: string, use24: boolean) => {
   const hoursFormat = use24 ? 'HH:mm' : 'h:mm aaa';
   const longFormat = `${format} ${hoursFormat}`;
-
   return formatDate(date, longFormat);
 };
 
@@ -89,11 +134,38 @@ export const getOldestWeekDate = () => {
   return new Date(validDate);
 };
 
-export const addMonths = (date: Date | string, value: number) => {
-  const start_date = new Date(date);
-  start_date.setMonth(start_date.getMonth() + value);
+/**
+ * Adds the specified number of months to a date, handling month transitions safely
+ * @param date - Date object or date string to add months to
+ * @param value - Number of months to add (can be negative)
+ * @returns New Date object with months added, or current date if input is invalid
+ */
+export const addMonths = (date: Date | string, value: number): Date => {
+  try {
+    const startDate = new Date(date);
+    if (!isValid(startDate)) {
+      console.error('Invalid date provided to addMonths:', date);
+      return new Date(); // Return current date as fallback
+    }
 
-  return start_date;
+    const newDate = new Date(startDate);
+    newDate.setMonth(newDate.getMonth() + value);
+
+    // Handle edge case where the day doesn't exist in the new month
+    // (e.g., Jan 31 + 1 month = March 3rd or March 2nd in leap years)
+    if (
+      startDate.getDate() !== newDate.getDate() &&
+      (newDate.getMonth() - startDate.getMonth() + 12) % 12 !== value % 12
+    ) {
+      // If the day changed and we didn't land on the expected month due to rollover
+      newDate.setDate(0); // Set to last day of previous month
+    }
+
+    return newDate;
+  } catch (error) {
+    console.error('Error in addMonths:', error);
+    return new Date(); // Return current date as fallback
+  }
 };
 
 export const addWeeks = (date: Date | string, value: number) => {
@@ -338,22 +410,61 @@ export const computeMonthsDiff = (startDate: Date, endDate: Date) => {
   return monthsDiff + 12 * yearsDiff;
 };
 
+/**
+ * Creates an array of months between two dates in 'yyyy/MM' format
+ * @param startMonth - Start month in 'yyyy/MM' format
+ * @param endMonth - End month in 'yyyy/MM' format
+ * @returns Array of months in 'yyyy/MM' format
+ */
 export const createArrayFromMonths = (startMonth: string, endMonth: string) => {
   const result: string[] = [];
 
-  let currentMonth = startMonth;
+  // Validate input formats
+  const monthRegex = /^\d{4}\/\d{2}$/;
+  if (!monthRegex.test(startMonth) || !monthRegex.test(endMonth)) {
+    console.error('Invalid month format. Expected yyyy/MM but got:', {
+      startMonth,
+      endMonth,
+    });
+    return [];
+  }
 
-  do {
-    result.push(currentMonth);
+  try {
+    // Parse dates with proper validation
+    const startDate = new Date(`${startMonth}/01`);
+    const endDate = new Date(`${endMonth}/01`);
 
-    const date = new Date(`${currentMonth}/01`);
-    const nextMonth = addMonths(date, 1);
-    currentMonth = formatDate(nextMonth, 'yyyy/MM');
-  } while (currentMonth !== endMonth);
+    if (!isValid(startDate) || !isValid(endDate)) {
+      console.error('Invalid date range:', { startMonth, endMonth });
+      return [];
+    }
 
-  result.push(endMonth);
+    // Handle case where start is after end
+    if (startDate > endDate) {
+      console.error('Start date cannot be after end date:', {
+        startMonth,
+        endMonth,
+      });
+      return [];
+    }
 
-  return result;
+    let currentDate = new Date(startDate);
+
+    while (currentDate <= endDate) {
+      result.push(formatDate(currentDate, 'yyyy/MM'));
+      // Move to first day of next month
+      currentDate = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() + 1,
+        1
+      );
+    }
+
+    return result;
+  } catch (error) {
+    console.error('Error creating month array:', error);
+    return [];
+  }
 };
 
 export const firstWeekMonth = (year: number, month: number) => {
