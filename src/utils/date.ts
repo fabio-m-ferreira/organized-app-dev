@@ -78,6 +78,11 @@ export const getWeekDate = (date: Date = new Date()) => {
   return monDay;
 };
 
+export const getDayDate = () => {
+  const day = new Date();
+  return day;
+};
+
 export const getOldestWeekDate = () => {
   const weekDate = getWeekDate();
   const validDate = weekDate.setMonth(weekDate.getMonth() - 12);
@@ -344,7 +349,7 @@ export const createArrayFromMonths = (startMonth: string, endMonth: string) => {
     const date = new Date(`${currentMonth}/01`);
     const nextMonth = addMonths(date, 1);
     currentMonth = formatDate(nextMonth, 'yyyy/MM');
-  } while (currentMonth <= endMonth);
+  } while (currentMonth !== endMonth);
 
   result.push(endMonth);
 
