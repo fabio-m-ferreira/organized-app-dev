@@ -3,11 +3,11 @@ import { useAtom, useAtomValue } from 'jotai';
 import {
   disconnectCongAccount,
   setIsAboutOpen,
-  setIsAppLoad,
+  //setIsAppLoad,
   setIsContactOpen,
-  setIsSetup,
+  //setIsSetup,
   setIsSupportOpen,
-  setOfflineOverride,
+  //setOfflineOverride,
 } from '@services/states/app';
 import { useBreakpoints } from '@hooks/index';
 import {
@@ -55,11 +55,12 @@ const useNavbar = () => {
   };
 
   const handleReconnectAccount = () => {
-    handleCloseMore();
+    // handleCloseMore();
 
-    setOfflineOverride(true);
-    setIsSetup(true);
-    setIsAppLoad(true);
+    // setOfflineOverride(true);
+    // setIsSetup(true);
+    // setIsAppLoad(true);
+    window.location.reload();
   };
 
   const handleOpenContact = async () => {
