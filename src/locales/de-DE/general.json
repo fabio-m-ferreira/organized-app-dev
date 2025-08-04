@@ -146,6 +146,7 @@
   "tr_startTime": "Start time",
   "tr_endTime": "End time",
   "tr_days": "{{ daysCount }} days",
+  "tr_created": "Created: {{ date }}",
   "tr_missingInfo": "Missing info",
   "tr_fillRequiredField": "Please fill in the required field",
   "tr_mondayShort": "Mon",
@@ -154,5 +155,6 @@
   "tr_thursdayShort": "Don",
   "tr_fridayShort": "Fre",
   "tr_saturdayShort": "Sam",
-  "tr_sundayShort": "Son"
+  "tr_sundayShort": "Son",
+  "tr_dateRangeNoYear": "{{ startDate }}-{{ endDate }}"
 }

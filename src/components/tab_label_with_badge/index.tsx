@@ -54,7 +54,6 @@ const TabLabelWithBadge = ({
       <Typography
         className={className}
         sx={{
-          color: 'unset',
           fontWeight: '500 !important',
         }}
       >

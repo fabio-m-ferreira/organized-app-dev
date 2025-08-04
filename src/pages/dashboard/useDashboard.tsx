@@ -8,7 +8,7 @@ import {
 } from '@states/settings';
 import { isMyAssignmentOpenState } from '@states/app';
 import { assignmentsHistoryState } from '@states/schedules';
-import { formatDate, getWeekDate } from '@utils/date';
+import { formatDate, getDayDate } from '@utils/date';
 import { isTest } from '@constants/index';
 
 const useDashboard = () => {
@@ -31,7 +31,7 @@ const useDashboard = () => {
   const [newCongSnack, setNewCongSnack] = useState(initialSnackValue);
 
   const countFutureAssignments = useMemo(() => {
-    const now = formatDate(getWeekDate(), 'yyyy/MM/dd');
+    const now = formatDate(getDayDate(), 'yyyy/MM/dd');
 
     const personAssignments = assignmentsHistory.filter(
       (record) =>

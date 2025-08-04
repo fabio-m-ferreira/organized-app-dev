@@ -20,6 +20,8 @@ const DashboardMenu = (props: DashboardMenuProps) => {
     activeMenuSecondaryBg,
   } = useMenu(props);
 
+  if (props.isDisabled) return <DisabledButton {...props} />;
+
   return (
     <ListItemButton
       disableRipple
@@ -117,6 +119,46 @@ const DashboardMenu = (props: DashboardMenuProps) => {
         />
       </Box>
     </ListItemButton>
+  );
+};
+
+const DisabledButton = (props: DashboardMenuProps) => {
+  return (
+    <Box
+      sx={{
+        flex: '1 0 0',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '16px',
+        padding: props.small ? '4px 4px 4px 8px' : '8px 8px 8px 16px',
+        height: '100%',
+        borderRadius: 'var(--radius-s)',
+        cursor: 'default',
+      }}
+    >
+      <ListItemIcon sx={{ minWidth: 0, color: '#6b7280' }}>
+        {props.icon}
+      </ListItemIcon>
+      <ListItemText
+        sx={{ marginTop: 0, marginBottom: 0 }}
+        disableTypography
+        primary={
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Box>
+              <Typography className="body-regular" color="var(--grey-350)">
+                {props.primaryText}
+              </Typography>
+            </Box>
+          </Box>
+        }
+      />
+    </Box>
   );
 };
 

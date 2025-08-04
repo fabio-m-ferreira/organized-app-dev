@@ -23,7 +23,7 @@ const useFamilyMembers = () => {
       return personsActive.some((p) => {
         if (p.person_data.family_members) {
           const isMember =
-            p.person_data.family_members.members.includes(person_uid);
+            p.person_data.family_members?.members?.includes(person_uid);
           return isMember;
         }
         return false;
@@ -38,7 +38,7 @@ const useFamilyMembers = () => {
 
   const currentFamily = useMemo(() => {
     return personsActive.find((person) =>
-      person.person_data.family_members?.members.includes(
+      person.person_data.family_members?.members?.includes(
         currentPerson.person_uid
       )
     );

@@ -126,7 +126,7 @@
   "tr_loginOAuthHint": "Inicie sessão mais rápido com {{ oauth }} usando o botão abaixo",
   "tr_disconnectAccount": "Desconectar a minha conta",
   "tr_loginWithEmail": "Email de início de sessão",
-  "tr_loginWithEmailDesc": "Use Google, Yahoo ou outro email para criar e aceder a sua conta a qualquer momento, em qualquer dispositivo",
+  "tr_loginWithEmailDesc": "Use Google, Apple ou outro email para criar e aceder a sua conta a qualquer momento, em qualquer dispositivo",
   "tr_loginWithCode": "Código de convite para iniciar sessão",
   "tr_loginWithCodeDesc": "Aceder apenas neste navegador, com um código o único. Vai precisar de uma código de cada vez"
 }
