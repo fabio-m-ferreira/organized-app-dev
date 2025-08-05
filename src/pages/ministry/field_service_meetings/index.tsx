@@ -229,9 +229,11 @@ const MeetingAttendance = () => {
       >
         {t('tr_weekend')}
       </Typography>
-      {weekendMeetings.map((item) => (
-        <MeetingItem key={item.id} {...item} />
-      ))}
+      {weekendMeetings
+        .filter((item) => item.type === filterId || filterId === 'All')
+        .map((item) => (
+          <MeetingItem key={item.id} {...item} />
+        ))}
 
       {midweekMeetings.length === 0 && weekendMeetings.length === 0 && (
         <InfoTip

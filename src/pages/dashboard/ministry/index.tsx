@@ -45,7 +45,7 @@ const MinistryCard = () => {
         <DashboardMenu
           icon={<IconFootprint color="var(--black)" />}
           primaryText={t('tr_fieldServiceMeetings')}
-          path="/activities/field-service-meetings"
+          path="/field-service-meetings"
         />
       </ListItem>
 

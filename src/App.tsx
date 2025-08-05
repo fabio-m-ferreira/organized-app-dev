@@ -64,7 +64,7 @@ const ApplicationDetails = lazy(
   () => import('@pages/persons/application_details')
 );
 const FieldServiceMeetings = lazy(
-  () => import('@pages/congregation/field_service_meetings')
+  () => import('@pages/ministry/field_service_meetings')
 );
 const UpcomingEvents = lazy(() => import('@pages/activities/upcoming_events'));
 
@@ -123,7 +123,7 @@ const App = ({ updatePwa }: { updatePwa: VoidFunction }) => {
                 { path: '/ministry-report', element: <MinistryReport /> },
                 { path: '/service-year', element: <ServiceYear /> },
                 {
-                  path: '/activities/field-service-meetings',
+                  path: '/field-service-meetings',
                   element: <FieldServiceMeetings />,
                 },
 

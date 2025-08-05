@@ -1,10 +1,10 @@
 import { Box } from '@mui/material';
-import { IconAddMonth, IconAtHome, IconEdit } from '@components/icons';
+import { IconAtHome, IconEdit } from '@components/icons';
 import Button from '@components/button';
 import GroupBadge from '@components/group_badge';
 import Badge from '@components/badge';
 import Typography from '@components/typography';
-import { useAppTranslation, useBreakpoints } from '@hooks/index';
+import { useBreakpoints } from '@hooks/index';
 
 type MeetingItemProps = {
   id: number;
@@ -14,7 +14,7 @@ type MeetingItemProps = {
 };
 
 const MeetingItem = ({ id, title, badges }: MeetingItemProps) => {
-  const { t } = useAppTranslation();
+  //const { t } = useAppTranslation();
   const { desktopUp } = useBreakpoints();
 
   return (
@@ -107,32 +107,12 @@ const MeetingItem = ({ id, title, badges }: MeetingItemProps) => {
           <Typography className="h4">Nolan Ekstrom Bothman</Typography>
           <Typography className="body-regular" color="var(--grey-400)">
             <Box component="span" display="flex" alignItems="center" gap="4px">
-              <IconAtHome color="var(--grey-400)" /> Lorem ipsum dolor sit amet,
-              consectetur adipiscing elit.
+              <IconAtHome color="var(--grey-400)" /> Morada ou Local
             </Box>
           </Typography>
           <Typography className="body-small-regular" color="var(--grey-400)">
             Optional: e.g. a maps link: https://goo.gl/maps/xyz123
           </Typography>
-        </Box>
-        <Box
-          className="add-to-calendar"
-          sx={{
-            display: 'flex',
-            flex: 0,
-            alignItems: 'center',
-            opacity: desktopUp ? 0 : 1,
-          }}
-        >
-          <Button variant="small" startIcon={<IconAddMonth />}>
-            <Typography
-              className="body-small-regular"
-              color="var(--blue-500)"
-              noWrap
-            >
-              {t('tr_addToCalendar')}
-            </Typography>
-          </Button>
         </Box>
       </Box>
     </Box>
