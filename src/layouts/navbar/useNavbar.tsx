@@ -3,11 +3,10 @@ import { useAtom, useAtomValue } from 'jotai';
 import {
   disconnectCongAccount,
   setIsAboutOpen,
-  //setIsAppLoad,
   setIsContactOpen,
-  //setIsSetup,
   setIsSupportOpen,
-  //setOfflineOverride,
+  setIsUserSignIn,
+  displaySnackNotification,
 } from '@services/states/app';
 import { useBreakpoints } from '@hooks/index';
 import {
@@ -21,6 +20,8 @@ import {
   fullnameState,
 } from '@states/settings';
 import { userSignOut } from '@services/firebase/auth';
+import { authProvider } from '@services/firebase/auth';
+import { currentAuthUser, userSignInPopup } from '@services/firebase/auth';
 
 const useNavbar = () => {
   const navigate = useNavigate();
@@ -54,13 +55,48 @@ const useNavbar = () => {
     navigate(`/user-profile`);
   };
 
-  const handleReconnectAccount = () => {
-    // handleCloseMore();
+  const handleReconnectAccount = async () => {
+    handleCloseMore();
 
-    // setOfflineOverride(true);
-    // setIsSetup(true);
-    // setIsAppLoad(true);
-    window.location.reload();
+    try {
+      const user = currentAuthUser();
+      
+      if (!user) {
+        // If no user is signed in, show the sign-in form
+        setIsUserSignIn(true);
+        return;
+      }
+
+      // Get the provider ID used for the original sign-in
+      const providerId = user.providerData[0]?.providerId;
+      
+      // Handle email/password login
+      if (providerId === 'password') {
+        // For email login, show the sign-in form
+        setIsUserSignIn(true);
+        return;
+      }
+      
+      // Handle Google OAuth
+      if (providerId === 'google.com') {
+        await userSignInPopup(authProvider.Google);
+        return;
+      }
+
+      // If we get here, the provider is not supported
+      console.error('Unsupported provider:', providerId);
+      throw new Error('Unsupported authentication provider');
+      
+    } catch (error) {
+      console.error('Reauthentication failed:', error);
+      displaySnackNotification({
+        header: 'Reauthentication Failed',
+        message: 'Failed to reconnect your account. Please try again or sign in manually.',
+        severity: 'error',
+      });
+      // Show the sign-in form as fallback
+      setIsUserSignIn(true);
+    }
   };
 
   const handleOpenContact = async () => {
