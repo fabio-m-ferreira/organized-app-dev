@@ -5,10 +5,8 @@ import {
   setIsAboutOpen,
   setIsContactOpen,
   setIsSupportOpen,
-  setOfflineOverride,
-  setIsSetup,
-  setIsAppLoad,
 } from '@services/states/app';
+import useStartup from '@features/app_start/vip/startup/useStartup';
 import { useBreakpoints } from '@hooks/index';
 import {
   congAccountConnectedState,
@@ -35,6 +33,7 @@ const useNavbar = () => {
   const isAppLoad = useAtomValue(isAppLoadState);
   const accountType = useAtomValue(accountTypeState);
 
+  const { runStartupCheck } = useStartup();
   const openMore = Boolean(anchorEl);
 
   const handleOpenMoreMenu = (e) => {
@@ -56,9 +55,7 @@ const useNavbar = () => {
 
   const handleReconnectAccount = async () => {
     handleCloseMore();
-    setOfflineOverride(true);
-    setIsSetup(true);
-    setIsAppLoad(true);
+    await runStartupCheck();
   };
 
   const handleOpenContact = async () => {

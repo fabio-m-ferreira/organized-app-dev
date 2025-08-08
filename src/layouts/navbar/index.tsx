@@ -30,6 +30,7 @@ import DemoBanner from '@features/demo/banner';
 import LanguageSwitcher from '@features/language_switcher';
 import ThemeSwitcher from '@features/theme_switcher';
 import Typography from '@components/typography';
+import { setCongAccountConnected } from '@services/states/app';
 
 const baseMenuStyle = {
   padding: '8px 12px 8px 16px',
@@ -133,6 +134,14 @@ const NavBar = ({ isSupported }: NavBarType) => {
             {isSupported && <AppNotification />}
 
             <ThemeSwitcher />
+
+            <div
+              onClick={() => {
+                setCongAccountConnected(false);
+              }}
+            >
+              Off
+            </div>
 
             {tabletUp && (isAppLoad || isTest) && (
               <LanguageSwitcher
