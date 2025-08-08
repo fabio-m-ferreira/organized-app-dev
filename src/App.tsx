@@ -322,9 +322,11 @@ const App = ({ updatePwa }: { updatePwa: VoidFunction }) => {
       'isAppLoad:',
       isAppLoad,
       'isAuthenticated:',
-      isAuthenticated
+      isAuthenticated,
+      'congAccountConnected:',
+      isConnected
     );
-  }, [offlineOverride, isSetup, isAppLoad, isAuthenticated]);
+  }, [offlineOverride, isSetup, isAppLoad, isAuthenticated, isConnected]);
 
   return (
     <ThemeProvider theme={theme}>
