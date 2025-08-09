@@ -18,6 +18,7 @@ import {
   IconMail,
   IconArrowLink,
   IconLogout,
+  IconRefresh,
 } from '@icons/index';
 import { useAppTranslation, useFirebaseAuth } from '@hooks/index';
 import { APP_ENVIRONMENT, isTest } from '@constants/index';
@@ -29,8 +30,8 @@ import Button from '@components/button';
 import DemoBanner from '@features/demo/banner';
 import LanguageSwitcher from '@features/language_switcher';
 import ThemeSwitcher from '@features/theme_switcher';
+import ButtonIcon from '@components/icon_button';
 import Typography from '@components/typography';
-import { setCongAccountConnected } from '@services/states/app';
 
 const baseMenuStyle = {
   padding: '8px 12px 8px 16px',
@@ -73,11 +74,13 @@ const NavBar = ({ isSupported }: NavBarType) => {
     handleGoDashboard,
     isAppLoad,
     handleReconnectAccount,
+    handleReconnectExistingAccount,
     handleOpenRealApp,
     accountType,
     handleDisonnectAccount,
     congName,
     fullname,
+    isOffline,
   } = useNavbar();
 
   return (
@@ -133,15 +136,17 @@ const NavBar = ({ isSupported }: NavBarType) => {
           >
             {isSupported && <AppNotification />}
 
-            <ThemeSwitcher />
+            {/* Refresh/Seamless Reconnect Icon Button */}
+            {isOffline && (
+              <ButtonIcon
+                onClick={handleReconnectExistingAccount}
+                title={t('tr_reconnectExistingAccount')}
+              >
+                <IconRefresh color="var(--black)" width={24} height={24} />
+              </ButtonIcon>
+            )}
 
-            <div
-              onClick={() => {
-                setCongAccountConnected(false);
-              }}
-            >
-              Off
-            </div>
+            <ThemeSwitcher />
 
             {tabletUp && (isAppLoad || isTest) && (
               <LanguageSwitcher

@@ -68,30 +68,22 @@ const useStartup = () => {
     setUserMfaVerify(false);
   }, [setIsUserSignIn, isEmailLink]);
 
-  useEffect(() => {
-    console.log(isAuthenticated);
-  }, [isAuthenticated]);
-
   const runStartupCheck = useCallback(async () => {
     try {
       setIsLoading(true);
       console.log('run startup check');
 
-      if (isOfflineOverride && !isAuthenticated) {
-        console.log('hey');
+      if (isOfflineOverride) {
         setIsLoading(false);
         setIsStart(false);
         showSignin();
-
         return;
       }
 
       if (congName.length === 0) {
-        console.log('hey2');
         setIsLoading(false);
         setIsStart(false);
         showSignin();
-
         return;
       }
 
@@ -99,7 +91,6 @@ const useStartup = () => {
       const masterKeyNeeded = congRole.some((role) => VIP_ROLES.includes(role));
 
       if (!approvedRole) {
-        console.log('hey3');
         setIsLoading(false);
         setIsStart(false);
         showSignin();
@@ -120,7 +111,6 @@ const useStartup = () => {
           setIsSetup(false);
           setIsAppLoad(false);
         }, 1000);
-
         return;
       }
 
@@ -133,7 +123,6 @@ const useStartup = () => {
       }
 
       if (!isUserAccountCreated && (status === 403 || status === 400)) {
-        console.log('hey4');
         await userSignOut();
         setIsLoading(false);
         showSignin();
@@ -192,7 +181,6 @@ const useStartup = () => {
       setIsStart(false);
       setIsLoading(false);
     } catch (error) {
-      console.log('hey5');
       showSignin();
       setIsLoading(false);
       console.error(error);

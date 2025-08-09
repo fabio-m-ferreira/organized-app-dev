@@ -26,6 +26,7 @@ const IconButton: FC<IconButtonProps> = (props) => {
       edge="start"
       sx={{
         padding: '8px',
+        margin: '0px',
         borderRadius: 'var(--radius-l)',
         '&:hover': {
           backgroundColor: getBackgroundColor(),
