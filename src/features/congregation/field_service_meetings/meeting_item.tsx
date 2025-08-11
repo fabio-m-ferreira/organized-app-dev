@@ -1,5 +1,11 @@
 import { Box } from '@mui/material';
-import { IconAtHome, IconEdit } from '@components/icons';
+import {
+  IconAtHome,
+  IconEdit,
+  IconTalk,
+  IconTalker,
+  IconVisitors,
+} from '@components/icons';
 import Button from '@components/button';
 import GroupBadge from '@components/group_badge';
 import Badge from '@components/badge';
@@ -78,11 +84,10 @@ const MeetingItem = ({ id, title, badges }: MeetingItemProps) => {
         <Box
           sx={{
             backgroundColor: 'var(--accent-150)',
-            padding: '8px 16px',
+            padding: '16px 16px',
             borderRadius: 'var(--radius-l)',
             display: 'flex',
             alignItems: 'center',
-            alignSelf: 'stretch',
             justifyContent: 'center',
             flex: 0,
           }}
@@ -104,14 +109,32 @@ const MeetingItem = ({ id, title, badges }: MeetingItemProps) => {
             gap: '4px',
           }}
         >
-          <Typography className="h4">Nolan Ekstrom Bothman</Typography>
+          <Typography className="h4">
+            <Box component="span" display="flex" alignItems="center" gap="4px">
+              <IconTalk color="var(--grey-400)" /> Nolan Ekstrom Bothman
+            </Box>
+          </Typography>
+          <Typography
+            sx={{ display: 'none' }}
+            className="body-regular"
+            color="var(--grey-400)"
+          >
+            <Box component="span" display="flex" alignItems="center" gap="4px">
+              <IconVisitors color="var(--grey-400)" /> Fábio Ferreira
+            </Box>
+          </Typography>
+          <Typography sx={{ display: 'none' }} className="body-regular">
+            <Box component="span" display="flex" alignItems="center" gap="4px">
+              <IconTalker color="var(--grey-400)" /> Fábio Ferreira
+            </Box>
+          </Typography>
           <Typography className="body-regular" color="var(--grey-400)">
             <Box component="span" display="flex" alignItems="center" gap="4px">
               <IconAtHome color="var(--grey-400)" /> Morada ou Local
             </Box>
           </Typography>
           <Typography className="body-small-regular" color="var(--grey-400)">
-            Optional: e.g. a maps link: https://goo.gl/maps/xyz123
+            Matéria: Ame as pessoas Lição 1 ponto 1
           </Typography>
         </Box>
       </Box>
