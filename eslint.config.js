@@ -62,6 +62,7 @@ export default [
       'react/jsx-uses-react': 'error',
       'react/jsx-uses-vars': 'error',
       'import/no-cycle': ['error', { maxDepth: 9999 }],
+      '@typescript-eslint/no-unused-vars': 'warn',
     },
   },
 ];

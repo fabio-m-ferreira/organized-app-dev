@@ -54,6 +54,7 @@ export const CustomListBoxComponent = forwardRef((props: BoxProps, ref) => {
           minHeight: '36px !important',
           backgroundColor: 'unset',
           borderBottom: '1px solid var(--accent-200)',
+          color: 'var(--black)',
           '&:hover': {
             backgroundColor: 'var(--accent-150)',
             '& p': {

@@ -4,6 +4,7 @@ import {
   IconOverseer,
   IconMore,
   IconRemovePerson,
+  IconAtHome,
 } from '@components/icons';
 import { useAppTranslation } from '@hooks/index';
 import { GroupMemberProps } from './index.types';
@@ -28,8 +29,10 @@ const GroupMember = (props: GroupMemberProps) => {
     item_hover_color,
     make_assistant,
     make_overseer,
+    make_host,
     handleMakeOverseer,
     handleMakeAssistant,
+    handleMakeHost,
     handleCloseRemove,
     handleOpenRemove,
     handlePersonRemove,
@@ -132,6 +135,15 @@ const GroupMember = (props: GroupMemberProps) => {
               >
                 <IconAssistant color="var(--black)" />
                 <Typography>{t('tr_makeAssistant')}</Typography>
+              </MenuItem>
+            )}
+            {make_host && (
+              <MenuItem
+                onClick={handleMakeHost}
+                sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
+                <IconAtHome color="var(--black)" />
+                <Typography>{t('tr_makeHost')}</Typography>
               </MenuItem>
             )}
 

@@ -1,27 +1,78 @@
+import { useState } from 'react';
 import { Box } from '@mui/material';
 import {
   IconAtHome,
   IconEdit,
   IconTalk,
-  IconTalker,
   IconVisitors,
 } from '@components/icons';
 import Button from '@components/button';
-import GroupBadge from '@components/group_badge';
-import Badge from '@components/badge';
 import Typography from '@components/typography';
-import { useBreakpoints } from '@hooks/index';
+import { useAppTranslation, useBreakpoints } from '@hooks/index';
+import GroupBadge from '@components/group_badge';
+import FieldServiceMeetingForm, {
+  FieldServiceMeetingFormValues,
+} from './field_service_meeting_form';
 
-type MeetingItemProps = {
+export type MeetingItemProps = {
   id: number;
-  title: string;
-  badges: string[];
-  type: string;
+  time: Date;
+  type: 'joint' | 'group' | 'zoom'; // for each type theres a different badge
+  group?: string; // Only required if type === "group"
+  conductor: string;
+  assistant?: string; // Only required if type === "joint"
+  location?: string; // Only required if type === "group"
+  materials: string;
+  onEdit?: () => void;
 };
 
-const MeetingItem = ({ id, title, badges }: MeetingItemProps) => {
-  //const { t } = useAppTranslation();
+const MeetingItem = ({
+  id,
+  time,
+  type,
+  group,
+  conductor,
+  assistant,
+  location,
+  materials,
+}: MeetingItemProps) => {
   const { desktopUp } = useBreakpoints();
+  const { i18n } = useAppTranslation();
+  const appLocale = i18n?.language || navigator.language;
+  const [isEditing, setIsEditing] = useState(false);
+
+  const groupColors: Record<string, string> = {
+    'Passos Esteves': 'group-1',
+    Esteveira: 'group-2',
+    'Bairro da Camara': 'group-3',
+    'Grupo Salão 1': 'group-4',
+    'Grupo Salão 2': 'group-5',
+  };
+
+  if (isEditing) {
+    // Map meeting type to form type string
+    let meetingType: FieldServiceMeetingFormValues['meetingType'];
+    if (type === 'joint') meetingType = 'Joint meeting';
+    else if (type === 'group') meetingType = 'Field service group meeting';
+    else meetingType = 'Zoom';
+
+    const initialValues: FieldServiceMeetingFormValues = {
+      meetingType,
+      selectedGroup: group,
+      conductor,
+      assistant,
+      date: time,
+      time,
+      materials,
+    };
+
+    return (
+      <FieldServiceMeetingForm
+        handleCloseForm={() => setIsEditing(false)}
+        initialValues={initialValues}
+      />
+    );
+  }
 
   return (
     <Box
@@ -50,27 +101,44 @@ const MeetingItem = ({ id, title, badges }: MeetingItemProps) => {
         }}
       >
         <Box display="flex" alignItems="center">
-          <Typography className="h3">{title}</Typography>
+          <Typography
+            className="h3"
+            sx={{ '&::first-letter': { textTransform: 'capitalize' } }}
+          >
+            {time.toLocaleDateString(appLocale, {
+              weekday: 'long',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </Typography>
           <Box className="edit-button" sx={{ opacity: desktopUp ? 0 : 1 }}>
             <Button
               variant="small"
               sx={{ marginLeft: '8px', minHeight: '24px', minWidth: '24px' }}
+              onClick={() => setIsEditing(true)}
             >
               <IconEdit />
             </Button>
           </Box>
         </Box>
         <Box display="flex" alignItems="center" gap="8px">
-          {/* TODO: remove old badge and implement new one */}
-          {badges.map((badge, index) => (
-            <Badge key={index} text={badge} size="big" color="accent" />
-          ))}
-          <Badge text="Service overseer visit" size="big" color="accent" />
-          <GroupBadge
-            label="Group 3 - Outlined"
-            color="group-3"
-            variant="outlined"
-          />
+          {type === 'joint' && (
+            <GroupBadge label="Congregação" color="black" variant="outlined" />
+          )}
+          {type === 'group' && group && (
+            <GroupBadge
+              label={group}
+              color={groupColors[group] || 'black'}
+              variant="outlined"
+            />
+          )}
+          {type === 'zoom' && (
+            <GroupBadge
+              label="Zoom"
+              color="swiper-theme-color"
+              variant="outlined"
+            />
+          )}
         </Box>
       </Box>
       <Box
@@ -93,8 +161,7 @@ const MeetingItem = ({ id, title, badges }: MeetingItemProps) => {
           }}
         >
           <Typography className="h4" color="var(--accent-dark)">
-            {/* Format time based on location */}
-            {new Date().toLocaleTimeString(navigator.language, {
+            {time.toLocaleTimeString(navigator.language, {
               hour: '2-digit',
               minute: '2-digit',
               hour12: false,
@@ -111,30 +178,35 @@ const MeetingItem = ({ id, title, badges }: MeetingItemProps) => {
         >
           <Typography className="h4">
             <Box component="span" display="flex" alignItems="center" gap="4px">
-              <IconTalk color="var(--grey-400)" /> Nolan Ekstrom Bothman
+              <IconTalk color="var(--grey-400)" /> {conductor}
             </Box>
           </Typography>
-          <Typography
-            sx={{ display: 'none' }}
-            className="body-regular"
-            color="var(--grey-400)"
-          >
-            <Box component="span" display="flex" alignItems="center" gap="4px">
-              <IconVisitors color="var(--grey-400)" /> Fábio Ferreira
-            </Box>
-          </Typography>
-          <Typography sx={{ display: 'none' }} className="body-regular">
-            <Box component="span" display="flex" alignItems="center" gap="4px">
-              <IconTalker color="var(--grey-400)" /> Fábio Ferreira
-            </Box>
-          </Typography>
-          <Typography className="body-regular" color="var(--grey-400)">
-            <Box component="span" display="flex" alignItems="center" gap="4px">
-              <IconAtHome color="var(--grey-400)" /> Morada ou Local
-            </Box>
-          </Typography>
+          {type === 'joint' && assistant && (
+            <Typography className="body-regular" color="var(--grey-400)">
+              <Box
+                component="span"
+                display="flex"
+                alignItems="center"
+                gap="4px"
+              >
+                <IconVisitors color="var(--grey-400)" /> {assistant}
+              </Box>
+            </Typography>
+          )}
+          {type === 'group' && location && (
+            <Typography className="body-regular" color="var(--grey-400)">
+              <Box
+                component="span"
+                display="flex"
+                alignItems="center"
+                gap="4px"
+              >
+                <IconAtHome color="var(--grey-400)" /> Casa: {location}
+              </Box>
+            </Typography>
+          )}
           <Typography className="body-small-regular" color="var(--grey-400)">
-            Matéria: Ame as pessoas Lição 1 ponto 1
+            Matéria: {materials}
           </Typography>
         </Box>
       </Box>
