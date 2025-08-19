@@ -71,6 +71,7 @@ const useStartup = () => {
   const runStartupCheck = useCallback(async () => {
     try {
       setIsLoading(true);
+      console.log('run startup check');
 
       if (isOfflineOverride) {
         setIsLoading(false);
@@ -110,7 +111,6 @@ const useStartup = () => {
           setIsSetup(false);
           setIsAppLoad(false);
         }, 1000);
-
         return;
       }
 
@@ -230,6 +230,7 @@ const useStartup = () => {
     isEncryptionCodeOpen,
     isCongCreate,
     isLoading,
+    runStartupCheck,
   };
 };
 
