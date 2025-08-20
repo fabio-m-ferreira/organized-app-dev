@@ -196,6 +196,7 @@
   "tr_reorderGroups": "순서 변경",
   "tr_makeOverseer": "집단 감독자로 설정",
   "tr_makeAssistant": "부관 임명",
+  "tr_makeHost": "호스트로 지정",
   "tr_removeFromGroups": "집단에서 제거",
   "tr_reorderGroupsTitle": "집단 순서 변경",
   "tr_remove": "제거",
