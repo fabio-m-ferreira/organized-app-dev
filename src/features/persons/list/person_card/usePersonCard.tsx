@@ -141,7 +141,6 @@ const usePersonCard = (person: PersonType) => {
 
   const handleOpenPerson = async () => {
     const result = updateRecentPersons(person.person_uid, 'add');
-    console.log(person.person_uid);
     setPersonsRecent(result);
 
     navigate(`/persons/${person.person_uid}`);

@@ -319,22 +319,6 @@ const App = ({ updatePwa }: { updatePwa: VoidFunction }) => {
     });
   }, [appLang, firstDayOfTheWeekOption, setAdapterLocale]);
 
-  // Debug: Track state changes
-  useEffect(() => {
-    console.log(
-      'offlineOverride:',
-      offlineOverride,
-      'isSetup:',
-      isSetup,
-      'isAppLoad:',
-      isAppLoad,
-      'isAuthenticated:',
-      isAuthenticated,
-      'congAccountConnected:',
-      isConnected
-    );
-  }, [offlineOverride, isSetup, isAppLoad, isAuthenticated, isConnected]);
-
   return (
     <ThemeProvider theme={theme}>
       <LocalizationProvider
