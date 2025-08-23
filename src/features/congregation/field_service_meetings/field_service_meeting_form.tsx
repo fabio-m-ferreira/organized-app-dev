@@ -9,20 +9,15 @@ import DatePicker from '@components/date_picker';
 import TimePicker from '@components/time_picker';
 import Divider from '@components/divider';
 import TextField from '@components/textfield';
-import { useAppTranslation } from '@hooks/index';
+import { useAppTranslation, useBreakpoints } from '@hooks/index';
 import Autocomplete from '@components/autocomplete';
 import usePersons from '@features/persons/hooks/usePersons';
 import useFieldServiceGroups from '@features/congregation/field_service_groups/useFieldServiceGroups';
 import { formatDate } from '@utils/date';
 import { buildPersonFullname } from '@utils/common';
 
-const meetingTypeList = [
-  'Joint meeting',
-  'Field service group meeting',
-  'Zoom',
-] as const;
-
-export type MeetingType = (typeof meetingTypeList)[number];
+const meetingTypeValues = ['joint', 'group', 'zoom'] as const;
+export type MeetingType = (typeof meetingTypeValues)[number];
 
 export interface FieldServiceMeetingFormValues {
   meetingType?: MeetingType;
@@ -44,9 +39,16 @@ const FieldServiceMeetingForm: FC<FieldServiceMeetingFormProps> = ({
   initialValues,
 }) => {
   const { t } = useAppTranslation();
+  const { laptopDown, tabletDown } = useBreakpoints();
+  // Meeting type list with localized labels
+  const meetingTypeList = [
+    { value: 'joint', label: t('tr_jointMeeting') },
+    { value: 'group', label: t('tr_groupMeeting') },
+    { value: 'zoom', label: t('tr_zoom') },
+  ];
   // Use initialValues for edit mode, fallback to defaults for add mode
   const [meetingType, setMeetingType] = useState<MeetingType>(
-    initialValues?.meetingType ?? meetingTypeList[0]
+    (initialValues?.meetingType as MeetingType) ?? 'joint'
   );
   const [selectedGroup, setSelectedGroup] = useState<string>(
     initialValues?.selectedGroup ?? ''
@@ -73,7 +75,7 @@ const FieldServiceMeetingForm: FC<FieldServiceMeetingFormProps> = ({
 
   // Conductor options logic
   let brotherOptions: string[] = [];
-  if (meetingType === 'Field service group meeting' && selectedGroup) {
+  if (meetingType === 'group' && selectedGroup) {
     const group = groups_list.find((g) => g.group_data.name === selectedGroup);
     if (group) {
       const groupMemberUIDs = group.group_data.members.map((m) => m.person_uid);
@@ -119,6 +121,7 @@ const FieldServiceMeetingForm: FC<FieldServiceMeetingFormProps> = ({
           justifyContent: 'space-between',
           alignItems: 'center',
           gap: '16px',
+          flexDirection: laptopDown ? 'column' : 'row',
         }}
       >
         <Select
@@ -128,12 +131,12 @@ const FieldServiceMeetingForm: FC<FieldServiceMeetingFormProps> = ({
           sx={{ minWidth: 180 }}
         >
           {meetingTypeList.map((type) => (
-            <MenuItem key={type} value={type}>
-              {type}
+            <MenuItem key={type.value} value={type.value}>
+              {type.label}
             </MenuItem>
           ))}
         </Select>
-        {meetingType === 'Field service group meeting' && (
+        {meetingType === 'group' && (
           <Select
             label={t('tr_group')}
             value={selectedGroup ?? ''}
@@ -162,7 +165,7 @@ const FieldServiceMeetingForm: FC<FieldServiceMeetingFormProps> = ({
           }}
           endIcon={<IconSearch />}
         />
-        {meetingType === 'Joint meeting' && (
+        {meetingType === 'joint' && (
           <Autocomplete
             label={t('tr_assistant')}
             value={assistant}
@@ -193,16 +196,17 @@ const FieldServiceMeetingForm: FC<FieldServiceMeetingFormProps> = ({
           gap="16px"
           justifyContent="space-between"
           flex={1}
+          flexDirection={tabletDown ? 'column' : 'row'}
         >
           <DatePicker
             sx={{ flex: 1, height: '48px' }}
-            label="Date"
+            label={t('tr_date')}
             value={date}
             onChange={setDate}
           />
           <TimePicker
             sx={{ flex: 1, height: '48px' }}
-            label="Time"
+            label={t('tr_time')}
             ampm={false}
             value={time}
             onChange={setTime}
@@ -211,7 +215,7 @@ const FieldServiceMeetingForm: FC<FieldServiceMeetingFormProps> = ({
         {/* Removed location and address fields */}
       </Box>
       <TextField
-        label={t('tr_meetingMaterials')}
+        label={t('tr_material')}
         height={48}
         value={materials}
         onChange={(e) => setMaterials(e.target.value)}

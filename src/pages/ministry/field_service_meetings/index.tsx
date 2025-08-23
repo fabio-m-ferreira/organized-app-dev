@@ -22,18 +22,29 @@ import { getWeekDate } from '@utils/date';
 import FieldServiceMeetingForm from '@features/congregation/field_service_meetings/field_service_meeting_form';
 import ScheduleExport from '@features/congregation/field_service_meetings/schedule_export';
 
-const filters = [
-  { id: 1, name: 'All' },
-  { id: 2, name: 'My group' },
-  { id: 3, name: 'Joint' },
-  { id: 4, name: 'Zoom' },
-];
-
 const MeetingAttendance = () => {
+  const { t } = useAppTranslation();
+  const [isAddingNewMeeting, setIsAddingNewMeeting] = useState(false);
+  const [filterId, setFilterId] = useState<string | null>('all');
+  const [openExport, setOpenExport] = useState(false);
+  const [showPast, setShowPast] = useState(false);
+
+  const { isSecretary, isGroup, my_group } = useCurrentUser();
+
+  const { monthsTab, handleMonthChange, initialValue, selectedMonth } =
+    useFieldServiceMeetings();
+
+  const filters = [
+    { value: 'all', label: t('tr_fieldServiceAll') },
+    { value: 'group', label: t('tr_myGroup') },
+    { value: 'joint', label: t('tr_joint') },
+    { value: 'zoom', label: t('tr_zoom') },
+  ];
+
   // Shared filter function for meetings
   function meetingFilter(item: (typeof mockMeetings)[0]) {
     if (!filterId) return true; // No filter selected, show all meetings
-    if (filterId === 'All') {
+    if (filterId === 'all') {
       // Show user's group, joint, and zoom meetings
       if (item.type === 'joint' || item.type === 'zoom') return true;
       if (
@@ -44,27 +55,17 @@ const MeetingAttendance = () => {
         return true;
       return false;
     }
-    if (filterId === 'Joint') return item.type === 'joint';
-    if (filterId === 'My group')
+    if (filterId === 'joint') return item.type === 'joint';
+    if (filterId === 'group')
       return (
         item.type === 'group' &&
         my_group &&
         item.group === my_group.group_data.name
       );
-    if (filterId === 'Zoom') return item.type === 'zoom';
+    if (filterId === 'zoom') return item.type === 'zoom';
 
     return true;
   }
-  const { t } = useAppTranslation();
-  const [isAddingNewMeeting, setIsAddingNewMeeting] = useState(false);
-  const [filterId, setFilterId] = useState<string | null>('All');
-  const [openExport, setOpenExport] = useState(false);
-  const [showPast, setShowPast] = useState(false);
-
-  const { isSecretary, isGroup, my_group } = useCurrentUser();
-
-  const { monthsTab, handleMonthChange, initialValue, selectedMonth } =
-    useFieldServiceMeetings();
 
   function openScheduleExport(event: MouseEvent<HTMLAnchorElement>): void {
     event.preventDefault();
@@ -151,11 +152,11 @@ const MeetingAttendance = () => {
           >
             {filters.map((filter) => (
               <FilterChip
-                key={filter.id}
-                label={filter.name}
-                selected={filter.name === filterId}
+                key={filter.value}
+                label={filter.label}
+                selected={filter.value === filterId}
                 onClick={() =>
-                  setFilterId(filter.name === filterId ? null : filter.name)
+                  setFilterId(filter.value === filterId ? null : filter.value)
                 }
               />
             ))}
@@ -261,17 +262,17 @@ const MeetingAttendance = () => {
             <>
               {futureContent}
               {pastMeetings.length > 0 && pastContent}
+              {futureMeetings.length === 0 && (
+                <InfoTip
+                  isBig={false}
+                  icon={<IconInfo />}
+                  color="blue"
+                  text={t('tr_noFieldServiceMeetings')}
+                />
+              )}
             </>
           );
         })()}
-        {mockMeetings.length === 0 && (
-          <InfoTip
-            isBig={false}
-            icon={<IconInfo />}
-            color="blue"
-            text={t('tr_noFieldServiceMeetings')}
-          />
-        )}
       </Fragment>
     </Box>
   );

@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { Box } from '@mui/material';
+import { Menu } from '@mui/material';
+import MenuItem from '@components/menuitem';
 import {
   IconAtHome,
   IconEdit,
+  IconMore,
   IconTalk,
   IconVisitors,
+  IconDelete,
 } from '@components/icons';
 import Button from '@components/button';
 import Typography from '@components/typography';
@@ -37,9 +41,11 @@ const MeetingItem = ({
   materials,
 }: MeetingItemProps) => {
   const { desktopUp } = useBreakpoints();
-  const { i18n } = useAppTranslation();
+  const { t, i18n } = useAppTranslation();
   const appLocale = i18n?.language || navigator.language;
   const [isEditing, setIsEditing] = useState(false);
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const isMenuOpen = Boolean(menuAnchorEl);
 
   const groupColors: Record<string, string> = {
     'Passos Esteves': 'group-1',
@@ -50,14 +56,8 @@ const MeetingItem = ({
   };
 
   if (isEditing) {
-    // Map meeting type to form type string
-    let meetingType: FieldServiceMeetingFormValues['meetingType'];
-    if (type === 'joint') meetingType = 'Joint meeting';
-    else if (type === 'group') meetingType = 'Field service group meeting';
-    else meetingType = 'Zoom';
-
     const initialValues: FieldServiceMeetingFormValues = {
-      meetingType,
+      meetingType: type,
       selectedGroup: group,
       conductor,
       assistant,
@@ -79,11 +79,6 @@ const MeetingItem = ({
       className="meeting-item"
       key={id}
       sx={{
-        '&:hover .add-to-calendar, &:hover .edit-button': {
-          '@media (hover: hover) and (pointer: fine)': {
-            opacity: 1,
-          },
-        },
         display: 'flex',
         gap: '16px',
         flexDirection: 'column',
@@ -98,6 +93,7 @@ const MeetingItem = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          gap: '5px',
         }}
       >
         <Box display="flex" alignItems="center">
@@ -111,34 +107,99 @@ const MeetingItem = ({
               day: 'numeric',
             })}
           </Typography>
-          <Box className="edit-button" sx={{ opacity: desktopUp ? 0 : 1 }}>
+        </Box>
+        <Box display="flex" flexDirection="row">
+          <Box display="flex" alignItems="center" gap="8px">
+            {type === 'joint' && (
+              <GroupBadge
+                label={t('tr_joint')}
+                color="black"
+                variant="outlined"
+              />
+            )}
+            {type === 'group' && group && (
+              <GroupBadge
+                label={group}
+                color={groupColors[group] || 'black'}
+                variant="outlined"
+              />
+            )}
+            {type === 'zoom' && (
+              <GroupBadge
+                label={t('tr_zoom')}
+                color="swiper-theme-color"
+                variant="outlined"
+              />
+            )}
+          </Box>
+          <Box className="edit-button">
             <Button
               variant="small"
-              sx={{ marginLeft: '8px', minHeight: '24px', minWidth: '24px' }}
-              onClick={() => setIsEditing(true)}
+              sx={{
+                marginLeft: '8px',
+                marginRight: '-8px',
+                minHeight: '14px',
+                minWidth: '14px',
+                padding: 0,
+              }}
+              onClick={(e) => setMenuAnchorEl(e.currentTarget)}
             >
-              <IconEdit />
+              <IconMore />
             </Button>
+            <Menu
+              anchorEl={menuAnchorEl}
+              open={isMenuOpen}
+              onClose={() => setMenuAnchorEl(null)}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              sx={{
+                '& .MuiPaper-root': {
+                  backgroundColor: 'var(--white)',
+                  color: 'var(--black) !important',
+                  borderRadius: 'var(--radius-l)',
+                  border: '1px solid var(--accent-200)',
+                  padding: '8px 0px',
+                  marginTop: '2px',
+                  boxShadow: 'var(--shadow-m)',
+                },
+                '& .MuiPaper-root .MuiSvgIcon-root': {
+                  color: 'var(--black) !important',
+                },
+              }}
+            >
+              <MenuItem
+                onClick={() => {
+                  setIsEditing(true);
+                  setMenuAnchorEl(null);
+                }}
+              >
+                <Box
+                  component="span"
+                  display="flex"
+                  alignItems="center"
+                  gap={1}
+                >
+                  <IconEdit />
+                  <Typography>{t('tr_edit')}</Typography>
+                </Box>
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  /* TODO: handle delete */ setMenuAnchorEl(null);
+                }}
+              >
+                <Box
+                  component="span"
+                  display="flex"
+                  alignItems="center"
+                  gap={1}
+                >
+                  <IconDelete />
+                  <Typography>{t('tr_delete')}</Typography>
+                </Box>
+              </MenuItem>
+            </Menu>
           </Box>
-        </Box>
-        <Box display="flex" alignItems="center" gap="8px">
-          {type === 'joint' && (
-            <GroupBadge label="Congregação" color="black" variant="outlined" />
-          )}
-          {type === 'group' && group && (
-            <GroupBadge
-              label={group}
-              color={groupColors[group] || 'black'}
-              variant="outlined"
-            />
-          )}
-          {type === 'zoom' && (
-            <GroupBadge
-              label="Zoom"
-              color="swiper-theme-color"
-              variant="outlined"
-            />
-          )}
         </Box>
       </Box>
       <Box

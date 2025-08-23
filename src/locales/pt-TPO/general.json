@@ -156,5 +156,8 @@
   "tr_fridayShort": "Sex",
   "tr_saturdayShort": "Sáb",
   "tr_sundayShort": "Dom",
-  "tr_dateRangeNoYear": "{{ startDate }}-{{ endDate }}"
+  "tr_dateRangeNoYear": "{{ startDate }}-{{ endDate }}",
+  "tr_all": "Todos",
+  "tr_material": "Matéria",
+  "tr_time": "Hora"
 }

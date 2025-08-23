@@ -22,7 +22,11 @@ const GroupBadge = ({
       }}
     >
       {/* <IconVisitors color="var(--always-white)" width={16} height={16} /> */}
-      <Typography className="body-small-semibold" color="inherit">
+      <Typography
+        sx={{ whiteSpace: 'nowrap' }}
+        className="body-small-semibold"
+        color="inherit"
+      >
         {label}
       </Typography>
     </Box>

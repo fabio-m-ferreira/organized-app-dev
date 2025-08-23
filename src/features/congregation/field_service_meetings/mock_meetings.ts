@@ -172,7 +172,7 @@ const unsortedMeetings: MeetingItemProps[] = [
     id: 20,
     time: new Date('2025-08-23T10:00:00'),
     type: 'zoom',
-    conductor: 'Ernesto Franco',
+    conductor: 'Armindo Ramalho',
     materials: 'Brochura Leitura e Ensino - Lição 8 - Ensine com Ilustrações',
   },
 ];
