@@ -13,14 +13,13 @@ import PageTitle from '@components/page_title';
 import InfoTip from '@components/info_tip';
 import FilterChip from '@components/filter_chip';
 import { useAppTranslation, useCurrentUser } from '@hooks/index';
-import MeetingItem, {
-  MeetingItemProps,
-} from '@features/congregation/field_service_meetings/meeting_item';
+import MeetingItem from '@features/congregation/field_service_meetings/meeting_item';
 import Accordion from '@components/accordion';
 import { mockMeetings } from '@features/congregation/field_service_meetings/mock_meetings';
 import { getWeekDate } from '@utils/date';
-import FieldServiceMeetingForm from '@features/congregation/field_service_meetings/field_service_meeting_form';
+import FieldServiceMeetingForm from '@features/congregation/field_service_meetings/field_service_meeting_form/fieldServiceMeetingForm';
 import ScheduleExport from '@features/congregation/field_service_meetings/schedule_export';
+import { FieldServiceMeetingDataType } from '@features/congregation/field_service_meetings/field_service_meeting_form/index.types';
 
 const MeetingAttendance = () => {
   const { t } = useAppTranslation();
@@ -31,7 +30,7 @@ const MeetingAttendance = () => {
 
   const { isSecretary, isGroup, my_group } = useCurrentUser();
 
-  const { monthsTab, handleMonthChange, initialValue, selectedMonth } =
+  const { monthsTab, handleMonthChange, initialValue } =
     useFieldServiceMeetings();
 
   const filters = [
@@ -166,20 +165,24 @@ const MeetingAttendance = () => {
 
       {isAddingNewMeeting && (
         <FieldServiceMeetingForm
-          handleCloseForm={() => {
-            setIsAddingNewMeeting(false);
+          data={undefined}
+          type="add"
+          onSave={() => {
+            // Handle save logic here
           }}
+          onCancel={() => setIsAddingNewMeeting(false)}
         />
       )}
       <Fragment>
         {(() => {
           const meetings = mockMeetings.filter(meetingFilter);
-          const now = new Date();
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
           // Split meetings into future and past
-          const futureMeetings: MeetingItemProps[] = [];
-          const pastMeetings: MeetingItemProps[] = [];
+          const futureMeetings: FieldServiceMeetingDataType[] = [];
+          const pastMeetings: FieldServiceMeetingDataType[] = [];
           meetings.forEach((item) => {
-            if (item.time >= now) {
+            if (item.time >= today) {
               futureMeetings.push(item);
             } else {
               pastMeetings.push(item);
@@ -187,10 +190,11 @@ const MeetingAttendance = () => {
           });
 
           // Group by week
-          function groupByWeek(meetingList: MeetingItemProps[]) {
-            const weekGroups: Record<string, MeetingItemProps[]> = {};
+          function groupByWeek(meetingList: FieldServiceMeetingDataType[]) {
+            const weekGroups: Record<string, FieldServiceMeetingDataType[]> =
+              {};
             meetingList.forEach((item) => {
-              const weekStart = getWeekDate(new Date(item.time));
+              const weekStart = getWeekDate(new Date(item.meeting_data.date));
               const key = weekStart.toISOString().slice(0, 10);
               if (!weekGroups[key]) weekGroups[key] = [];
               weekGroups[key].push(item);
@@ -199,7 +203,9 @@ const MeetingAttendance = () => {
           }
 
           // Render grouped meetings
-          function renderGroupedMeetings(meetingList: MeetingItemProps[]) {
+          function renderGroupedMeetings(
+            meetingList: FieldServiceMeetingDataType[]
+          ) {
             const weekGroups = groupByWeek(meetingList);
             const sortedWeekKeys = Object.keys(weekGroups).sort();
             return sortedWeekKeys.map((weekKey) => {
@@ -227,7 +233,7 @@ const MeetingAttendance = () => {
                     })}
                   </Box>
                   {weekGroups[weekKey].map((item) => (
-                    <MeetingItem key={item.id} {...item} />
+                    <MeetingItem key={item.meeting_uid} {...item} />
                   ))}
                 </Fragment>
               );

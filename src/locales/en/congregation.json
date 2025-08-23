@@ -509,6 +509,7 @@
   "tr_location": "Location",
   "tr_group": "Group",
   "tr_addFieldServiceMeeting": "Add a field service meeting",
+  "tr_editFieldServiceMeeting": "Edit a field service meeting",
   "tr_joinInfo": "Join info",
   "tr_next": "Next",
   "tr_allGroups": "All groups",
@@ -517,5 +518,11 @@
   "tr_exportSchedule": "Export schedule",
   "tr_selectScheduleToExport": "Select which schedules do you want to export",
   "tr_personAwayNotice": "This person is away: {{ date }}",
-  "tr_weekendTemplateShowSongs": "Display songs on weekend meeting schedules"
+  "tr_weekendTemplateShowSongs": "Display songs on weekend meeting schedules",
+  "tr_joint": "Joint",
+  "tr_fieldServiceAll": "All",
+  "tr_zoom": "Zoom",
+  "tr_showPastMeetings": "Show past meetings",
+  "tr_jointMeeting": "Joint meeting",
+  "tr_groupMeeting": "Group meeting"
 }

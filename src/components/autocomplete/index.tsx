@@ -83,6 +83,8 @@ const Autocomplete = <T,>(props: AutocompletePropsType<T>) => {
     styleIcon,
     decorator,
     variant,
+    error,
+    helperText,
     ...defaultProps
   } = props;
 
@@ -134,6 +136,8 @@ const Autocomplete = <T,>(props: AutocompletePropsType<T>) => {
           endIcon={endIcon}
           height={48}
           styleIcon={styleIcon ?? true}
+          error={error}
+          helperText={helperText}
           sx={
             decorator
               ? {

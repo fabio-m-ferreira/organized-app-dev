@@ -12,40 +12,20 @@ import {
 } from '@components/icons';
 import Button from '@components/button';
 import Typography from '@components/typography';
-import { useAppTranslation, useBreakpoints } from '@hooks/index';
+import { useAppTranslation } from '@hooks/index';
 import GroupBadge from '@components/group_badge';
-import FieldServiceMeetingForm, {
-  FieldServiceMeetingFormValues,
-} from './field_service_meeting_form';
+import FieldServiceMeetingForm from './field_service_meeting_form/fieldServiceMeetingForm';
+import { FieldServiceMeetingDataType } from './field_service_meeting_form/index.types';
 
-export type MeetingItemProps = {
-  id: number;
-  time: Date;
-  type: 'joint' | 'group' | 'zoom'; // for each type theres a different badge
-  group?: string; // Only required if type === "group"
-  conductor: string;
-  assistant?: string; // Only required if type === "joint"
-  location?: string; // Only required if type === "group"
-  materials: string;
-  onEdit?: () => void;
-};
-
-const MeetingItem = ({
-  id,
-  time,
-  type,
-  group,
-  conductor,
-  assistant,
-  location,
-  materials,
-}: MeetingItemProps) => {
-  const { desktopUp } = useBreakpoints();
+const MeetingItem = (data: FieldServiceMeetingDataType) => {
   const { t, i18n } = useAppTranslation();
   const appLocale = i18n?.language || navigator.language;
   const [isEditing, setIsEditing] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(menuAnchorEl);
+
+  const { uid, date, type, group, conductor, assistant, location, materials } =
+    data.meeting_data;
 
   const groupColors: Record<string, string> = {
     'Passos Esteves': 'group-1',
@@ -56,20 +36,23 @@ const MeetingItem = ({
   };
 
   if (isEditing) {
-    const initialValues: FieldServiceMeetingFormValues = {
-      meetingType: type,
-      selectedGroup: group,
-      conductor,
-      assistant,
-      date: time,
-      time,
-      materials,
-    };
-
     return (
       <FieldServiceMeetingForm
-        handleCloseForm={() => setIsEditing(false)}
-        initialValues={initialValues}
+        data={{
+          type,
+          group,
+          conductor,
+          assistant,
+          date,
+          time: date,
+          materials,
+        }}
+        type="edit"
+        onSave={() => {
+          // Handle save logic here
+          setIsEditing(false);
+        }}
+        onCancel={() => setIsEditing(false)}
       />
     );
   }
@@ -77,7 +60,7 @@ const MeetingItem = ({
   return (
     <Box
       className="meeting-item"
-      key={id}
+      key={uid}
       sx={{
         display: 'flex',
         gap: '16px',
@@ -101,7 +84,7 @@ const MeetingItem = ({
             className="h3"
             sx={{ '&::first-letter': { textTransform: 'capitalize' } }}
           >
-            {time.toLocaleDateString(appLocale, {
+            {date.toLocaleDateString(appLocale, {
               weekday: 'long',
               month: 'long',
               day: 'numeric',
@@ -132,38 +115,41 @@ const MeetingItem = ({
               />
             )}
           </Box>
-          <Box className="edit-button">
+          <Box className="more-button">
             <Button
               variant="small"
               sx={{
                 marginLeft: '8px',
                 marginRight: '-8px',
-                minHeight: '14px',
-                minWidth: '14px',
+                height: '28px',
+                minWidth: '20px',
                 padding: 0,
               }}
               onClick={(e) => setMenuAnchorEl(e.currentTarget)}
             >
-              <IconMore />
+              <IconMore color="var(--grey-400)" />
             </Button>
             <Menu
               anchorEl={menuAnchorEl}
               open={isMenuOpen}
               onClose={() => setMenuAnchorEl(null)}
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
               sx={{
-                '& .MuiPaper-root': {
-                  backgroundColor: 'var(--white)',
-                  color: 'var(--black) !important',
-                  borderRadius: 'var(--radius-l)',
-                  border: '1px solid var(--accent-200)',
-                  padding: '8px 0px',
-                  marginTop: '2px',
-                  boxShadow: 'var(--shadow-m)',
+                marginTop: '8px',
+                '& li': {
+                  borderBottom: '1px solid var(--accent-200)',
                 },
-                '& .MuiPaper-root .MuiSvgIcon-root': {
-                  color: 'var(--black) !important',
+                '& li:last-child': {
+                  borderBottom: 'none',
+                },
+              }}
+              slotProps={{
+                paper: {
+                  className: 'small-card-shadow',
+                  style: {
+                    borderRadius: 'var(--radius-l)',
+                    border: '1px solid var(--accent-200)',
+                    backgroundColor: 'var(--white)',
+                  },
                 },
               }}
             >
@@ -222,7 +208,7 @@ const MeetingItem = ({
           }}
         >
           <Typography className="h4" color="var(--accent-dark)">
-            {time.toLocaleTimeString(navigator.language, {
+            {date.toLocaleTimeString(navigator.language, {
               hour: '2-digit',
               minute: '2-digit',
               hour12: false,

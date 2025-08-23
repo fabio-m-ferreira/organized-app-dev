@@ -1,4 +1,3 @@
-import { useState, type FC } from 'react';
 import { Box } from '@mui/material';
 import { IconCheck, IconClose, IconSearch } from '@components/icons';
 import Button from '@components/button';
@@ -15,31 +14,25 @@ import usePersons from '@features/persons/hooks/usePersons';
 import useFieldServiceGroups from '@features/congregation/field_service_groups/useFieldServiceGroups';
 import { formatDate } from '@utils/date';
 import { buildPersonFullname } from '@utils/common';
+import useFieldServiceMeetingForm from './useFieldServiceMeetingForm';
+import { FieldServiceMeetingFormProps } from './index.types';
 
-const meetingTypeValues = ['joint', 'group', 'zoom'] as const;
-export type MeetingType = (typeof meetingTypeValues)[number];
-
-export interface FieldServiceMeetingFormValues {
-  meetingType?: MeetingType;
-  selectedGroup?: string;
-  conductor?: string;
-  assistant?: string;
-  date?: Date;
-  time?: Date;
-  materials?: string;
-}
-
-type FieldServiceMeetingFormProps = {
-  handleCloseForm: () => void;
-  initialValues?: FieldServiceMeetingFormValues;
-};
-
-const FieldServiceMeetingForm: FC<FieldServiceMeetingFormProps> = ({
-  handleCloseForm,
-  initialValues,
-}) => {
+const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
   const { t } = useAppTranslation();
   const { laptopDown, tabletDown } = useBreakpoints();
+  const {
+    localMeeting,
+    errors,
+    handleChangeMeetingType,
+    handleChangeSelectedGroup,
+    handleChangeConductor,
+    handleChangeAssistant,
+    handleChangeDate,
+    handleChangeTime,
+    handleChangeMaterials,
+    handleSaveMeeting,
+  } = useFieldServiceMeetingForm(props);
+
   // Meeting type list with localized labels
   const meetingTypeList = [
     { value: 'joint', label: t('tr_jointMeeting') },
@@ -47,25 +40,8 @@ const FieldServiceMeetingForm: FC<FieldServiceMeetingFormProps> = ({
     { value: 'zoom', label: t('tr_zoom') },
   ];
   // Use initialValues for edit mode, fallback to defaults for add mode
-  const [meetingType, setMeetingType] = useState<MeetingType>(
-    (initialValues?.meetingType as MeetingType) ?? 'joint'
-  );
-  const [selectedGroup, setSelectedGroup] = useState<string>(
-    initialValues?.selectedGroup ?? ''
-  );
-  const [conductor, setConductor] = useState<string>(
-    initialValues?.conductor ?? ''
-  );
-  const [assistant, setAssistant] = useState<string>(
-    initialValues?.assistant ?? ''
-  );
-  const [date, setDate] = useState<Date>(initialValues?.date ?? new Date());
-  const [time, setTime] = useState<Date>(
-    initialValues?.time ?? new Date('2023-11-19T12:00:00')
-  );
-  const [materials, setMaterials] = useState<string>(
-    initialValues?.materials ?? ''
-  );
+  const meetingType = localMeeting.type ?? 'joint';
+  const selectedGroup = localMeeting.group ?? '';
 
   // Get all groups and persons
   const { groups_list } = useFieldServiceGroups();
@@ -113,7 +89,9 @@ const FieldServiceMeetingForm: FC<FieldServiceMeetingFormProps> = ({
       }}
     >
       <Typography className="h3" color="var(--black)">
-        {t('tr_addFieldServiceMeeting')}
+        {props.type === 'add'
+          ? t('tr_addFieldServiceMeeting')
+          : t('tr_editFieldServiceMeeting')}
       </Typography>
       <Box
         sx={{
@@ -127,7 +105,9 @@ const FieldServiceMeetingForm: FC<FieldServiceMeetingFormProps> = ({
         <Select
           label={t('tr_type')}
           value={meetingType}
-          onChange={(e) => setMeetingType(e.target.value as MeetingType)}
+          onChange={handleChangeMeetingType}
+          error={errors.meetingType}
+          helperText={errors.meetingType && t('tr_fillRequiredField')}
           sx={{ minWidth: 180 }}
         >
           {meetingTypeList.map((type) => (
@@ -139,8 +119,10 @@ const FieldServiceMeetingForm: FC<FieldServiceMeetingFormProps> = ({
         {meetingType === 'group' && (
           <Select
             label={t('tr_group')}
-            value={selectedGroup ?? ''}
-            onChange={(e) => setSelectedGroup(e.target.value as string)}
+            value={selectedGroup}
+            onChange={handleChangeSelectedGroup}
+            error={errors.selectedGroup}
+            helperText={errors.selectedGroup && t('tr_fillRequiredField')}
             sx={{ minWidth: 180 }}
           >
             {groupOptions.length === 0 ? (
@@ -157,23 +139,21 @@ const FieldServiceMeetingForm: FC<FieldServiceMeetingFormProps> = ({
 
         <Autocomplete
           label={t('tr_conductor')}
-          value={conductor}
+          value={localMeeting.conductor ?? ''}
           options={brotherOptions}
-          onChange={(_, value) => {
-            if (typeof value === 'string') setConductor(value);
-            else setConductor('');
-          }}
+          onChange={handleChangeConductor}
+          error={errors.conductor}
+          helperText={errors.conductor && t('tr_fillRequiredField')}
           endIcon={<IconSearch />}
         />
         {meetingType === 'joint' && (
           <Autocomplete
             label={t('tr_assistant')}
-            value={assistant}
+            value={localMeeting.assistant ?? ''}
             options={brotherOptions}
-            onChange={(_, value) => {
-              if (typeof value === 'string') setAssistant(value);
-              else setAssistant('');
-            }}
+            onChange={handleChangeAssistant}
+            error={errors.assistant}
+            helperText={errors.assistant && t('tr_fillRequiredField')}
             endIcon={<IconSearch />}
           />
         )}
@@ -201,15 +181,15 @@ const FieldServiceMeetingForm: FC<FieldServiceMeetingFormProps> = ({
           <DatePicker
             sx={{ flex: 1, height: '48px' }}
             label={t('tr_date')}
-            value={date}
-            onChange={setDate}
+            value={localMeeting.date}
+            onChange={handleChangeDate}
           />
           <TimePicker
             sx={{ flex: 1, height: '48px' }}
             label={t('tr_time')}
             ampm={false}
-            value={time}
-            onChange={setTime}
+            value={localMeeting.time}
+            onChange={handleChangeTime}
           />
         </Box>
         {/* Removed location and address fields */}
@@ -217,8 +197,10 @@ const FieldServiceMeetingForm: FC<FieldServiceMeetingFormProps> = ({
       <TextField
         label={t('tr_material')}
         height={48}
-        value={materials}
-        onChange={(e) => setMaterials(e.target.value)}
+        value={localMeeting.materials}
+        onChange={handleChangeMaterials}
+        error={errors.materials}
+        helperText={errors.materials && t('tr_fillRequiredField')}
       />
       <Box
         sx={{
@@ -232,14 +214,14 @@ const FieldServiceMeetingForm: FC<FieldServiceMeetingFormProps> = ({
           variant="secondary"
           startIcon={<IconClose />}
           color="red"
-          onClick={handleCloseForm}
+          onClick={props.onCancel}
         >
           {t('tr_cancel')}
         </Button>
         <Button
           variant="secondary"
           startIcon={<IconCheck />}
-          onClick={handleCloseForm}
+          onClick={handleSaveMeeting}
         >
           {t('tr_done')}
         </Button>

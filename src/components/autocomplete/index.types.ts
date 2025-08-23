@@ -47,6 +47,10 @@ export type AutocompletePropsType<T> = Omit<
   decorator?: boolean;
 
   variant?: TextFieldProps['variant'];
+
+  error?: boolean;
+
+  helperText?: string;
 };
 
 export type CustomPaperType = PaperProps & {
