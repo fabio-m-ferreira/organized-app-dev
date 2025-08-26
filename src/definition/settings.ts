@@ -228,5 +228,6 @@ export type BackupDataType = {
   dbUserBibleStudiesTbl: [];
   dbUserFieldServiceReportsTbl: [];
   dbUpcomingEventsTbl: [];
+  dbFieldServiceMeetingsTbl: [];
   dbSettings: object[];
 };

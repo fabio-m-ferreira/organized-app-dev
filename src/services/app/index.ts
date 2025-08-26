@@ -63,6 +63,7 @@ import { UserLoginResponseType } from '@definition/api';
 import { settingSchema } from '@services/dexie/schema';
 import { dbUpcomingEventsCleanup } from '@services/dexie/upcoming_events';
 import appDb from '@db/appDb';
+import { dbFieldServiceMeetingsCleanup } from '@services/dexie/field_service_meetings';
 
 export const loadApp = () => {
   const appLang = store.get(appLangState);
@@ -91,6 +92,7 @@ export const runUpdater = async () => {
   await dbSourcesUpdateEventsName();
   await dbUserSaveTimerToStorage();
   await dbUpcomingEventsCleanup();
+  await dbFieldServiceMeetingsCleanup();
 };
 
 export const userLogoutSuccess = async () => {

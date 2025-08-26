@@ -15,7 +15,7 @@ import useFieldServiceGroups from '@features/congregation/field_service_groups/u
 import { formatDate } from '@utils/date';
 import { buildPersonFullname } from '@utils/common';
 import useFieldServiceMeetingForm from './useFieldServiceMeetingForm';
-import { FieldServiceMeetingFormProps } from './index.types';
+import { FieldServiceMeetingFormProps } from '@definition/field_service_meetings';
 
 const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
   const { t } = useAppTranslation();
@@ -23,8 +23,8 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
   const {
     localMeeting,
     errors,
-    handleChangeMeetingType,
-    handleChangeSelectedGroup,
+    handleChangeType,
+    handleChangeGroup,
     handleChangeConductor,
     handleChangeAssistant,
     handleChangeDate,
@@ -40,8 +40,8 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
     { value: 'zoom', label: t('tr_zoom') },
   ];
   // Use initialValues for edit mode, fallback to defaults for add mode
-  const meetingType = localMeeting.type ?? 'joint';
-  const selectedGroup = localMeeting.group ?? '';
+  const meetingType = localMeeting.meeting_data.type ?? 'joint';
+  const selectedGroup = localMeeting.meeting_data.group ?? '';
 
   // Get all groups and persons
   const { groups_list } = useFieldServiceGroups();
@@ -49,7 +49,6 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
   const currentMonth = formatDate(new Date(), 'yyyy/MM');
   const appointedBrothers = getAppointedBrothers(currentMonth);
 
-  // Conductor options logic
   let brotherOptions: string[] = [];
   if (meetingType === 'group' && selectedGroup) {
     const group = groups_list.find((g) => g.group_data.name === selectedGroup);
@@ -105,9 +104,9 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
         <Select
           label={t('tr_type')}
           value={meetingType}
-          onChange={handleChangeMeetingType}
-          error={errors.meetingType}
-          helperText={errors.meetingType && t('tr_fillRequiredField')}
+          onChange={handleChangeType}
+          error={errors.type}
+          helperText={errors.type && t('tr_fillRequiredField')}
           sx={{ minWidth: 180 }}
         >
           {meetingTypeList.map((type) => (
@@ -120,9 +119,9 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
           <Select
             label={t('tr_group')}
             value={selectedGroup}
-            onChange={handleChangeSelectedGroup}
-            error={errors.selectedGroup}
-            helperText={errors.selectedGroup && t('tr_fillRequiredField')}
+            onChange={handleChangeGroup}
+            error={errors.group}
+            helperText={errors.group && t('tr_fillRequiredField')}
             sx={{ minWidth: 180 }}
           >
             {groupOptions.length === 0 ? (
@@ -139,7 +138,7 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
 
         <Autocomplete
           label={t('tr_conductor')}
-          value={localMeeting.conductor ?? ''}
+          value={localMeeting.meeting_data.conductor ?? ''}
           options={brotherOptions}
           onChange={handleChangeConductor}
           error={errors.conductor}
@@ -149,7 +148,7 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
         {meetingType === 'joint' && (
           <Autocomplete
             label={t('tr_assistant')}
-            value={localMeeting.assistant ?? ''}
+            value={localMeeting.meeting_data.assistant ?? ''}
             options={brotherOptions}
             onChange={handleChangeAssistant}
             error={errors.assistant}
@@ -181,14 +180,14 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
           <DatePicker
             sx={{ flex: 1, height: '48px' }}
             label={t('tr_date')}
-            value={localMeeting.date}
+            value={new Date(localMeeting.meeting_data.date)}
             onChange={handleChangeDate}
           />
           <TimePicker
             sx={{ flex: 1, height: '48px' }}
             label={t('tr_time')}
             ampm={false}
-            value={localMeeting.time}
+            value={new Date(localMeeting.meeting_data.date)}
             onChange={handleChangeTime}
           />
         </Box>
@@ -197,7 +196,7 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
       <TextField
         label={t('tr_material')}
         height={48}
-        value={localMeeting.materials}
+        value={localMeeting.meeting_data.materials}
         onChange={handleChangeMaterials}
         error={errors.materials}
         helperText={errors.materials && t('tr_fillRequiredField')}

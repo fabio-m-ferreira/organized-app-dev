@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Box } from '@mui/material';
 import { Menu } from '@mui/material';
 import MenuItem from '@components/menuitem';
@@ -9,13 +9,16 @@ import {
   IconTalk,
   IconVisitors,
   IconDelete,
+  IconJwHome,
 } from '@components/icons';
 import Button from '@components/button';
 import Typography from '@components/typography';
 import { useAppTranslation } from '@hooks/index';
 import GroupBadge from '@components/group_badge';
 import FieldServiceMeetingForm from './field_service_meeting_form/fieldServiceMeetingForm';
-import { FieldServiceMeetingDataType } from './field_service_meeting_form/index.types';
+import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
+import { fieldWithLanguageGroupsNoStudentsState } from '@states/field_service_groups';
+import { useAtomValue } from 'jotai';
 
 const MeetingItem = (data: FieldServiceMeetingDataType) => {
   const { t, i18n } = useAppTranslation();
@@ -23,8 +26,9 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
   const [isEditing, setIsEditing] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(menuAnchorEl);
+  const groups_list = useAtomValue(fieldWithLanguageGroupsNoStudentsState);
 
-  const { uid, date, type, group, conductor, assistant, location, materials } =
+  const { date, type, group, conductor, assistant, location, materials } =
     data.meeting_data;
 
   const groupColors: Record<string, string> = {
@@ -35,18 +39,12 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
     'Grupo Salão 2': 'group-5',
   };
 
+  const meetingDate = new Date(date);
+
   if (isEditing) {
     return (
       <FieldServiceMeetingForm
-        data={{
-          type,
-          group,
-          conductor,
-          assistant,
-          date,
-          time: date,
-          materials,
-        }}
+        data={data}
         type="edit"
         onSave={() => {
           // Handle save logic here
@@ -60,7 +58,7 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
   return (
     <Box
       className="meeting-item"
-      key={uid}
+      key={data.meeting_uid}
       sx={{
         display: 'flex',
         gap: '16px',
@@ -84,7 +82,7 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
             className="h3"
             sx={{ '&::first-letter': { textTransform: 'capitalize' } }}
           >
-            {date.toLocaleDateString(appLocale, {
+            {meetingDate.toLocaleDateString(appLocale, {
               weekday: 'long',
               month: 'long',
               day: 'numeric',
@@ -208,7 +206,7 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
           }}
         >
           <Typography className="h4" color="var(--accent-dark)">
-            {date.toLocaleTimeString(navigator.language, {
+            {meetingDate.toLocaleTimeString(navigator.language, {
               hour: '2-digit',
               minute: '2-digit',
               hour12: false,
@@ -240,7 +238,7 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
               </Box>
             </Typography>
           )}
-          {type === 'group' && location && (
+          {type === 'group' && (
             <Typography className="body-regular" color="var(--grey-400)">
               <Box
                 component="span"
@@ -248,7 +246,16 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
                 alignItems="center"
                 gap="4px"
               >
-                <IconAtHome color="var(--grey-400)" /> Casa: {location}
+                {location ? (
+                  <>
+                    <IconAtHome color="var(--grey-400)" /> {t('tr_house')}:{' '}
+                    {location}
+                  </>
+                ) : (
+                  <>
+                    <IconJwHome color="var(--grey-400)" /> {t('tr_kingdomHall')}
+                  </>
+                )}
               </Box>
             </Typography>
           )}

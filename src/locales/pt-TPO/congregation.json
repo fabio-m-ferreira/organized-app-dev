@@ -519,5 +519,7 @@
   "tr_zoom": "Zoom",
   "tr_showPastMeetings": "Mostrar reuniões passadas",
   "tr_jointMeeting": "Saída Congregacional",
-  "tr_groupMeeting": "Saída de grupo"
+  "tr_groupMeeting": "Saída de grupo",
+  "tr_groupHost": "Anfitrião do grupo",
+  "tr_kingdomHall": "Salão do Reino"
 }

@@ -524,5 +524,7 @@
   "tr_zoom": "Zoom",
   "tr_showPastMeetings": "Show past meetings",
   "tr_jointMeeting": "Joint meeting",
-  "tr_groupMeeting": "Group meeting"
+  "tr_groupMeeting": "Group meeting",
+  "tr_groupHost": "Group host",
+  "tr_kingdomHall": "Kingdom Hall"
 }

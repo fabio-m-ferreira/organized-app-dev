@@ -159,5 +159,6 @@
   "tr_dateRangeNoYear": "{{ startDate }}-{{ endDate }}",
   "tr_all": "All",
   "tr_material": "Material",
-  "tr_time": "Time"
+  "tr_time": "Time",
+  "tr_house": "House"
 }

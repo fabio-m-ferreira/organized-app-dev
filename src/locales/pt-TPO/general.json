@@ -159,5 +159,6 @@
   "tr_dateRangeNoYear": "{{ startDate }}-{{ endDate }}",
   "tr_all": "Todos",
   "tr_material": "Matéria",
-  "tr_time": "Hora"
+  "tr_time": "Hora",
+  "tr_house": "Casa"
 }

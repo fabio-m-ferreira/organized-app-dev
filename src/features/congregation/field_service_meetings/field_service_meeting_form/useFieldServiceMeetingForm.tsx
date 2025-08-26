@@ -1,33 +1,39 @@
+import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
+import useFieldServiceGroups from '@features/congregation/field_service_groups/useFieldServiceGroups';
 import { useCallback, useState } from 'react';
+import { stackDatesToOne } from '@utils/date';
 
 const initialErrors = {
-  meetingType: false,
-  selectedGroup: false,
+  type: false,
+  group: false,
   conductor: false,
   assistant: false,
   materials: false,
 };
 
 const useFieldServiceMeetingForm = ({ data, onSave }) => {
-  const [localMeeting, setLocalMeeting] = useState(data);
+  const [localMeeting, setLocalMeeting] =
+    useState<FieldServiceMeetingDataType>(data);
   const [errors, setErrors] = useState(initialErrors);
   const [wasSubmitted, setWasSubmitted] = useState(false);
+
+  const { getGroupHostName } = useFieldServiceGroups();
 
   const validateField = useCallback(
     (field, value) => {
       switch (field) {
-        case 'meetingType':
+        case 'type':
           return !value;
-        case 'selectedGroup':
+        case 'group':
           return (
-            localMeeting.meetingType === 'group' &&
+            localMeeting.meeting_data.type === 'group' &&
             (!value || value.trim() === '')
           );
         case 'conductor':
           return !value || value.trim() === '';
         case 'assistant':
           return (
-            localMeeting.meetingType === 'joint' &&
+            localMeeting.meeting_data.type === 'joint' &&
             (!value || value.trim() === '')
           );
         case 'materials':
@@ -40,74 +46,107 @@ const useFieldServiceMeetingForm = ({ data, onSave }) => {
   );
 
   const validateForm = useCallback(() => {
-    const data = localMeeting;
+    const meetingData = localMeeting.meeting_data;
     const newErrors = {
-      meetingType: validateField('meetingType', data.meetingType),
-      selectedGroup: validateField('selectedGroup', data.selectedGroup),
-      conductor: validateField('conductor', data.conductor),
-      assistant: validateField('assistant', data.assistant),
-      date: validateField('date', data.date),
-      time: validateField('time', data.time),
-      materials: validateField('materials', data.materials),
+      type: validateField('type', meetingData.type),
+      group: validateField('group', meetingData.group),
+      conductor: validateField('conductor', meetingData.conductor),
+      assistant: validateField('assistant', meetingData.assistant),
+      materials: validateField('materials', meetingData.materials),
     };
     setErrors(newErrors);
     return !Object.values(newErrors).some(Boolean);
   }, [localMeeting, validateField]);
 
   // Individual field change handlers
-  const handleChangeMeetingType = useCallback(
-    (value) => {
-      setLocalMeeting((prev) => ({ ...prev, meetingType: value }));
-      if (wasSubmitted) setErrors((prev) => ({ ...prev, meetingType: false }));
+  const handleChangeType = useCallback(
+    (event) => {
+      setLocalMeeting((prev) => {
+        return {
+          ...prev,
+          meeting_data: { ...prev.meeting_data, type: event.target.value },
+        };
+      });
+
+      if (wasSubmitted) setErrors((prev) => ({ ...prev, type: false }));
     },
     [wasSubmitted]
   );
 
-  const handleChangeSelectedGroup = useCallback(
-    (value) => {
-      setLocalMeeting((prev) => ({ ...prev, selectedGroup: value }));
-      if (wasSubmitted)
-        setErrors((prev) => ({ ...prev, selectedGroup: false }));
+  const handleChangeGroup = useCallback(
+    (event) => {
+      const host = getGroupHostName(event.target.value);
+      setLocalMeeting((prev) => ({
+        ...prev,
+        meeting_data: {
+          ...prev.meeting_data,
+          group: event.target.value,
+          ...(host && { location: host }),
+        },
+      }));
+
+      if (wasSubmitted) setErrors((prev) => ({ ...prev, group: false }));
     },
-    [wasSubmitted]
+    [wasSubmitted, getGroupHostName]
   );
 
   const handleChangeConductor = useCallback(
-    (value) => {
-      setLocalMeeting((prev) => ({ ...prev, conductor: value }));
+    (_, value) => {
+      setLocalMeeting((prev) => ({
+        ...prev,
+        meeting_data: { ...prev.meeting_data, conductor: value },
+      }));
       if (wasSubmitted) setErrors((prev) => ({ ...prev, conductor: false }));
     },
     [wasSubmitted]
   );
 
   const handleChangeAssistant = useCallback(
-    (value) => {
-      setLocalMeeting((prev) => ({ ...prev, assistant: value }));
+    (_, value) => {
+      setLocalMeeting((prev) => ({
+        ...prev,
+        meeting_data: { ...prev.meeting_data, assistant: value },
+      }));
       if (wasSubmitted) setErrors((prev) => ({ ...prev, assistant: false }));
     },
     [wasSubmitted]
   );
 
   // Only update date and time separately
-  const handleChangeDate = useCallback(
-    (dateValue) => {
-      setLocalMeeting((prev) => ({ ...prev, date: dateValue }));
-      if (wasSubmitted) setErrors((prev) => ({ ...prev, date: false }));
-    },
-    [wasSubmitted]
-  );
+  const handleChangeDate = useCallback((dateValue: Date) => {
+    setLocalMeeting((prev) => ({
+      ...prev,
+      meeting_data: {
+        ...prev.meeting_data,
+        date: stackDatesToOne(
+          dateValue,
+          new Date(prev.meeting_data.date),
+          true
+        ).toISOString(),
+      },
+    }));
+  }, []);
 
-  const handleChangeTime = useCallback(
-    (timeValue) => {
-      setLocalMeeting((prev) => ({ ...prev, time: timeValue }));
-      if (wasSubmitted) setErrors((prev) => ({ ...prev, time: false }));
-    },
-    [wasSubmitted]
-  );
+  const handleChangeTime = useCallback((timeValue: Date) => {
+    setLocalMeeting((prev) => ({
+      ...prev,
+      meeting_data: {
+        ...prev.meeting_data,
+        date: stackDatesToOne(
+          new Date(prev.meeting_data.date),
+          timeValue,
+          true
+        ).toISOString(),
+      },
+    }));
+  }, []);
 
   const handleChangeMaterials = useCallback(
-    (value) => {
-      setLocalMeeting((prev) => ({ ...prev, materials: value }));
+    (event) => {
+      setLocalMeeting((prev) => ({
+        ...prev,
+        meeting_data: { ...prev.meeting_data, materials: event.target.value },
+      }));
       if (wasSubmitted) setErrors((prev) => ({ ...prev, materials: false }));
     },
     [wasSubmitted]
@@ -116,18 +155,11 @@ const useFieldServiceMeetingForm = ({ data, onSave }) => {
   const handleSaveMeeting = useCallback(() => {
     setWasSubmitted(true);
     if (validateForm()) {
-      const meeting = structuredClone(localMeeting);
-      // Combine date and time for saving
-      const combinedDate = new Date(meeting.date);
-      combinedDate.setHours(
-        meeting.time.getHours(),
-        meeting.time.getMinutes(),
-        0,
-        0
-      );
-      meeting.date = combinedDate;
-      delete meeting.time; // Remove time before saving
-      meeting.updatedAt = new Date().toISOString();
+      const meeting: FieldServiceMeetingDataType =
+        structuredClone(localMeeting);
+
+      meeting.meeting_data.updatedAt = new Date().toISOString();
+
       onSave(meeting);
     }
   }, [localMeeting, onSave, validateForm]);
@@ -144,8 +176,8 @@ const useFieldServiceMeetingForm = ({ data, onSave }) => {
   return {
     localMeeting,
     errors,
-    handleChangeMeetingType,
-    handleChangeSelectedGroup,
+    handleChangeType,
+    handleChangeGroup,
     handleChangeConductor,
     handleChangeAssistant,
     handleChangeDate,

@@ -19,7 +19,8 @@ import { mockMeetings } from '@features/congregation/field_service_meetings/mock
 import { getWeekDate } from '@utils/date';
 import FieldServiceMeetingForm from '@features/congregation/field_service_meetings/field_service_meeting_form/fieldServiceMeetingForm';
 import ScheduleExport from '@features/congregation/field_service_meetings/schedule_export';
-import { FieldServiceMeetingDataType } from '@features/congregation/field_service_meetings/field_service_meeting_form/index.types';
+import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
+import { set } from 'date-fns';
 
 const MeetingAttendance = () => {
   const { t } = useAppTranslation();
@@ -30,8 +31,14 @@ const MeetingAttendance = () => {
 
   const { isSecretary, isGroup, my_group } = useCurrentUser();
 
-  const { monthsTab, handleMonthChange, initialValue } =
-    useFieldServiceMeetings();
+  const {
+    monthsTab,
+    handleMonthChange,
+    initialValue,
+    filteredMeetings,
+    emptyMeeting,
+    handleSaveMeeting,
+  } = useFieldServiceMeetings();
 
   const filters = [
     { value: 'all', label: t('tr_fieldServiceAll') },
@@ -41,27 +48,29 @@ const MeetingAttendance = () => {
   ];
 
   // Shared filter function for meetings
-  function meetingFilter(item: (typeof mockMeetings)[0]) {
+  function meetingFilter(item: FieldServiceMeetingDataType) {
     if (!filterId) return true; // No filter selected, show all meetings
+
+    const meeting = item.meeting_data;
     if (filterId === 'all') {
       // Show user's group, joint, and zoom meetings
-      if (item.type === 'joint' || item.type === 'zoom') return true;
+      if (meeting.type === 'joint' || meeting.type === 'zoom') return true;
       if (
-        item.type === 'group' &&
+        meeting.type === 'group' &&
         my_group &&
-        item.group === my_group.group_data.name
+        meeting.group === my_group.group_data.name
       )
         return true;
       return false;
     }
-    if (filterId === 'joint') return item.type === 'joint';
+    if (filterId === 'joint') return meeting.type === 'joint';
     if (filterId === 'group')
       return (
-        item.type === 'group' &&
+        meeting.type === 'group' &&
         my_group &&
-        item.group === my_group.group_data.name
+        meeting.group === my_group.group_data.name
       );
-    if (filterId === 'zoom') return item.type === 'zoom';
+    if (filterId === 'zoom') return meeting.type === 'zoom';
 
     return true;
   }
@@ -165,24 +174,22 @@ const MeetingAttendance = () => {
 
       {isAddingNewMeeting && (
         <FieldServiceMeetingForm
-          data={undefined}
+          data={emptyMeeting}
           type="add"
-          onSave={() => {
-            // Handle save logic here
-          }}
+          onSave={handleSaveMeeting}
           onCancel={() => setIsAddingNewMeeting(false)}
         />
       )}
       <Fragment>
         {(() => {
-          const meetings = mockMeetings.filter(meetingFilter);
+          const meetings = filteredMeetings.filter(meetingFilter);
           const today = new Date();
           today.setHours(0, 0, 0, 0);
           // Split meetings into future and past
           const futureMeetings: FieldServiceMeetingDataType[] = [];
           const pastMeetings: FieldServiceMeetingDataType[] = [];
           meetings.forEach((item) => {
-            if (item.time >= today) {
+            if (new Date(item.meeting_data.date) >= today) {
               futureMeetings.push(item);
             } else {
               pastMeetings.push(item);

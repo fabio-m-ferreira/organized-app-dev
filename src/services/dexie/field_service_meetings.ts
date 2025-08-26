@@ -1,5 +1,5 @@
 import appDb from '@db/appDb';
-import { FieldServiceMeetingDataType } from '@features/congregation/field_service_meetings/field_service_meeting_form/index.types';
+import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
 
 const dbUpdateFieldServiceMeetingMetadata = async () => {
   const metadata = await appDb.metadata.get(1);
@@ -22,13 +22,6 @@ export const dbFieldServiceMeetingsGetActive = async () => {
   return meetings;
 };
 
-export const dbFieldServiceMeetingsBulkSave = async (
-  meetings: FieldServiceMeetingDataType[]
-) => {
-  await appDb.field_service_meetings.bulkPut(meetings);
-  await dbUpdateFieldServiceMeetingMetadata();
-};
-
 export const dbFieldServiceMeetingsSave = async (
   meeting: FieldServiceMeetingDataType
 ) => {
@@ -44,4 +37,33 @@ export const dbFieldServiceMeetingsClear = async () => {
     record.updatedAt = new Date().toISOString();
   }
   await appDb.field_service_meetings.bulkPut(records);
+};
+
+export const dbFieldServiceMeetingsCleanup = async () => {
+  const records = await appDb.field_service_meetings.toArray();
+
+  if (records.length === 0) return;
+
+  const recordsToUpdate = records.reduce(
+    (acc: FieldServiceMeetingDataType[], current) => {
+      if (current.updatedAt) {
+        const meeting = structuredClone(current);
+
+        meeting.meeting_data._deleted = meeting._deleted;
+        meeting.meeting_data.updatedAt = meeting.updatedAt;
+
+        delete meeting._deleted;
+        delete meeting.updatedAt;
+
+        acc.push(meeting);
+      }
+
+      return acc;
+    },
+    []
+  );
+
+  if (recordsToUpdate.length > 0) {
+    await appDb.field_service_meetings.bulkPut(recordsToUpdate);
+  }
 };

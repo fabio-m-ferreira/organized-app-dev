@@ -1,15 +1,11 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useAtomValue } from 'jotai';
 import { IconError } from '@components/icons';
-import { useCurrentUser } from '@hooks/index';
-import { FieldServiceMeetingDataType } from './field_service_meeting_form/index.types';
+import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
 import { displaySnackNotification } from '@services/states/app';
 import { getMessageByCode } from '@services/i18n/translation';
 import { fieldServiceMeetingsActiveState } from '@states/field_service_meetings';
-import {
-  dbFieldServiceMeetingsSave,
-  dbFieldServiceMeetingsDelete,
-} from '@services/dexie/field_service_meetings';
+import { dbFieldServiceMeetingsSave } from '@services/dexie/field_service_meetings';
 import {
   buildPublisherReportMonths,
   currentMonthServiceYear,
@@ -36,7 +32,6 @@ const useFieldServiceMeetings = () => {
   const monthsTab = monthsList.map((month) => ({ label: month.label }));
 
   // CRUD/data logic
-  const { isSecretary, isGroup, my_group } = useCurrentUser();
   const meetings = useAtomValue(fieldServiceMeetingsActiveState);
   const [addMeetingBoxShow, setAddMeetingBoxShow] = useState(false);
   const [editMeeting, setEditMeeting] =
@@ -46,9 +41,11 @@ const useFieldServiceMeetings = () => {
   const emptyMeeting: FieldServiceMeetingDataType = {
     meeting_uid: crypto.randomUUID(),
     meeting_data: {
-      date: new Date(),
-      type: 'group',
-      group: my_group?.group_data?.name || '',
+      _deleted: false,
+      updatedAt: new Date().toISOString(),
+      date: new Date().toISOString(),
+      type: 'joint',
+      group: '',
       conductor: '',
       assistant: '',
       location: '',
@@ -58,8 +55,18 @@ const useFieldServiceMeetings = () => {
 
   // Filtering logic (customize as needed)
   const filteredMeetings = useMemo(() => {
-    // Example: show all meetings
-    return meetings;
+    // if (!selectedMonth) return meetings;
+    // return meetings.filter((item) => {
+    //   // Extract YYYY-MM from meeting_data.date
+    //   const meetingMonth = item.meeting_data.date.slice(0, 7);
+    //   return meetingMonth === selectedMonth;
+    // });
+    const sortedMeetings = meetings.sort(
+      (a, b) =>
+        new Date(a.meeting_data.date).getTime() -
+        new Date(b.meeting_data.date).getTime()
+    );
+    return sortedMeetings;
   }, [meetings]);
 
   const handleShowAddMeetingBox = () => {
@@ -70,10 +77,6 @@ const useFieldServiceMeetings = () => {
   const handleHideAddMeetingBox = () => {
     setAddMeetingBoxShow(false);
     setEditMeeting(null);
-  };
-
-  const handleAddMeetingButtonClick = () => {
-    handleShowAddMeetingBox();
   };
 
   const handleEditMeeting = (meeting: FieldServiceMeetingDataType) => {
@@ -96,20 +99,6 @@ const useFieldServiceMeetings = () => {
     }
   };
 
-  const handleDeleteMeeting = async (meetingId: number) => {
-    try {
-      await dbFieldServiceMeetingsDelete(meetingId);
-    } catch (error) {
-      console.error(error);
-      displaySnackNotification({
-        header: getMessageByCode('error_app_generic-title'),
-        message: error.message,
-        severity: 'error',
-        icon: <IconError color="var(--white)" />,
-      });
-    }
-  };
-
   return {
     // Month tab logic
     monthsTab,
@@ -117,17 +106,12 @@ const useFieldServiceMeetings = () => {
     selectedMonth,
     initialValue,
     // CRUD/data logic
-    isSecretary,
-    isGroup,
-    my_group,
     emptyMeeting,
-    meetings: filteredMeetings,
+    filteredMeetings,
     addMeetingBoxShow,
     editMeeting,
     handleSaveMeeting,
-    handleDeleteMeeting,
     handleHideAddMeetingBox,
-    handleAddMeetingButtonClick,
     handleEditMeeting,
   };
 };

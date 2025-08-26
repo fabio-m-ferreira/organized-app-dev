@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { FieldServiceMeetingDataType } from '@features/congregation/field_service_meetings/field_service_meeting_form/index.types';
+import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
 
 export const fieldServiceMeetingsDbState = atom<FieldServiceMeetingDataType[]>(
   []

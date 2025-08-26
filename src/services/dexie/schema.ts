@@ -3,6 +3,7 @@ import { BranchFieldServiceReportType } from '@definition/branch_field_service_r
 import { CongFieldServiceReportType } from '@definition/cong_field_service_reports';
 import { DelegatedFieldServiceReportType } from '@definition/delegated_field_service_reports';
 import { FieldServiceGroupType } from '@definition/field_service_groups';
+import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
 import { MeetingAttendanceType } from '@definition/meeting_attendance';
 import { PersonType } from '@definition/person';
 import { SchedWeekType } from '@definition/schedules';
@@ -366,6 +367,8 @@ export const settingSchema: SettingsType = {
 export const upcomingEventsSchema: UpcomingEventType = {
   event_uid: '',
   event_data: {
+    _deleted: false,
+    updatedAt: '',
     start: '',
     end: '',
     description: '',
@@ -376,6 +379,21 @@ export const upcomingEventsSchema: UpcomingEventType = {
   },
   _deleted: false,
   updatedAt: '',
+};
+
+export const fieldServiceMeetingsSchema: FieldServiceMeetingDataType = {
+  meeting_uid: crypto.randomUUID(),
+  meeting_data: {
+    _deleted: false,
+    updatedAt: '',
+    date: '',
+    type: 'joint',
+    group: '',
+    conductor: '',
+    assistant: '',
+    location: '',
+    materials: '',
+  },
 };
 
 export const vistingSpeakerSchema: VisitingSpeakerType = {
