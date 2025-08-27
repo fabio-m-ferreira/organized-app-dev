@@ -19,6 +19,8 @@ const UserAdditionalRights = () => {
     handleToggleAttendance,
     isWeekend,
     handleToggleWeekend,
+    isFieldService,
+    handleToggleFieldService,
   } = useUserAdditionalRights();
 
   return (
@@ -32,6 +34,12 @@ const UserAdditionalRights = () => {
       </Typography>
 
       <SwitchContainer>
+        <SwitchWithLabel
+          label={t('tr_fieldServiceMeetingScheduling')}
+          readOnly={isProcessing}
+          checked={isFieldService}
+          onChange={handleToggleFieldService}
+        />
         <SwitchWithLabel
           label={t('tr_midweekMeetingScheduling')}
           readOnly={isProcessing}
