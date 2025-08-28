@@ -167,6 +167,8 @@ const useFieldServiceMeetingForm = ({ data, onSave }) => {
   const handleDeleteMeeting = useCallback(() => {
     const meeting = structuredClone(localMeeting);
 
+    console.log(meeting);
+
     meeting.meeting_data._deleted = true;
     meeting.meeting_data.updatedAt = new Date().toISOString();
 

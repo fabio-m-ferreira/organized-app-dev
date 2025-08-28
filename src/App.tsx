@@ -5,15 +5,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from '@components/index';
 import { RootLayout } from '@layouts/index';
 import { useCurrentUser } from './hooks';
-import { useFirebaseAuth } from '@hooks/index';
 import {
   appLangState,
   appLocaleState,
   appThemeState,
   congAccountConnectedState,
-  isAppLoadState,
-  isSetupState,
-  offlineOverrideState,
 } from '@states/app';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -100,14 +96,9 @@ const App = ({ updatePwa }: { updatePwa: VoidFunction }) => {
   const [adapterLocale, setAdapterLocale] = useAtom(appLocaleState);
 
   const isConnected = useAtomValue(congAccountConnectedState);
-  const offlineOverride = useAtomValue(offlineOverrideState);
-  const isSetup = useAtomValue(isSetupState);
-  const isAppLoad = useAtomValue(isAppLoadState);
   const theme = useAtomValue(appThemeState);
   const appLang = useAtomValue(appLangState);
   const firstDayOfTheWeekOption = useAtomValue(firstDayWeekState);
-
-  const { isAuthenticated } = useFirebaseAuth();
 
   const router = createHashRouter([
     {

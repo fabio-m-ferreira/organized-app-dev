@@ -35,12 +35,6 @@ const UserAdditionalRights = () => {
 
       <SwitchContainer>
         <SwitchWithLabel
-          label={t('tr_fieldServiceMeetingScheduling')}
-          readOnly={isProcessing}
-          checked={isFieldService}
-          onChange={handleToggleFieldService}
-        />
-        <SwitchWithLabel
           label={t('tr_midweekMeetingScheduling')}
           readOnly={isProcessing}
           checked={isMidweek}
@@ -52,6 +46,13 @@ const UserAdditionalRights = () => {
           readOnly={isProcessing}
           checked={isWeekend}
           onChange={handleToggleWeekend}
+        />
+
+        <SwitchWithLabel
+          label={t('tr_fieldServiceMeetingScheduling')}
+          readOnly={isProcessing}
+          checked={isFieldService}
+          onChange={handleToggleFieldService}
         />
 
         <SwitchWithLabel

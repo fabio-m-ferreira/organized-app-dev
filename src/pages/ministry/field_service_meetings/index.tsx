@@ -15,21 +15,19 @@ import FilterChip from '@components/filter_chip';
 import { useAppTranslation, useCurrentUser } from '@hooks/index';
 import MeetingItem from '@features/congregation/field_service_meetings/meeting_item';
 import Accordion from '@components/accordion';
-import { mockMeetings } from '@features/congregation/field_service_meetings/mock_meetings';
 import { getWeekDate } from '@utils/date';
 import FieldServiceMeetingForm from '@features/congregation/field_service_meetings/field_service_meeting_form/fieldServiceMeetingForm';
 import ScheduleExport from '@features/congregation/field_service_meetings/schedule_export';
 import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
-import { set } from 'date-fns';
 
 const MeetingAttendance = () => {
   const { t } = useAppTranslation();
-  const [isAddingNewMeeting, setIsAddingNewMeeting] = useState(false);
   const [filterId, setFilterId] = useState<string | null>('all');
   const [openExport, setOpenExport] = useState(false);
   const [showPast, setShowPast] = useState(false);
 
-  const { isSecretary, isGroup, my_group } = useCurrentUser();
+  const { isFieldServiceEditor, isSecretary, isGroup, my_group } =
+    useCurrentUser();
 
   const {
     monthsTab,
@@ -38,6 +36,9 @@ const MeetingAttendance = () => {
     filteredMeetings,
     emptyMeeting,
     handleSaveMeeting,
+    handleShowAddMeetingBox,
+    handleHideAddMeetingBox,
+    addMeetingBoxShow,
   } = useFieldServiceMeetings();
 
   const filters = [
@@ -91,15 +92,14 @@ const MeetingAttendance = () => {
       <PageTitle
         title={t('tr_fieldServiceMeetings')}
         buttons={
-          !isGroup &&
-          isSecretary && (
+          isFieldServiceEditor && (
             <>
-              {openExport && (
+              {/* {openExport && (
                 <ScheduleExport
                   open={openExport}
                   onClose={() => setOpenExport(false)}
                 />
-              )}
+              )} */}
               <Button
                 variant="secondary"
                 onClick={openScheduleExport}
@@ -107,19 +107,15 @@ const MeetingAttendance = () => {
               >
                 {t('tr_export')}
               </Button>
-              <Button
-                variant="secondary"
-                onClick={() => setIsAddingNewMeeting(true)}
-                startIcon={<IconAdd />}
-              >
+              <Button onClick={handleShowAddMeetingBox} startIcon={<IconAdd />}>
                 {t('tr_add')}
               </Button>
-              <Button
+              {/* <Button
                 variant="main"
                 startIcon={<IconEventAvailable color="white" />}
               >
                 {t('tr_publish')}
-              </Button>
+              </Button> */}
             </>
           )
         }
@@ -172,12 +168,12 @@ const MeetingAttendance = () => {
         </Box>
       </Box>
 
-      {isAddingNewMeeting && (
+      {addMeetingBoxShow && (
         <FieldServiceMeetingForm
           data={emptyMeeting}
           type="add"
           onSave={handleSaveMeeting}
-          onCancel={() => setIsAddingNewMeeting(false)}
+          onCancel={handleHideAddMeetingBox}
         />
       )}
       <Fragment>
@@ -274,7 +270,6 @@ const MeetingAttendance = () => {
           return (
             <>
               {futureContent}
-              {pastMeetings.length > 0 && pastContent}
               {futureMeetings.length === 0 && (
                 <InfoTip
                   isBig={false}
@@ -283,6 +278,7 @@ const MeetingAttendance = () => {
                   text={t('tr_noFieldServiceMeetings')}
                 />
               )}
+              {pastMeetings.length > 0 && pastContent}
             </>
           );
         })()}

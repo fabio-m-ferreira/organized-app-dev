@@ -34,8 +34,7 @@ const useFieldServiceMeetings = () => {
   // CRUD/data logic
   const meetings = useAtomValue(fieldServiceMeetingsActiveState);
   const [addMeetingBoxShow, setAddMeetingBoxShow] = useState(false);
-  const [editMeeting, setEditMeeting] =
-    useState<FieldServiceMeetingDataType | null>(null);
+  const [isEdit, setIsEdit] = useState(false);
 
   // Example empty meeting object
   const emptyMeeting: FieldServiceMeetingDataType = {
@@ -53,35 +52,28 @@ const useFieldServiceMeetings = () => {
     },
   };
 
-  // Filtering logic (customize as needed)
   const filteredMeetings = useMemo(() => {
-    // if (!selectedMonth) return meetings;
-    // return meetings.filter((item) => {
-    //   // Extract YYYY-MM from meeting_data.date
-    //   const meetingMonth = item.meeting_data.date.slice(0, 7);
-    //   return meetingMonth === selectedMonth;
-    // });
-    const sortedMeetings = meetings.sort(
+    const filtered = selectedMonth
+      ? meetings.filter((item) => {
+          // Normalize the date format for comparison (replace hyphens with slashes)
+          const meetingMonth = item.meeting_data.date.slice(0, 7).replace(/-/g, '/');
+          return meetingMonth === selectedMonth;
+        })
+      : meetings;
+
+    return [...filtered].sort(
       (a, b) =>
         new Date(a.meeting_data.date).getTime() -
         new Date(b.meeting_data.date).getTime()
     );
-    return sortedMeetings;
-  }, [meetings]);
+  }, [meetings, selectedMonth]);
 
   const handleShowAddMeetingBox = () => {
     setAddMeetingBoxShow(true);
-    setEditMeeting(null);
   };
 
   const handleHideAddMeetingBox = () => {
     setAddMeetingBoxShow(false);
-    setEditMeeting(null);
-  };
-
-  const handleEditMeeting = (meeting: FieldServiceMeetingDataType) => {
-    setEditMeeting(meeting);
-    setAddMeetingBoxShow(true);
   };
 
   const handleSaveMeeting = async (meeting: FieldServiceMeetingDataType) => {
@@ -109,10 +101,9 @@ const useFieldServiceMeetings = () => {
     emptyMeeting,
     filteredMeetings,
     addMeetingBoxShow,
-    editMeeting,
     handleSaveMeeting,
     handleHideAddMeetingBox,
-    handleEditMeeting,
+    handleShowAddMeetingBox,
   };
 };
 

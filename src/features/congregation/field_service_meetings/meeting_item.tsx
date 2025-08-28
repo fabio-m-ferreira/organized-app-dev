@@ -19,17 +19,33 @@ import FieldServiceMeetingForm from './field_service_meeting_form/fieldServiceMe
 import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
 import { fieldWithLanguageGroupsNoStudentsState } from '@states/field_service_groups';
 import { useAtomValue } from 'jotai';
+import useFieldServiceMeetings from './useFieldServiceMeetings';
+import useFieldServiceMeetingForm from './field_service_meeting_form/useFieldServiceMeetingForm';
+import useCurrentUser from '@hooks/useCurrentUser';
 
 const MeetingItem = (data: FieldServiceMeetingDataType) => {
   const { t, i18n } = useAppTranslation();
   const appLocale = i18n?.language || navigator.language;
-  const [isEditing, setIsEditing] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(menuAnchorEl);
   const groups_list = useAtomValue(fieldWithLanguageGroupsNoStudentsState);
 
   const { date, type, group, conductor, assistant, location, materials } =
     data.meeting_data;
+
+  const {
+    handleSaveMeeting,
+    handleHideAddMeetingBox,
+    handleShowAddMeetingBox,
+    addMeetingBoxShow,
+  } = useFieldServiceMeetings();
+
+  const { handleDeleteMeeting } = useFieldServiceMeetingForm({
+    data,
+    onSave: handleSaveMeeting,
+  });
+
+  const { isFieldServiceEditor } = useCurrentUser();
 
   const groupColors: Record<string, string> = {
     'Passos Esteves': 'group-1',
@@ -41,16 +57,16 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
 
   const meetingDate = new Date(date);
 
-  if (isEditing) {
+  if (addMeetingBoxShow) {
     return (
       <FieldServiceMeetingForm
         data={data}
         type="edit"
-        onSave={() => {
-          // Handle save logic here
-          setIsEditing(false);
+        onSave={(data) => {
+          handleSaveMeeting(data);
+          setMenuAnchorEl(null);
         }}
-        onCancel={() => setIsEditing(false)}
+        onCancel={handleHideAddMeetingBox}
       />
     );
   }
@@ -112,77 +128,75 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
                 variant="outlined"
               />
             )}
-          </Box>
-          <Box className="more-button">
-            <Button
-              variant="small"
-              sx={{
-                marginLeft: '8px',
-                marginRight: '-8px',
-                height: '28px',
-                minWidth: '20px',
-                padding: 0,
-              }}
-              onClick={(e) => setMenuAnchorEl(e.currentTarget)}
-            >
-              <IconMore color="var(--grey-400)" />
-            </Button>
-            <Menu
-              anchorEl={menuAnchorEl}
-              open={isMenuOpen}
-              onClose={() => setMenuAnchorEl(null)}
-              sx={{
-                marginTop: '8px',
-                '& li': {
-                  borderBottom: '1px solid var(--accent-200)',
-                },
-                '& li:last-child': {
-                  borderBottom: 'none',
-                },
-              }}
-              slotProps={{
-                paper: {
-                  className: 'small-card-shadow',
-                  style: {
-                    borderRadius: 'var(--radius-l)',
-                    border: '1px solid var(--accent-200)',
-                    backgroundColor: 'var(--white)',
+
+            <Box className="more-button">
+              {isFieldServiceEditor && (
+                <Button
+                  variant="small"
+                  sx={{
+                    marginRight: '-8px',
+                    minHeight: '28px',
+                    minWidth: '20px',
+                    padding: 0,
+                  }}
+                  onClick={(e) => setMenuAnchorEl(e.currentTarget)}
+                >
+                  <IconMore color="var(--grey-400)" />
+                </Button>
+              )}
+              <Menu
+                anchorEl={menuAnchorEl}
+                open={isMenuOpen}
+                onClose={() => setMenuAnchorEl(null)}
+                sx={{
+                  marginTop: '8px',
+                  '& li': {
+                    borderBottom: '1px solid var(--accent-200)',
                   },
-                },
-              }}
-            >
-              <MenuItem
-                onClick={() => {
-                  setIsEditing(true);
-                  setMenuAnchorEl(null);
+                  '& li:last-child': {
+                    borderBottom: 'none',
+                  },
+                }}
+                slotProps={{
+                  paper: {
+                    className: 'small-card-shadow',
+                    style: {
+                      borderRadius: 'var(--radius-l)',
+                      border: '1px solid var(--accent-200)',
+                      backgroundColor: 'var(--white)',
+                    },
+                  },
                 }}
               >
-                <Box
-                  component="span"
-                  display="flex"
-                  alignItems="center"
-                  gap={1}
+                <MenuItem onClick={handleShowAddMeetingBox}>
+                  <Box
+                    component="span"
+                    display="flex"
+                    alignItems="center"
+                    gap={1}
+                  >
+                    <IconEdit />
+                    <Typography>{t('tr_edit')}</Typography>
+                  </Box>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    handleDeleteMeeting();
+                    setMenuAnchorEl(null);
+                  }}
                 >
-                  <IconEdit />
-                  <Typography>{t('tr_edit')}</Typography>
-                </Box>
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  /* TODO: handle delete */ setMenuAnchorEl(null);
-                }}
-              >
-                <Box
-                  component="span"
-                  display="flex"
-                  alignItems="center"
-                  gap={1}
-                >
-                  <IconDelete />
-                  <Typography>{t('tr_delete')}</Typography>
-                </Box>
-              </MenuItem>
-            </Menu>
+                  <Box
+                    component="span"
+                    display="flex"
+                    alignItems="center"
+                    gap={1}
+                  >
+                    <IconDelete />
+                    <Typography>{t('tr_delete')}</Typography>
+                  </Box>
+                </MenuItem>
+              </Menu>
+            </Box>
           </Box>
         </Box>
       </Box>
