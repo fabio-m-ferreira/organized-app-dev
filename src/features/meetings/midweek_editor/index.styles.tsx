@@ -16,4 +16,5 @@ export const PersonDoubleContainer = styled(Box)({
 export const StyledNavigationArrowButton = styled(Box)({
   display: 'flex',
   alignItems: 'center',
+  color: 'var(--black)',
 }) as unknown as typeof Box;

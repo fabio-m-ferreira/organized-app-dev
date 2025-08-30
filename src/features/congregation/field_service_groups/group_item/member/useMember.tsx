@@ -1,6 +1,11 @@
 import { MouseEvent, useMemo, useState } from 'react';
 import { useAtomValue } from 'jotai';
-import { IconAssistant, IconOverseer, IconPerson } from '@components/icons';
+import {
+  IconAssistant,
+  IconOverseer,
+  IconPerson,
+  IconAtHome,
+} from '@components/icons';
 import { useAppTranslation, useCurrentUser } from '@hooks/index';
 import { buildPersonFullname } from '@utils/common';
 import { personsState } from '@states/persons';
@@ -41,15 +46,20 @@ const useMember = ({ member, index, group_id }: GroupMemberProps) => {
   }, [index]);
 
   const member_icon = useMemo(() => {
+    const icons = [];
     if (member.isOverseer) {
-      return <IconOverseer color="var(--black)" />;
+      icons.push(<IconOverseer color="var(--black)" key="overseer" />);
     }
-
     if (member.isAssistant) {
-      return <IconAssistant color="var(--black)" />;
+      icons.push(<IconAssistant color="var(--black)" key="assistant" />);
     }
-
-    return <IconPerson color="var(--black)" />;
+    if (member.isHost) {
+      icons.push(<IconAtHome color="var(--black)" key="host" />);
+    }
+    if (icons.length === 0) {
+      icons.push(<IconPerson color="var(--black)" key="person" />);
+    }
+    return <>{icons}</>;
   }, [member]);
 
   const person = useMemo(() => {
@@ -67,14 +77,25 @@ const useMember = ({ member, index, group_id }: GroupMemberProps) => {
   }, [person, fullnameOption]);
 
   const member_desc = useMemo(() => {
+    const descs = [];
     if (member.isOverseer) {
-      return t('tr_groupOverseer');
+      descs.push(t('tr_groupOverseer'));
     }
-
     if (member.isAssistant) {
-      return t('tr_groupOverseerAssistant');
+      descs.push(t('tr_groupOverseerAssistant'));
     }
+    if (member.isHost) {
+      descs.push(t('tr_groupHost'));
+    }
+    return descs.length > 0 ? descs.join(', ') : undefined;
   }, [member, t]);
+  // Host logic
+  const make_host = useMemo(() => {
+    if (!isServiceCommittee) return false;
+    if (member.isHost) return false;
+    if (!person) return false;
+    return true;
+  }, [isServiceCommittee, person, member]);
 
   const make_overseer = useMemo(() => {
     if (!isServiceCommittee) return false;
@@ -218,6 +239,52 @@ const useMember = ({ member, index, group_id }: GroupMemberProps) => {
     }
   };
 
+  const handleMakeHost = async () => {
+    handleCloseMenu();
+
+    try {
+      const group = structuredClone(current_group);
+
+      const current = group.group_data.members.find(
+        (record) => record.person_uid === member.person_uid
+      );
+
+      const host = group.group_data.members.find((record) => record.isHost);
+
+      if (host) {
+        host.isHost = false;
+        host.sort_index = current.sort_index;
+      }
+
+      if (!host) {
+        const currentIndex = current.sort_index;
+        let index = currentIndex < 2 ? 2 : currentIndex;
+
+        for (const member of group.group_data.members) {
+          if (member.sort_index < currentIndex) continue;
+
+          member.sort_index = index;
+          index++;
+        }
+      }
+
+      current.isHost = true;
+      current.sort_index = 2; // You may want to use a different index for Host
+
+      group.group_data.updatedAt = new Date().toISOString();
+
+      await dbFieldServiceGroupSave(group);
+    } catch (error) {
+      console.error(error);
+
+      displaySnackNotification({
+        header: getMessageByCode('error_app_generic-title'),
+        message: getMessageByCode(error.message),
+        severity: 'error',
+      });
+    }
+  };
+
   const handleOpenRemove = () => {
     handleCloseMenu();
     setRemoveOpen(true);
@@ -273,8 +340,10 @@ const useMember = ({ member, index, group_id }: GroupMemberProps) => {
     item_hover_color,
     make_overseer,
     make_assistant,
+    make_host,
     handleMakeOverseer,
     handleMakeAssistant,
+    handleMakeHost,
     handleOpenRemove,
     handleCloseRemove,
     handlePersonRemove,

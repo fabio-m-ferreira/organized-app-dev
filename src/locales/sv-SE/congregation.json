@@ -196,6 +196,7 @@
   "tr_reorderGroups": "Ändra ordning",
   "tr_makeOverseer": "Gör till gruppansvarig",
   "tr_makeAssistant": "Gör till medhjälpare",
+  "tr_makeHost": "Gör till värd",
   "tr_removeFromGroups": "Ta bort från gruppen",
   "tr_reorderGroupsTitle": "Ändra ordning på grupper",
   "tr_remove": "Ta bort",
