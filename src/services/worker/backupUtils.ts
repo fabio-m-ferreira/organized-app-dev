@@ -1714,6 +1714,10 @@ export const dbExportDataBackup = async (backupData: BackupDataType) => {
         (role) => role === 'midweek_schedule' || role === 'weekend_schedule'
       );
 
+    const fieldServiceMeetingEditor =
+      serviceCommitteeRole ||
+      userRole.some((role) => role === 'field_service_schedule');
+
     const personEditor = serviceCommitteeRole || scheduleEditor;
 
     const settingEditor =
@@ -2015,20 +2019,25 @@ export const dbExportDataBackup = async (backupData: BackupDataType) => {
           }
         }
 
-        //  // include field service meetings
-        //           if (metadata.metadata.field_service_meetings?.send_local) {
-        //             const backupFieldServiceMeetings = field_service_meetings.map((meeting) => {
-        //               encryptObject({
-        //                 data: meeting,
-        //                 table: 'field_service_meetings',
-        //                 accessCode,
-        //               });
+        // include field service meetings
+        if (
+          fieldServiceMeetingEditor &&
+          metadata.metadata.field_service_meetings?.send_local
+        ) {
+          const backupFieldServiceMeetings = field_service_meetings.map(
+            (meeting) => {
+              encryptObject({
+                data: meeting,
+                table: 'field_service_meetings',
+                accessCode,
+              });
 
-        //               return meeting;
-        //             });
+              return meeting;
+            }
+          );
 
-        //             obj.field_service_meetings = backupFieldServiceMeetings;
-        //           }
+          obj.field_service_meetings = backupFieldServiceMeetings;
+        }
 
         // include user role changes
         if (adminRole && backupData.cong_users) {

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Box } from '@mui/material';
 import { Menu } from '@mui/material';
 import MenuItem from '@components/menuitem';
@@ -17,8 +17,6 @@ import { useAppTranslation } from '@hooks/index';
 import GroupBadge from '@components/group_badge';
 import FieldServiceMeetingForm from './field_service_meeting_form/fieldServiceMeetingForm';
 import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
-import { fieldWithLanguageGroupsNoStudentsState } from '@states/field_service_groups';
-import { useAtomValue } from 'jotai';
 import useFieldServiceMeetings from './useFieldServiceMeetings';
 import useFieldServiceMeetingForm from './field_service_meeting_form/useFieldServiceMeetingForm';
 import useCurrentUser from '@hooks/useCurrentUser';
@@ -28,7 +26,6 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
   const appLocale = i18n?.language || navigator.language;
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(menuAnchorEl);
-  const groups_list = useAtomValue(fieldWithLanguageGroupsNoStudentsState);
 
   const { date, type, group, conductor, assistant, location, materials } =
     data.meeting_data;
@@ -66,7 +63,10 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
           handleSaveMeeting(data);
           setMenuAnchorEl(null);
         }}
-        onCancel={handleHideAddMeetingBox}
+        onCancel={() => {
+          handleHideAddMeetingBox();
+          setMenuAnchorEl(null);
+        }}
       />
     );
   }

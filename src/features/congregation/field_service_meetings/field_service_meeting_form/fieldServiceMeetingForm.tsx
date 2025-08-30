@@ -96,7 +96,6 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'center',
           gap: '16px',
           flexDirection: laptopDown ? 'column' : 'row',
         }}
@@ -151,8 +150,6 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
             value={localMeeting.meeting_data.assistant ?? ''}
             options={brotherOptions}
             onChange={handleChangeAssistant}
-            error={errors.assistant}
-            helperText={errors.assistant && t('tr_fillRequiredField')}
             endIcon={<IconSearch />}
           />
         )}

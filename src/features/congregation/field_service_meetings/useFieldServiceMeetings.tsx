@@ -34,7 +34,6 @@ const useFieldServiceMeetings = () => {
   // CRUD/data logic
   const meetings = useAtomValue(fieldServiceMeetingsActiveState);
   const [addMeetingBoxShow, setAddMeetingBoxShow] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
 
   // Example empty meeting object
   const emptyMeeting: FieldServiceMeetingDataType = {
@@ -56,7 +55,9 @@ const useFieldServiceMeetings = () => {
     const filtered = selectedMonth
       ? meetings.filter((item) => {
           // Normalize the date format for comparison (replace hyphens with slashes)
-          const meetingMonth = item.meeting_data.date.slice(0, 7).replace(/-/g, '/');
+          const meetingMonth = item.meeting_data.date
+            .slice(0, 7)
+            .replace(/-/g, '/');
           return meetingMonth === selectedMonth;
         })
       : meetings;

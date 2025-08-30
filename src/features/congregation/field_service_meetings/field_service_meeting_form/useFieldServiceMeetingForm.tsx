@@ -7,7 +7,6 @@ const initialErrors = {
   type: false,
   group: false,
   conductor: false,
-  assistant: false,
   materials: false,
 };
 
@@ -31,11 +30,6 @@ const useFieldServiceMeetingForm = ({ data, onSave }) => {
           );
         case 'conductor':
           return !value || value.trim() === '';
-        case 'assistant':
-          return (
-            localMeeting.meeting_data.type === 'joint' &&
-            (!value || value.trim() === '')
-          );
         case 'materials':
           return !value || value.trim() === '';
         default:
@@ -101,16 +95,12 @@ const useFieldServiceMeetingForm = ({ data, onSave }) => {
     [wasSubmitted]
   );
 
-  const handleChangeAssistant = useCallback(
-    (_, value) => {
-      setLocalMeeting((prev) => ({
-        ...prev,
-        meeting_data: { ...prev.meeting_data, assistant: value },
-      }));
-      if (wasSubmitted) setErrors((prev) => ({ ...prev, assistant: false }));
-    },
-    [wasSubmitted]
-  );
+  const handleChangeAssistant = useCallback((_, value) => {
+    setLocalMeeting((prev) => ({
+      ...prev,
+      meeting_data: { ...prev.meeting_data, assistant: value },
+    }));
+  }, []);
 
   // Only update date and time separately
   const handleChangeDate = useCallback((dateValue: Date) => {
@@ -166,8 +156,6 @@ const useFieldServiceMeetingForm = ({ data, onSave }) => {
 
   const handleDeleteMeeting = useCallback(() => {
     const meeting = structuredClone(localMeeting);
-
-    console.log(meeting);
 
     meeting.meeting_data._deleted = true;
     meeting.meeting_data.updatedAt = new Date().toISOString();
