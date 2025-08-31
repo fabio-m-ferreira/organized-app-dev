@@ -48,6 +48,20 @@ const TermsUse = () => {
           />
         </Box>
 
+        <Box
+          sx={{
+            backgroundColor: 'var(--red-secondary)',
+            borderRadius: 'var(--radius-s)',
+            padding: '16px',
+          }}
+        >
+          <TextMarkup
+            color="var(--red-dark)"
+            className="body-regular"
+            content={t('tr_congregationNotice')}
+          />
+        </Box>
+
         <Typography className="h3">{t('tr_privacySecurityTitle')}</Typography>
 
         <TextMarkup
