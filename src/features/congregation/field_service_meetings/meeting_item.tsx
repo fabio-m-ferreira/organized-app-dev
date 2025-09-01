@@ -88,9 +88,9 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
       <Box
         sx={{
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           justifyContent: 'space-between',
-          gap: '5px',
+          gap: '15px',
         }}
       >
         <Box display="flex" alignItems="center">

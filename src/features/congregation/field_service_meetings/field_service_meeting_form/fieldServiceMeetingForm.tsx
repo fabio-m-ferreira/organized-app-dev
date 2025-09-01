@@ -72,6 +72,16 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
     );
   }
 
+  // Prevent duplicates in conductor/assistant
+  const conductorValue = localMeeting.meeting_data.conductor ?? '';
+  const assistantValue = localMeeting.meeting_data.assistant ?? '';
+  const conductorOptions = brotherOptions.filter(
+    (name) => name !== assistantValue
+  );
+  const assistantOptions = brotherOptions.filter(
+    (name) => name !== conductorValue
+  );
+
   // Get all group names from field service groups
   const groupOptions = groups_list.map((group) => group.group_data.name);
 
@@ -137,8 +147,8 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
 
         <Autocomplete
           label={t('tr_conductor')}
-          value={localMeeting.meeting_data.conductor ?? ''}
-          options={brotherOptions}
+          value={conductorValue}
+          options={conductorOptions}
           onChange={handleChangeConductor}
           error={errors.conductor}
           helperText={errors.conductor && t('tr_fillRequiredField')}
@@ -147,8 +157,8 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
         {meetingType === 'joint' && (
           <Autocomplete
             label={t('tr_assistant')}
-            value={localMeeting.meeting_data.assistant ?? ''}
-            options={brotherOptions}
+            value={assistantValue}
+            options={assistantOptions}
             onChange={handleChangeAssistant}
             endIcon={<IconSearch />}
           />

@@ -521,7 +521,7 @@
   "tr_personAwayNotice": "This person is away: {{ date }}",
   "tr_weekendTemplateShowSongs": "Display songs on weekend meeting schedules",
   "tr_joint": "Joint",
-  "tr_fieldServiceAll": "All",
+  "tr_fieldServiceAll": "My meetings",
   "tr_zoom": "Zoom",
   "tr_showPastMeetings": "Show past meetings",
   "tr_jointMeeting": "Joint meeting",
