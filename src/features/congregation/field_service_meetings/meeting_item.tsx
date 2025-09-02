@@ -47,9 +47,9 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
   const groupColors: Record<string, string> = {
     'Passos Esteves': 'group-1',
     Esteveira: 'group-2',
-    'Bairro da Camara': 'group-3',
-    'Grupo Salão 1': 'group-4',
-    'Grupo Salão 2': 'group-5',
+    'Bairro da Câmara': 'group-3',
+    'Salão 1': 'group-4',
+    'Salão 2': 'group-5',
   };
 
   const meetingDate = new Date(date);
