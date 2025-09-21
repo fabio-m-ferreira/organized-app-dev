@@ -1,11 +1,7 @@
 import { apiDefault } from './common';
-import { SourceWeekType } from '@definition/sources';
-import {
-  OutgoingTalkExportScheduleType,
-  SchedWeekType,
-} from '@definition/schedules';
+import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
 
-export const apiPublicScheduleGet = async () => {
+export const apiPublicFieldMeetingsGet = async () => {
   const {
     apiHost,
     appVersion: appversion,
@@ -14,7 +10,7 @@ export const apiPublicScheduleGet = async () => {
   } = await apiDefault();
 
   const res = await fetch(
-    `${apiHost}api/v3/congregations/meeting/${congID}/schedules`,
+    `${apiHost}api/v3/congregations/meeting/${congID}/field-meetings`,
     {
       method: 'GET',
       credentials: 'include',
@@ -27,21 +23,24 @@ export const apiPublicScheduleGet = async () => {
     }
   );
 
-  const data = await res.json();
+  if (!res.ok) {
+    return {
+      status: res.status,
+      meetings: [],
+      message: await res.text(),
+    };
+  }
 
+  const data = await res.json();
   return {
     status: res.status,
-    sources: data?.sources as SourceWeekType[],
-    schedules: data?.schedules as SchedWeekType[],
-    talks: data?.talks as OutgoingTalkExportScheduleType[],
-    message: data?.message as string,
+    meetings: data?.meetings as FieldServiceMeetingDataType[],
+    message: data?.message || '',
   };
 };
 
-export const apiPublishSchedule = async (
-  sources: SourceWeekType[],
-  schedules: SchedWeekType[],
-  talks?: OutgoingTalkExportScheduleType[]
+export const apiPublishFieldMeetings = async (
+  meetings: FieldServiceMeetingDataType[]
 ) => {
   const {
     apiHost,
@@ -51,7 +50,7 @@ export const apiPublishSchedule = async (
   } = await apiDefault();
 
   const res = await fetch(
-    `${apiHost}api/v3/congregations/meeting/${congID}/schedules`,
+    `${apiHost}api/v3/congregations/meeting/${congID}/field-meetings`,
     {
       method: 'POST',
       credentials: 'include',
@@ -61,11 +60,13 @@ export const apiPublishSchedule = async (
         appclient: 'organized',
         appversion,
       },
-      body: JSON.stringify({ sources, schedules, talks }),
+      body: JSON.stringify({ meetings }),
     }
   );
 
   const data = await res.json();
-
-  return { status: res.status, message: data?.message as string };
+  return {
+    status: res.status,
+    message: data.message || '',
+  };
 };

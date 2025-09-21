@@ -15,7 +15,3 @@ export const fieldServiceMeetingsState = atom((get) => {
         new Date(b.meeting_data.date).getTime()
     );
 });
-
-export const fieldServiceMeetingsActiveState = atom((get) => {
-  return get(fieldServiceMeetingsState);
-});

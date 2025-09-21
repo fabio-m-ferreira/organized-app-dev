@@ -5,7 +5,11 @@ import Checkbox from '@components/checkbox';
 import Divider from '@components/divider';
 import MonthItem from '../month_item';
 
-const YearContainer = ({ data, onChange }: YearContainerProps) => {
+const YearContainer = ({
+  data,
+  onChange,
+  monthSeparator,
+}: YearContainerProps) => {
   const { checked, indeterminate } = useYearContainer(data.months);
 
   return (
@@ -35,7 +39,12 @@ const YearContainer = ({ data, onChange }: YearContainerProps) => {
         padding="0px 4px 0px 16px"
       >
         {data.months.map((record) => (
-          <MonthItem key={record.month} data={record} onChange={onChange} />
+          <MonthItem
+            key={record.month}
+            data={record}
+            onChange={onChange}
+            separator={monthSeparator}
+          />
         ))}
       </Stack>
     </Stack>

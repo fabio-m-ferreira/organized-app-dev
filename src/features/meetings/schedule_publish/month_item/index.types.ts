@@ -5,4 +5,5 @@ export type MonthItemProps = {
     published?: boolean;
   };
   onChange: (checked: boolean, value: string) => void;
+  separator: string;
 };

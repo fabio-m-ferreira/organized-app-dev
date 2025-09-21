@@ -273,6 +273,9 @@ export const dbGetMetadata = async () => {
         role === 'public_talk_schedule'
     );
 
+  const isFieldMeetingsEditor =
+    isAdmin || userRole.includes('field_service_schedule') || isElder;
+
   const isPersonViewer = isScheduleEditor || isElder;
   const isPersonMinimal = !isPersonViewer;
 
@@ -299,6 +302,14 @@ export const dbGetMetadata = async () => {
   if (isPersonMinimal) {
     delete result.sources;
     delete result.schedules;
+  }
+
+  if (isFieldMeetingsEditor) {
+    delete result.public_field_meetings;
+  }
+
+  if (!isFieldMeetingsEditor) {
+    delete result.field_service_meetings;
   }
 
   if (!isAttendanceTracker && !isLanguageGroupOverseer) {
@@ -1626,6 +1637,13 @@ const dbRestoreFromBackup = async (
       await appDb.sources.clear();
       const data = backupData.public_sources as SourceWeekType[];
       await appDb.sources.bulkPut(data);
+    }
+
+    if (backupData.public_field_meetings) {
+      await appDb.field_service_meetings.clear();
+      const data =
+        backupData.public_field_meetings as FieldServiceMeetingDataType[];
+      await appDb.field_service_meetings.bulkPut(data);
     }
 
     await dbInsertMetadata(backupData.metadata);

@@ -1,23 +1,29 @@
 import { Box, Stack } from '@mui/material';
 import IconLoading from '@components/icon_loading';
 import { useAppTranslation } from '@hooks/index';
-import { SchedulePublishProps } from './index.types';
-import useSchedulePublish from './useSchedulePublish';
 import Button from '@components/button';
 import Dialog from '@components/dialog';
 import Divider from '@components/divider';
 import Typography from '@components/typography';
-import YearContainer from './year_container';
+import useFieldMeetingsPublish from '../publish_dialog/useFieldMeetingsPublish';
 
-const SchedulePublish = (props: SchedulePublishProps) => {
+import YearContainer from '../../../../features/meetings/schedule_publish/year_container';
+
+export interface FieldMeetingsPublishProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+const FieldMeetingsPublish = (props: FieldMeetingsPublishProps) => {
   const { t } = useAppTranslation();
-
+  // Placeholder for meetings selection logic
+  // const { meetingsList, handleCheckedChange, handlePublish, isProcessing } = usePublishMeetings(props);
   const {
     schedulesList,
     handleCheckedChange,
     handlePublishSchedule,
     isProcessing,
-  } = useSchedulePublish(props);
+  } = useFieldMeetingsPublish(props);
 
   return (
     <Dialog onClose={props.onClose} open={props.open} sx={{ padding: '24px' }}>
@@ -36,14 +42,20 @@ const SchedulePublish = (props: SchedulePublishProps) => {
         }
         sx={{ width: '100%', overflow: 'auto' }}
       >
-        {schedulesList.map((schedule) => (
-          <YearContainer
-            key={schedule.year}
-            data={schedule}
-            onChange={handleCheckedChange}
-            monthSeparator="/"
-          />
-        ))}
+        {schedulesList.length > 0 ? (
+          schedulesList.map((schedule) => (
+            <YearContainer
+              key={schedule.year}
+              data={schedule}
+              onChange={handleCheckedChange}
+              monthSeparator="-"
+            />
+          ))
+        ) : (
+          <Box sx={{ color: 'var(--grey-400)', padding: '24px' }}>
+            {t('tr_noMeetingsToPublish')}
+          </Box>
+        )}
       </Stack>
 
       <Box
@@ -58,7 +70,7 @@ const SchedulePublish = (props: SchedulePublishProps) => {
           variant="main"
           disabled={isProcessing}
           onClick={handlePublishSchedule}
-          endIcon={isProcessing && <IconLoading />}
+          endIcon={isProcessing ? <IconLoading /> : null}
         >
           {t('tr_publish')}
         </Button>
@@ -70,4 +82,4 @@ const SchedulePublish = (props: SchedulePublishProps) => {
   );
 };
 
-export default SchedulePublish;
+export default FieldMeetingsPublish;

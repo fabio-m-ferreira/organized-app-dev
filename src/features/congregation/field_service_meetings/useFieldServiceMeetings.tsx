@@ -4,15 +4,17 @@ import { IconError } from '@components/icons';
 import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
 import { displaySnackNotification } from '@services/states/app';
 import { getMessageByCode } from '@services/i18n/translation';
-import { fieldServiceMeetingsActiveState } from '@states/field_service_meetings';
+import { fieldServiceMeetingsState } from '@states/field_service_meetings';
 import { dbFieldServiceMeetingsSave } from '@services/dexie/field_service_meetings';
 import {
   buildPublisherReportMonths,
   currentMonthServiceYear,
 } from '@utils/date';
+import { congAccountConnectedState } from '@states/app';
 
 const useFieldServiceMeetings = () => {
-  // Month tab logic
+  const isConnected = useAtomValue(congAccountConnectedState);
+
   const monthsList = useMemo(() => buildPublisherReportMonths(), []);
   const initialMonth = useMemo(() => currentMonthServiceYear(), []);
   const [selectedMonth, setSelectedMonth] = useState(initialMonth);
@@ -31,9 +33,13 @@ const useFieldServiceMeetings = () => {
 
   const monthsTab = monthsList.map((month) => ({ label: month.label }));
 
-  // CRUD/data logic
-  const meetings = useAtomValue(fieldServiceMeetingsActiveState);
+  const meetings = useAtomValue(fieldServiceMeetingsState);
   const [addMeetingBoxShow, setAddMeetingBoxShow] = useState(false);
+
+  const [openPublish, setOpenPublish] = useState(false);
+
+  const handleOpenPublish = () => setOpenPublish(true);
+  const handleClosePublish = () => setOpenPublish(false);
 
   // Example empty meeting object
   const emptyMeeting: FieldServiceMeetingDataType = {
@@ -93,18 +99,20 @@ const useFieldServiceMeetings = () => {
   };
 
   return {
-    // Month tab logic
     monthsTab,
     handleMonthChange,
     selectedMonth,
     initialValue,
-    // CRUD/data logic
     emptyMeeting,
     filteredMeetings,
     addMeetingBoxShow,
     handleSaveMeeting,
     handleHideAddMeetingBox,
     handleShowAddMeetingBox,
+    openPublish,
+    handleOpenPublish,
+    handleClosePublish,
+    isConnected,
   };
 };
 

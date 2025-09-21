@@ -5,10 +5,10 @@ import { MonthItemProps } from './index.types';
 import useMonthItem from './useMonthItem';
 import Checkbox from '@components/checkbox';
 
-const MonthItem = ({ data, onChange }: MonthItemProps) => {
+const MonthItem = ({ data, onChange, separator }: MonthItemProps) => {
   const { t } = useAppTranslation();
 
-  const { monthName } = useMonthItem(data.month);
+  const { monthName } = useMonthItem(data.month, separator);
 
   return (
     <Stack

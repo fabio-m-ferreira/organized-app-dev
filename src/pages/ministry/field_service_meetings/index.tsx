@@ -2,7 +2,7 @@ import { useState, Fragment } from 'react';
 import useFieldServiceMeetings from '@features/congregation/field_service_meetings/useFieldServiceMeetings';
 import { Box } from '@mui/material';
 import ScrollableTabs from '@components/scrollable_tabs';
-import { IconAdd, IconInfo } from '@components/icons';
+import { IconAdd, IconEventAvailable, IconInfo } from '@components/icons';
 import Button from '@components/button';
 import PageTitle from '@components/page_title';
 import InfoTip from '@components/info_tip';
@@ -13,9 +13,12 @@ import Accordion from '@components/accordion';
 import { getWeekDate } from '@utils/date';
 import FieldServiceMeetingForm from '@features/congregation/field_service_meetings/field_service_meeting_form/fieldServiceMeetingForm';
 import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
+import i18n from '@services/i18n';
+import FieldMeetingsPublish from '@features/congregation/field_service_meetings/publish';
 
 const MeetingAttendance = () => {
   const { t } = useAppTranslation();
+  const appLocale = i18n?.language || navigator.language;
   const [filterId, setFilterId] = useState<string | null>('all');
   const [showPast, setShowPast] = useState(false);
 
@@ -31,6 +34,10 @@ const MeetingAttendance = () => {
     handleShowAddMeetingBox,
     handleHideAddMeetingBox,
     addMeetingBoxShow,
+    isConnected,
+    openPublish,
+    handleOpenPublish,
+    handleClosePublish,
   } = useFieldServiceMeetings();
 
   const filters = [
@@ -81,6 +88,10 @@ const MeetingAttendance = () => {
         flexDirection: 'column',
       }}
     >
+      {isConnected && openPublish && (
+        <FieldMeetingsPublish open={openPublish} onClose={handleClosePublish} />
+      )}
+
       <PageTitle
         title={t('tr_fieldServiceMeetings')}
         buttons={
@@ -99,15 +110,20 @@ const MeetingAttendance = () => {
               >
                 {t('tr_export')}
               </Button> */}
-              <Button onClick={handleShowAddMeetingBox} startIcon={<IconAdd />}>
+              <Button
+                variant="secondary"
+                onClick={handleShowAddMeetingBox}
+                startIcon={<IconAdd />}
+              >
                 {t('tr_add')}
               </Button>
-              {/* <Button
+              <Button
                 variant="main"
                 startIcon={<IconEventAvailable color="white" />}
+                onClick={handleOpenPublish}
               >
                 {t('tr_publish')}
-              </Button> */}
+              </Button>
             </>
           )
         }
@@ -217,12 +233,12 @@ const MeetingAttendance = () => {
                       color: 'var(--accent-main)',
                     }}
                   >
-                    {weekStart.toLocaleDateString(navigator.language, {
+                    {weekStart.toLocaleDateString(appLocale, {
                       day: 'numeric',
                       month: 'long',
                     })}
                     {' – '}
-                    {weekEnd.toLocaleDateString(navigator.language, {
+                    {weekEnd.toLocaleDateString(appLocale, {
                       day: 'numeric',
                       month: 'long',
                     })}
