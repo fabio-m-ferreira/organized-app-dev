@@ -348,10 +348,11 @@ const useMinistryMonthlyRecord = ({
   const hours_credit_enabled = useMemo(() => {
     if (!person) return false;
 
-    const hasAssignment =
-      person.person_data.assignments
-        .find((a) => a.type === dataView)
-        ?.values.includes(AssignmentCode.MINISTRY_HOURS_CREDIT) ?? false;
+    const hasAssignment = Array.isArray(person.person_data.assignments)
+      ? (person.person_data.assignments
+          .find((a) => a.type === dataView)
+          ?.values.includes(AssignmentCode.MINISTRY_HOURS_CREDIT) ?? false)
+      : false;
 
     if (!publisher) return hasAssignment;
 
