@@ -160,5 +160,6 @@
   "tr_all": "All",
   "tr_material": "Material",
   "tr_time": "Time",
-  "tr_house": "House"
+  "tr_house": "House",
+  "tr_location": "Location"
 }

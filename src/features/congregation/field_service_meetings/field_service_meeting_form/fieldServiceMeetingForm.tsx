@@ -163,7 +163,7 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
         {/* Location autocomplete for group meetings */}
         {meetingType === 'group' && (
           <Autocomplete
-            label={t('tr_Location')}
+            label={t('tr_location')}
             value={locationValue}
             options={locationOptions}
             getOptionLabel={(option) =>
