@@ -31,6 +31,7 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
     handleChangeTime,
     handleChangeMaterials,
     handleSaveMeeting,
+    handleChangeLocation,
   } = useFieldServiceMeetingForm(props);
 
   // Meeting type list with localized labels
@@ -44,7 +45,7 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
   const selectedGroup = localMeeting.meeting_data.group ?? '';
 
   // Get all groups and persons
-  const { groups_list } = useFieldServiceGroups();
+  const { groups_list, getGroupHostName } = useFieldServiceGroups();
   const { getAppointedBrothers } = usePersons();
   const currentMonth = formatDate(new Date(), 'yyyy/MM');
   const appointedBrothers = getAppointedBrothers(currentMonth);
@@ -70,6 +71,20 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
         person.person_data.person_firstname.value
       )
     );
+  }
+
+  // Location autocomplete for group meetings
+  let locationOptions: string[] = [];
+  let locationValue = localMeeting.meeting_data.location ?? '';
+  if (meetingType === 'group' && selectedGroup) {
+    locationOptions = ['', ...brotherOptions];
+    // Autofill location with group host if field is empty
+    if (!locationValue) {
+      const hostName = getGroupHostName(selectedGroup);
+      if (hostName && brotherOptions.includes(hostName)) {
+        locationValue = hostName;
+      }
+    }
   }
 
   // Prevent duplicates in conductor/assistant
@@ -116,7 +131,7 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
           onChange={handleChangeType}
           error={errors.type}
           helperText={errors.type && t('tr_fillRequiredField')}
-          sx={{ minWidth: 180 }}
+          sx={{ minWidth: 180, height: '48px' }}
         >
           {meetingTypeList.map((type) => (
             <MenuItem key={type.value} value={type.value}>
@@ -143,6 +158,20 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
               ))
             )}
           </Select>
+        )}
+
+        {/* Location autocomplete for group meetings */}
+        {meetingType === 'group' && (
+          <Autocomplete
+            label={t('tr_Location')}
+            value={locationValue}
+            options={locationOptions}
+            getOptionLabel={(option) =>
+              option === '' ? t('tr_kingdomHall') : option
+            }
+            onChange={handleChangeLocation}
+            endIcon={<IconSearch />}
+          />
         )}
 
         <Autocomplete
@@ -185,13 +214,13 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
           flexDirection={tabletDown ? 'column' : 'row'}
         >
           <DatePicker
-            sx={{ flex: 1, height: '48px' }}
+            sx={{ height: '48px' }}
             label={t('tr_date')}
             value={new Date(localMeeting.meeting_data.date)}
             onChange={handleChangeDate}
           />
           <TimePicker
-            sx={{ flex: 1, height: '48px' }}
+            sx={{ height: '48px' }}
             label={t('tr_time')}
             ampm={false}
             value={new Date(localMeeting.meeting_data.date)}

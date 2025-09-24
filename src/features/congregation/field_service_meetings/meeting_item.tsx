@@ -20,6 +20,8 @@ import { FieldServiceMeetingDataType } from '@definition/field_service_meetings'
 import useFieldServiceMeetings from './useFieldServiceMeetings';
 import useFieldServiceMeetingForm from './field_service_meeting_form/useFieldServiceMeetingForm';
 import useCurrentUser from '@hooks/useCurrentUser';
+import { useAtomValue } from 'jotai';
+import { fieldWithLanguageGroupsState } from '@states/field_service_groups';
 
 const MeetingItem = (data: FieldServiceMeetingDataType) => {
   const { t, i18n } = useAppTranslation();
@@ -51,6 +53,11 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
     'Salão 1': 'group-4',
     'Salão 2': 'group-5',
   };
+
+  const allGroups = useAtomValue(fieldWithLanguageGroupsState);
+  const groupNames = allGroups.map((g) => g.group_data.name);
+  const groupIndex = groupNames.indexOf(group);
+  const groupColor = `group-${groupIndex + 1}`;
 
   const meetingDate = new Date(date);
 
@@ -117,7 +124,7 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
             {type === 'group' && group && (
               <GroupBadge
                 label={group}
-                color={groupColors[group] || 'black'}
+                color={groupColor || 'black'}
                 variant="outlined"
               />
             )}

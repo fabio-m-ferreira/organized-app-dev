@@ -1,14 +1,15 @@
 import { useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { useBreakpoints } from '@hooks/index';
-import { fieldWithLanguageGroupsNoStudentsState } from '@states/field_service_groups';
+import { fieldWithLanguageGroupsState } from '@states/field_service_groups';
 import { personsState } from '@states/persons';
 import { buildPersonFullname } from '@utils/common';
 
 const useFieldServiceGroups = () => {
   const { desktopUp, tablet688Up, desktopLargeUp } = useBreakpoints();
 
-  const groups_list = useAtomValue(fieldWithLanguageGroupsNoStudentsState);
+  const groups_list = useAtomValue(fieldWithLanguageGroupsState);
+
   const persons = useAtomValue(personsState);
 
   const masonry_columns = useMemo(() => {
@@ -21,7 +22,7 @@ const useFieldServiceGroups = () => {
     return 4;
   }, [tablet688Up, desktopUp, desktopLargeUp]);
 
-  // Utility: get host's full name for a group by name
+  // Get host's full name for a group by name
   const getGroupHostName = (groupName: string): string => {
     const group = groups_list.find((g) => g.group_data.name === groupName);
     if (!group) return '';

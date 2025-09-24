@@ -45,8 +45,8 @@ const useFieldServiceMeetingForm = ({ data, onSave }) => {
       type: validateField('type', meetingData.type),
       group: validateField('group', meetingData.group),
       conductor: validateField('conductor', meetingData.conductor),
-      assistant: validateField('assistant', meetingData.assistant),
       materials: validateField('materials', meetingData.materials),
+      location: validateField('location', meetingData.location),
     };
     setErrors(newErrors);
     return !Object.values(newErrors).some(Boolean);
@@ -75,13 +75,23 @@ const useFieldServiceMeetingForm = ({ data, onSave }) => {
         meeting_data: {
           ...prev.meeting_data,
           group: event.target.value,
-          ...(host && { location: host }),
         },
       }));
 
       if (wasSubmitted) setErrors((prev) => ({ ...prev, group: false }));
     },
     [wasSubmitted, getGroupHostName]
+  );
+
+  const handleChangeLocation = useCallback(
+    (_, value) => {
+      setLocalMeeting((prev) => ({
+        ...prev,
+        meeting_data: { ...prev.meeting_data, location: value },
+      }));
+      if (wasSubmitted) setErrors((prev) => ({ ...prev, location: false }));
+    },
+    [wasSubmitted]
   );
 
   const handleChangeConductor = useCallback(
@@ -168,6 +178,7 @@ const useFieldServiceMeetingForm = ({ data, onSave }) => {
     errors,
     handleChangeType,
     handleChangeGroup,
+    handleChangeLocation,
     handleChangeConductor,
     handleChangeAssistant,
     handleChangeDate,
