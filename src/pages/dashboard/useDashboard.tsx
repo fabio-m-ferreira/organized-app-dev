@@ -32,7 +32,7 @@ const useDashboard = () => {
   const [newCongSnack, setNewCongSnack] = useState(initialSnackValue);
 
   const countFutureAssignments = useMemo(() => {
-    const now = getDayDate(); // Date object for today
+    const now = getDayDate();
     return assignmentsHistory.filter((record) => {
       if (record.assignment.person !== userUID) return false;
       let assignmentDateStr = record.weekOf;

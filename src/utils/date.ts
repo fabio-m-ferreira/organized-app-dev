@@ -80,6 +80,7 @@ export const getWeekDate = (date: Date = new Date()) => {
 
 export const getDayDate = () => {
   const day = new Date();
+  day.setHours(0, 0, 0, 0);
   return day;
 };
 
