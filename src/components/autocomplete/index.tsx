@@ -134,7 +134,7 @@ const Autocomplete = <T,>(props: AutocompletePropsType<T>) => {
           slotProps={{ input: params.InputProps }}
           startIcon={startIcon}
           endIcon={endIcon}
-          height={48}
+          height={44}
           styleIcon={styleIcon ?? true}
           error={error}
           helperText={helperText}

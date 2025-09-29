@@ -73,16 +73,12 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
     );
   }
 
-  // Location autocomplete for group meetings
-  let locationOptions: string[] = [];
-  let locationValue = localMeeting.meeting_data.location ?? '';
+  const locationValue = localMeeting.meeting_data.location ?? '';
   if (meetingType === 'group' && selectedGroup) {
-    locationOptions = ['', ...brotherOptions];
-    // Autofill location with group host if field is empty
     if (!locationValue) {
       const hostName = getGroupHostName(selectedGroup);
       if (hostName && brotherOptions.includes(hostName)) {
-        locationValue = hostName;
+        handleChangeLocation(null, hostName);
       }
     }
   }
@@ -131,7 +127,7 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
           onChange={handleChangeType}
           error={errors.type}
           helperText={errors.type && t('tr_fillRequiredField')}
-          sx={{ minWidth: 180, height: '48px' }}
+          sx={{ minWidth: 180 }}
         >
           {meetingTypeList.map((type) => (
             <MenuItem key={type.value} value={type.value}>
@@ -160,20 +156,6 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
           </Select>
         )}
 
-        {/* Location autocomplete for group meetings */}
-        {meetingType === 'group' && (
-          <Autocomplete
-            label={t('tr_location')}
-            value={locationValue}
-            options={locationOptions}
-            getOptionLabel={(option) =>
-              option === '' ? t('tr_kingdomHall') : option
-            }
-            onChange={handleChangeLocation}
-            endIcon={<IconSearch />}
-          />
-        )}
-
         <Autocomplete
           label={t('tr_conductor')}
           value={conductorValue}
@@ -198,40 +180,36 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
         {t('tr_details')}
       </Typography>
       <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '16px',
-        }}
+        display="flex"
+        alignItems="center"
+        gap="16px"
+        justifyContent="space-between"
+        flex={1}
+        flexDirection={laptopDown ? 'column' : 'row'}
       >
-        <Box
-          display="flex"
-          alignItems="center"
-          gap="16px"
-          justifyContent="space-between"
-          flex={1}
-          flexDirection={tabletDown ? 'column' : 'row'}
-        >
-          <DatePicker
-            sx={{ height: '48px' }}
-            label={t('tr_date')}
-            value={new Date(localMeeting.meeting_data.date)}
-            onChange={handleChangeDate}
+        <DatePicker
+          sx={{ flex: 1 }}
+          label={t('tr_date')}
+          value={new Date(localMeeting.meeting_data.date)}
+          onChange={handleChangeDate}
+        />
+        <TimePicker
+          label={t('tr_time')}
+          ampm={false}
+          value={new Date(localMeeting.meeting_data.date)}
+          onChange={handleChangeTime}
+        />
+        {meetingType === 'group' && (
+          <TextField
+            sx={{ flex: 1 }}
+            label={t('tr_location')}
+            value={locationValue}
+            onChange={(e) => handleChangeLocation(e, e.target.value)}
           />
-          <TimePicker
-            sx={{ height: '48px' }}
-            label={t('tr_time')}
-            ampm={false}
-            value={new Date(localMeeting.meeting_data.date)}
-            onChange={handleChangeTime}
-          />
-        </Box>
-        {/* Removed location and address fields */}
+        )}
       </Box>
       <TextField
         label={t('tr_material')}
-        height={48}
         value={localMeeting.meeting_data.materials}
         onChange={handleChangeMaterials}
         error={errors.materials}
