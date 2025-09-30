@@ -3,8 +3,8 @@ import { IconAccount } from '@components/icons';
 import { useAppTranslation } from '@hooks/index';
 import useRequestAccess from './useRequestAccess';
 import Button from '@components/button';
-import CongregationSelector from '@components/congregation_selector';
-import CountrySelector from '@components/country_selector';
+// import CongregationSelector from '@components/congregation_selector';
+// import CountrySelector from '@components/country_selector';
 import IconLoading from '@components/icon_loading';
 import TextField from '@components/textfield';
 
@@ -16,10 +16,10 @@ const RequestAccess = () => {
     lastname,
     setFirstname,
     setLastname,
-    setCountry,
-    congregation,
-    country,
-    setCongregation,
+    // setCountry,
+    //congregation,
+    // country,
+    // setCongregation,
     handleRequestAccess,
     isProcessing,
   } = useRequestAccess();
@@ -46,18 +46,15 @@ const RequestAccess = () => {
           onChange={(e) => setLastname(e.target.value)}
         />
       </Box>
-
-      <CountrySelector value={country} handleCountryChange={setCountry} />
-
-      {country !== null && (
+      {/* <CountrySelector value={country} handleCountryChange={setCountry} /> */}
+      {/* {country !== null && (
         <CongregationSelector
           country_guid={country.countryGuid}
           setCongregation={setCongregation}
         />
-      )}
-
+      )} */}
       <Button
-        disabled={!congregation}
+        disabled={!firstname || !lastname}
         onClick={handleRequestAccess}
         startIcon={
           isProcessing && (

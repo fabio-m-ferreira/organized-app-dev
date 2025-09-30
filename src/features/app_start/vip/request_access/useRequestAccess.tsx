@@ -28,8 +28,8 @@ const useRequestAccess = () => {
       setIsProcessing(true);
 
       await apiUserJoinCongregation({
-        cong_name: congregation.congName,
-        country_code: country.countryCode,
+        cong_name: 'Samora Correia Norte',
+        country_code: 'PRT',
         firstname,
         lastname,
       });

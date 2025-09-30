@@ -46,14 +46,6 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
 
   const { isFieldServiceEditor } = useCurrentUser();
 
-  const groupColors: Record<string, string> = {
-    'Passos Esteves': 'group-1',
-    Esteveira: 'group-2',
-    'Bairro da Câmara': 'group-3',
-    'Salão 1': 'group-4',
-    'Salão 2': 'group-5',
-  };
-
   const allGroups = useAtomValue(fieldWithLanguageGroupsState);
   const groupNames = allGroups.map((g) => g.group_data.name);
   const groupIndex = groupNames.indexOf(group);
