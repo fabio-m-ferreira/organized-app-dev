@@ -37,7 +37,7 @@ const MeetingPart = ({ meetingData, lang }: MeetingPartType) => {
 
       {(meetingData.wtstudy_reader_name ||
         meetingData.wtstudy_conductor_name) && (
-        <>
+        <View style={styles.meetingPartSectionRow}>
           {/* Horizontal separator */}
           {!meetingData.wt_study_only && <View style={styles.lineHorizontal} />}
 
@@ -111,7 +111,7 @@ const MeetingPart = ({ meetingData, lang }: MeetingPartType) => {
               </Text>
             </View>
           )}
-        </>
+        </View>
       )}
     </>
   );

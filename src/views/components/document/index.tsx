@@ -7,10 +7,10 @@ registerFonts();
 const Document = ({ title, children }: PDFDocumentType) => {
   return (
     <ReactPDFDocument
-      author="sws2apps"
+      author="Samora Correia Norte"
       title={title}
       creator="Organized"
-      producer="sws2apps (by react-pdf)"
+      producer="Samora Correia Norte (by react-pdf)"
     >
       {children}
     </ReactPDFDocument>
