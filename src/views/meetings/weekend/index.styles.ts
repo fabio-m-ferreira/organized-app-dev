@@ -68,12 +68,13 @@ const styles = StyleSheet.create({
   meetingPartSectionRow: {
     display: 'flex',
     flexDirection: 'column',
-    gap: 0,
+    gap: '5px',
   },
   meetingPartContainer: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    gap: '5px',
   },
   meetingPartLabel: {
     width: '90px',

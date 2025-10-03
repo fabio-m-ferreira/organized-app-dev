@@ -66,6 +66,14 @@ const useMember = ({ member, index, group_id }: GroupMemberProps) => {
     return persons.find((record) => record.person_uid === member.person_uid);
   }, [persons, member]);
 
+  const label_overseer = useMemo(() => {
+    if (!person) return 'tr_makeOverseer';
+
+    const isElder = personIsElder(person);
+
+    return isElder ? 'tr_makeOverseer' : 'tr_groupServantAssign';
+  }, [person, personIsElder]);
+
   const member_name = useMemo(() => {
     if (!person) return '';
 
@@ -79,7 +87,9 @@ const useMember = ({ member, index, group_id }: GroupMemberProps) => {
   const member_desc = useMemo(() => {
     const descs = [];
     if (member.isOverseer) {
-      descs.push(t('tr_groupOverseer'));
+      const isElder = personIsElder(person);
+
+      descs.push(isElder ? t('tr_groupOverseer') : t('tr_groupServant'));
     }
     if (member.isAssistant) {
       descs.push(t('tr_groupOverseerAssistant'));
@@ -88,8 +98,8 @@ const useMember = ({ member, index, group_id }: GroupMemberProps) => {
       descs.push(t('tr_groupHost'));
     }
     return descs.length > 0 ? descs.join(', ') : undefined;
-  }, [member, t]);
-  // Host logic
+  }, [member, person, personIsElder, t]);
+
   const make_host = useMemo(() => {
     if (!isServiceCommittee) return false;
     if (member.isHost) return false;
@@ -349,6 +359,7 @@ const useMember = ({ member, index, group_id }: GroupMemberProps) => {
     handlePersonRemove,
     removeOpen,
     isServiceCommittee,
+    label_overseer,
   };
 };
 

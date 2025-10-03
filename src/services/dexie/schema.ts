@@ -242,7 +242,8 @@ export const settingSchema: SettingsType = {
   id: 1,
   cong_settings: {
     country_code: '',
-    cong_number: '',
+    cong_id: '',
+    cong_number: { value: '', updatedAt: '' },
     cong_name: '',
     cong_master_key: '',
     cong_access_code: '',

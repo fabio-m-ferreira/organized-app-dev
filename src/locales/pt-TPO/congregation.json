@@ -136,7 +136,7 @@
   "tr_newUserAddedSuccess": "Novo utilizador adicionado",
   "tr_newUserAddedSuccessDesc": "{{ PersonName }} agora tem uma conta de utilizador",
   "tr_congregationSettingsDesc": "Estas configurações se aplicam à congregação inteira",
-  "tr_circuitNumber": "Número do circuito",
+  "tr_circuitNumber": "Circuit",
   "tr_24hFormat": "Usar formato de tempo de 24 horas",
   "tr_useDisplayNameOnSchedules": "Usar nomes curtos em agendamentos",
   "tr_displayNameMeetingDesc": "'Mike S.' em vez de 'Mike Stevens'. O nome completo ainda será visível no Organized",
@@ -498,10 +498,6 @@
   "tr_familyHead": "Cabeça de família",
   "tr_setPersonToFamilyHead": "Definir esta pessoa como cabeça de família para add aos membros da família",
   "tr_personAlreadyMemberOfFamily": "Esta pessoa é membro da família <strong>{{ familyHead }}</strong>. Para editar os membros da família, aceda ao perfil do cabeça de família.",
-  "tr_cantAddANewGroup": "Can't add a new group",
-  "tr_maximumAmountOfGroupsIs10": "Maximum amount of field service groups is 10",
-  "tr_personAwayNotice": "Esta pessoa está ausente: {{ date }}",
-  "tr_weekendTemplateShowSongs": "Mostrar músicas nos horários das reuniões de fim de semana",
   "tr_fieldServiceMeetings": "Saídas ao serviço de campo",
   "tr_noFieldServiceMeetings": "Não existem saídas para o serviço de campo com os filtros ou mês selecionados. Tente mudar o filtro ou o mês.",
   "tr_addToCalendar": "Adicionar ao calendário",
@@ -522,5 +518,9 @@
   "tr_jointMeeting": "Saída Congregacional",
   "tr_groupMeeting": "Saída de grupo",
   "tr_groupHost": "Anfitrião do grupo",
-  "tr_kingdomHall": "Salão do Reino"
+  "tr_kingdomHall": "Salão do Reino",
+  "tr_cantAddANewGroup": "Impossível adicionar um novo grupo",
+  "tr_maximumAmountOfGroupsIs10": "O número máximo de grupos de serviço de campo são 10",
+  "tr_personAwayNotice": "Esta pessoa está ausente: {{ date }}",
+  "tr_weekendTemplateShowSongs": "Mostrar os cânticos na escala da reunião de fim de semana"
 }

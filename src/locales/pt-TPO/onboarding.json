@@ -130,5 +130,6 @@
   "tr_loginWithEmailDesc": "Use Google, Apple ou outro email para criar e aceder a sua conta a qualquer momento, em qualquer dispositivo",
   "tr_loginWithCode": "Código de convite para iniciar sessão",
   "tr_loginWithCodeDesc": "Aceder apenas neste navegador, com um código o único. Vai precisar de uma código de cada vez",
-  "tr_congregationNotice": "Esta aplicação não é a versão oficial do Organized. É uma adaptação do projeto open-source com servidor próprio, desenvolvida e mantida apenas para uso da Congregação Samora Correia Norte."
+  "tr_congregationNotice": "Esta aplicação não é a versão oficial do Organized. É uma adaptação do projeto open-source com servidor próprio, desenvolvida e mantida apenas para uso da Congregação Samora Correia Norte.",
+  "tr_loginEmailCode": "Alternatively, you can also enter the secure code that we sent to your email."
 }

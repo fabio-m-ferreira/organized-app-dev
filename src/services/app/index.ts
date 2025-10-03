@@ -35,6 +35,7 @@ import {
   dbAppSettingsCreatePublishersSort,
   dbAppSettingsGet,
   dbAppSettingsUpdate,
+  dbAppSettingsUpdateCongNumber,
   dbAppSettingsUpdateWithoutNotice,
   dbConvertAutoAssignPrayers,
 } from '@services/dexie/settings';
@@ -64,6 +65,7 @@ import { settingSchema } from '@services/dexie/schema';
 import { dbUpcomingEventsCleanup } from '@services/dexie/upcoming_events';
 import appDb from '@db/appDb';
 import { dbFieldServiceMeetingsCleanup } from '@services/dexie/field_service_meetings';
+import { dbSpeakersCongregationsSetName } from '@services/dexie/speakers_congregations';
 
 export const loadApp = () => {
   const appLang = store.get(appLangState);
@@ -93,6 +95,8 @@ export const runUpdater = async () => {
   await dbUserSaveTimerToStorage();
   await dbUpcomingEventsCleanup();
   await dbFieldServiceMeetingsCleanup();
+  await dbAppSettingsUpdateCongNumber();
+  await dbSpeakersCongregationsSetName();
 };
 
 export const userLogoutSuccess = async () => {
