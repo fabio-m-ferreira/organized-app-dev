@@ -1,5 +1,4 @@
 import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
-import useFieldServiceGroups from '@features/congregation/field_service_groups/useFieldServiceGroups';
 import { useCallback, useState } from 'react';
 import { stackDatesToOne } from '@utils/date';
 
@@ -15,8 +14,6 @@ const useFieldServiceMeetingForm = ({ data, onSave }) => {
     useState<FieldServiceMeetingDataType>(data);
   const [errors, setErrors] = useState(initialErrors);
   const [wasSubmitted, setWasSubmitted] = useState(false);
-
-  const { getGroupHostName } = useFieldServiceGroups();
 
   const validateField = useCallback(
     (field, value) => {
@@ -69,7 +66,6 @@ const useFieldServiceMeetingForm = ({ data, onSave }) => {
 
   const handleChangeGroup = useCallback(
     (event) => {
-      const host = getGroupHostName(event.target.value);
       setLocalMeeting((prev) => ({
         ...prev,
         meeting_data: {
@@ -80,7 +76,7 @@ const useFieldServiceMeetingForm = ({ data, onSave }) => {
 
       if (wasSubmitted) setErrors((prev) => ({ ...prev, group: false }));
     },
-    [wasSubmitted, getGroupHostName]
+    [wasSubmitted]
   );
 
   const handleChangeLocation = useCallback(

@@ -5,7 +5,7 @@ import Button from '@components/button';
 import Dialog from '@components/dialog';
 import Divider from '@components/divider';
 import Typography from '@components/typography';
-import useFieldMeetingsPublish from '../publish_dialog/useFieldMeetingsPublish';
+import useFieldMeetingsPublish from './useFieldMeetingsPublish';
 
 import YearContainer from '../../../../features/meetings/schedule_publish/year_container';
 

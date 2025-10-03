@@ -12,6 +12,7 @@ import {
   apiPublishFieldMeetings,
 } from '@services/api/field_service_meetings';
 import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
+import { getBaseList, getSchedulesList } from '../getSchedulesList';
 
 export interface YearGroupType {
   year: string;
@@ -36,7 +37,7 @@ const useFieldMeetingsPublish = ({ onClose }: FieldMeetingsPublishProps) => {
 
   const { data, refetch } = useQuery({
     queryKey: ['public_field_meetings'],
-    queryFn: apiPublicFieldMeetingsGet, // Should be adapted for field meetings if needed
+    queryFn: apiPublicFieldMeetingsGet,
     refetchOnMount: 'always',
   });
 
@@ -45,43 +46,12 @@ const useFieldMeetingsPublish = ({ onClose }: FieldMeetingsPublishProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
   const [publishedItems, setPublishedItems] = useState<string[]>([]);
-
-  // Build list of months from meetings
-  const monthsList = useMemo(() => {
-    const months = new Set<string>();
-    meetings.forEach((item) => {
-      const month = item.meeting_data.date.slice(0, 7); // YYYY-MM
-      months.add(month);
-    });
-    return Array.from(months).sort();
-  }, [meetings]);
-
-  // Group by year
-  const baseList = useMemo(() => {
-    const grouped: YearGroupType[] = [];
-    monthsList.forEach((month) => {
-      const [year] = month.split('-');
-      let yearGroup = grouped.find((g) => g.year === year);
-      if (!yearGroup) {
-        yearGroup = { year, months: [] };
-        grouped.push(yearGroup);
-      }
-      yearGroup.months.push(month);
-    });
-    return grouped;
-  }, [monthsList]);
-
-  // List for UI
-  const schedulesList = useMemo(() => {
-    return baseList.map((record) => ({
-      year: record.year,
-      months: record.months.map((month) => ({
-        month,
-        checked: checkedItems.includes(month),
-        published: publishedItems.includes(month),
-      })),
-    }));
-  }, [baseList, checkedItems, publishedItems]);
+  const baseList = getBaseList(meetings);
+  const schedulesList = getSchedulesList({
+    meetings,
+    checkedItems,
+    publishedItems,
+  });
 
   // Selection logic
   const handleCheckedChange = (checked: boolean, value: string) => {
