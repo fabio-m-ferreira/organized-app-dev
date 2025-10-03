@@ -1,4 +1,5 @@
 import { AppRoleType } from '@definition/app';
+import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
 import { OutgoingTalkExportScheduleType } from '@definition/schedules';
 import { UpcomingEventType } from '@definition/upcoming_events';
 
@@ -32,6 +33,8 @@ export type BackupDataType = {
   sources?: object;
   meeting_attendance?: object;
   upcoming_events?: UpcomingEventType[];
+  field_service_meetings?: FieldServiceMeetingDataType[];
+  public_field_meetings?: FieldServiceMeetingDataType[];
   cong_users?: CongUserType[];
   metadata?: Record<string, string>;
   delegated_field_service_reports?: object;

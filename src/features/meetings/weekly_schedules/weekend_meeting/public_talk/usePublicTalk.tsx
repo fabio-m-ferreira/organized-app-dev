@@ -56,11 +56,11 @@ const usePublicTalk = ({ week, dataView }: PublicTalkProps) => {
   }, [schedule, dataView]);
 
   const talkTitle = useMemo(() => {
-    if (!source) return;
+    if (!source || !source.weekend_meeting) return;
 
     if (WEEKEND_WITH_TALKS_NOCO.includes(weekType)) {
       const talk =
-        source.weekend_meeting.public_talk.find(
+        source.weekend_meeting.public_talk?.find(
           (record) => record.type === dataView
         )?.value ?? '';
 
@@ -76,18 +76,23 @@ const usePublicTalk = ({ week, dataView }: PublicTalkProps) => {
     }
 
     if (weekType === Week.CO_VISIT) {
-      return source.weekend_meeting.co_talk_title.public.src;
+      return source.weekend_meeting.co_talk_title?.public?.src;
     }
   }, [source, dataView, weekType, publicTalks]);
 
   const showSecondSpeaker = useMemo(() => {
-    if (!schedule) return false;
+    if (
+      !schedule ||
+      !schedule.weekend_meeting ||
+      !schedule.weekend_meeting.speaker
+    )
+      return false;
 
-    const speaker2 = schedule.weekend_meeting.speaker.part_2.find(
+    const speaker2 = schedule.weekend_meeting.speaker.part_2?.find(
       (record) => record.type === dataView
     );
 
-    if (speaker2?.value.length > 0) {
+    if (speaker2?.value?.length > 0) {
       return true;
     }
 

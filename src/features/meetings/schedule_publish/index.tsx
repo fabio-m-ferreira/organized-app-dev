@@ -41,6 +41,7 @@ const SchedulePublish = (props: SchedulePublishProps) => {
             key={schedule.year}
             data={schedule}
             onChange={handleCheckedChange}
+            monthSeparator="/"
           />
         ))}
       </Stack>

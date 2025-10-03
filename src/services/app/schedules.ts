@@ -3143,8 +3143,11 @@ export const schedulesGetMeetingDate = ({
     locale = source.midweek_meeting.week_date_locale[lang] ?? '';
   }
 
-  const weekTypes = schedule[`${meeting}_meeting`]
-    .week_type as WeekTypeCongregation[];
+  const meetingObj = schedule[`${meeting}_meeting`];
+  const weekTypes =
+    meetingObj && Array.isArray(meetingObj.week_type)
+      ? (meetingObj.week_type as WeekTypeCongregation[])
+      : [];
 
   const weekType =
     weekTypes.find((record) => record.type === dataView)?.value ?? Week.NORMAL;

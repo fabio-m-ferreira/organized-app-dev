@@ -10,6 +10,37 @@ const useUserAdditionalRights = () => {
   const [isWeekend, setIsWeekend] = useState(false);
   const [isPublicTalk, setIsPublicTalk] = useState(false);
   const [isAttendance, setIsAttendance] = useState(false);
+  const [isFieldService, setIsFieldService] = useState(false);
+
+  const handleToggleFieldService = async (value: boolean) => {
+    try {
+      setIsFieldService(value);
+
+      const newUser = structuredClone(currentUser);
+
+      newUser.profile.cong_role = newUser.profile.cong_role || [];
+
+      if (value) {
+        newUser.profile.cong_role.push('field_service_schedule');
+      }
+
+      if (!value) {
+        newUser.profile.cong_role = newUser.profile.cong_role.filter(
+          (role) => role !== 'field_service_schedule'
+        );
+      }
+
+      await handleSaveDetails(newUser);
+    } catch (error) {
+      console.error(error);
+
+      displaySnackNotification({
+        header: getMessageByCode('error_app_generic-title'),
+        message: getMessageByCode(error.message),
+        severity: 'error',
+      });
+    }
+  };
 
   const handleToggleMidweek = async (value: boolean) => {
     try {
@@ -132,6 +163,11 @@ const useUserAdditionalRights = () => {
   };
 
   useEffect(() => {
+    const isFieldService =
+      currentUser.profile.cong_role?.includes('field_service_schedule') ??
+      false;
+    setIsFieldService(isFieldService);
+
     const isMidweek =
       currentUser.profile.cong_role?.includes('midweek_schedule') ?? false;
     setIsMidweek(isMidweek);
@@ -158,6 +194,8 @@ const useUserAdditionalRights = () => {
     handleTogglePublicTalk,
     isAttendance,
     handleToggleAttendance,
+    isFieldService,
+    handleToggleFieldService,
   };
 };
 

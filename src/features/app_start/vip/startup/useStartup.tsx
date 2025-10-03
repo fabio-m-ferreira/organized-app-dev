@@ -110,7 +110,6 @@ const useStartup = () => {
           setIsSetup(false);
           setIsAppLoad(false);
         }, 1000);
-
         return;
       }
 
@@ -230,6 +229,7 @@ const useStartup = () => {
     isEncryptionCodeOpen,
     isCongCreate,
     isLoading,
+    runStartupCheck,
   };
 };
 

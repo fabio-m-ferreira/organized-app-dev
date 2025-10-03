@@ -20,6 +20,8 @@ import FeatureFlagsWrapper from '@wrapper/feature_flags';
 import RouteProtected from '@components/route_protected';
 import { determineAppLocale } from '@services/app';
 import { firstDayWeekState } from '@states/settings';
+import TermsOfServicePage from '@pages/tos';
+import PrivacyPolicyPage from '@pages/privacy';
 
 // lazy loading
 const Dashboard = lazy(() => import('@pages/dashboard'));
@@ -62,6 +64,9 @@ const CongregationSettings = lazy(() => import('@pages/congregation/settings'));
 const Applications = lazy(() => import('@pages/persons/applications'));
 const ApplicationDetails = lazy(
   () => import('@pages/persons/application_details')
+);
+const FieldServiceMeetings = lazy(
+  () => import('@pages/ministry/field_service_meetings')
 );
 const UpcomingEvents = lazy(() => import('@pages/activities/upcoming_events'));
 
@@ -119,6 +124,10 @@ const App = ({ updatePwa }: { updatePwa: VoidFunction }) => {
               children: [
                 { path: '/ministry-report', element: <MinistryReport /> },
                 { path: '/service-year', element: <ServiceYear /> },
+                {
+                  path: '/field-service-meetings',
+                  element: <FieldServiceMeetings />,
+                },
 
                 // only if connected
                 {
@@ -287,6 +296,8 @@ const App = ({ updatePwa }: { updatePwa: VoidFunction }) => {
             { path: '*', element: <Dashboard /> },
           ],
         },
+        { path: '/terms-of-use', element: <TermsOfServicePage /> },
+        { path: '/privacy', element: <PrivacyPolicyPage /> },
       ],
     },
   ]);

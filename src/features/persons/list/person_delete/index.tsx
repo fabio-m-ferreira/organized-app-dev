@@ -18,6 +18,12 @@ const DeletePersonConfirm = ({
       <Typography className="body-regular" color="var(--grey-400)">
         {t('tr_deletePersonConfirmation')}
       </Typography>
+      <Typography
+        style={{ textTransform: 'uppercase', fontWeight: 'bold' }}
+        className="body-regular"
+      >
+        Deverá ser garantido o resgisto físico da pessoa antes de eliminar.
+      </Typography>
       <Box
         sx={{
           display: 'flex',

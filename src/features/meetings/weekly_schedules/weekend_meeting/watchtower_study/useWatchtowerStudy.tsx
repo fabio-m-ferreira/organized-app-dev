@@ -56,9 +56,9 @@ const useWatchtowerStudy = ({ week, dataView }: WatchtowerStudyProps) => {
   }, [dataView, mainWeekType]);
 
   const articleTitle = useMemo(() => {
-    if (!source) return;
+    if (!source || !source.weekend_meeting) return;
 
-    return source.weekend_meeting.w_study[lang];
+    return source.weekend_meeting.w_study?.[lang];
   }, [source, lang]);
 
   const showWSReader = useMemo(() => {

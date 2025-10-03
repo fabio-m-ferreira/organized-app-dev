@@ -3,6 +3,7 @@ export type FieldServiceGroupMemberType = {
   sort_index: number;
   isOverseer: boolean;
   isAssistant: boolean;
+  isHost?: boolean;
 };
 
 export type FieldServiceGroupType = {

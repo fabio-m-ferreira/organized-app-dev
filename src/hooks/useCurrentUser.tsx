@@ -255,6 +255,22 @@ const useCurrentUser = () => {
     return false;
   }, [isAdmin, userRole, user_in_group, isGroup, isLanguageGroupOverseer]);
 
+  const isFieldServiceEditor = useMemo(() => {
+    if (isAdmin) return true;
+
+    if (isGroup && user_in_group && isLanguageGroupOverseer) return true;
+
+    const hasRole = userRole.includes('field_service_schedule');
+
+    if (!hasRole) return false;
+
+    if (!isGroup) return true;
+
+    if (isGroup && user_in_group) return true;
+
+    return false;
+  }, [isAdmin, userRole, user_in_group, isGroup, isLanguageGroupOverseer]);
+
   const isMeetingEditor = useMemo(() => {
     return isMidweekEditor || isWeekendEditor;
   }, [isMidweekEditor, isWeekendEditor]);
@@ -310,6 +326,7 @@ const useCurrentUser = () => {
     isAppointed,
     isMidweekEditor,
     isWeekendEditor,
+    isFieldServiceEditor,
     accountType,
     isMeetingEditor,
     isSecretary,

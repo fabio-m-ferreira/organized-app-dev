@@ -358,45 +358,53 @@ export const personIsEnrollmentActive = (
 };
 
 export const personIsAP = (person: PersonType) => {
-  const hasActive = person.person_data.enrollments.find(
-    (record) =>
-      record.enrollment === 'AP' &&
-      record.end_date === null &&
-      record._deleted === false
-  );
+  const hasActive = Array.isArray(person.person_data.enrollments)
+    ? person.person_data.enrollments.find(
+        (record) =>
+          record.enrollment === 'AP' &&
+          record.end_date === null &&
+          record._deleted === false
+      )
+    : undefined;
 
   return hasActive ? true : false;
 };
 
 export const personIsFMF = (person: PersonType) => {
-  const hasActive = person.person_data.enrollments.find(
-    (record) =>
-      record.enrollment === 'FMF' &&
-      record.end_date === null &&
-      record._deleted === false
-  );
+  const hasActive = Array.isArray(person.person_data.enrollments)
+    ? person.person_data.enrollments.find(
+        (record) =>
+          record.enrollment === 'FMF' &&
+          record.end_date === null &&
+          record._deleted === false
+      )
+    : undefined;
 
   return hasActive ? true : false;
 };
 
 export const personIsFR = (person: PersonType) => {
-  const hasActive = person.person_data.enrollments.find(
-    (record) =>
-      record.enrollment === 'FR' &&
-      record.end_date === null &&
-      record._deleted === false
-  );
+  const hasActive = Array.isArray(person.person_data.enrollments)
+    ? person.person_data.enrollments.find(
+        (record) =>
+          record.enrollment === 'FR' &&
+          record.end_date === null &&
+          record._deleted === false
+      )
+    : undefined;
 
   return hasActive ? true : false;
 };
 
 export const personIsFS = (person: PersonType) => {
-  const hasActive = person.person_data.enrollments.find(
-    (record) =>
-      record.enrollment === 'FS' &&
-      record.end_date === null &&
-      record._deleted === false
-  );
+  const hasActive = Array.isArray(person.person_data.enrollments)
+    ? person.person_data.enrollments.find(
+        (record) =>
+          record.enrollment === 'FS' &&
+          record.end_date === null &&
+          record._deleted === false
+      )
+    : undefined;
 
   return hasActive ? true : false;
 };

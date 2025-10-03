@@ -21,6 +21,7 @@ import { fieldServiceGroupsState } from '@states/field_service_groups';
 import { notificationsDbState } from '@states/notification';
 import { delegatedFieldServiceReportsDbState } from '@states/delegated_field_service_reports';
 import { upcomingEventsDbState } from '@states/upcoming_events';
+import { fieldServiceMeetingsDbState } from '@states/field_service_meetings';
 import { publicTalksState } from '@states/public_talks';
 import { songsState } from '@states/songs';
 
@@ -63,6 +64,9 @@ const useIndexedDb = () => {
     appDb.delegated_field_service_reports.toArray()
   );
   const dbUpcomingEvents = useLiveQuery(() => appDb.upcoming_events.toArray());
+  const dbFieldServiceMeetings = useLiveQuery(() =>
+    appDb.field_service_meetings?.toArray()
+  );
   const dbPublicTalks = useLiveQuery(() => appDb.public_talks.toArray());
   const dbSongs = useLiveQuery(() => appDb.songs.toArray());
 
@@ -86,6 +90,8 @@ const useIndexedDb = () => {
     delegatedFieldServiceReportsDbState
   );
   const setUpcomingEvents = useSetAtom(upcomingEventsDbState);
+  const setFieldServiceMeetings = useSetAtom(fieldServiceMeetingsDbState);
+
   const setPublicTalks = useSetAtom(publicTalksState);
   const setSongs = useSetAtom(songsState);
 
@@ -197,6 +203,12 @@ const useIndexedDb = () => {
     }
   }, [dbUpcomingEvents, setUpcomingEvents]);
 
+  const loadFieldServiceMeetings = useCallback(() => {
+    if (dbFieldServiceMeetings) {
+      setFieldServiceMeetings(dbFieldServiceMeetings);
+    }
+  }, [dbFieldServiceMeetings, setFieldServiceMeetings]);
+
   const loadPublicTalks = useCallback(() => {
     if (dbPublicTalks) {
       setPublicTalks(dbPublicTalks);
@@ -228,6 +240,7 @@ const useIndexedDb = () => {
     loadDbNotifications,
     loadDbDelegatedReports,
     loadUpcomingEvents,
+    loadFieldServiceMeetings,
     loadPublicTalks,
     loadSongs,
   };

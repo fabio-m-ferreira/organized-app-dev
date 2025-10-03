@@ -3,12 +3,17 @@ import { useAtom, useAtomValue } from 'jotai';
 import {
   disconnectCongAccount,
   setIsAboutOpen,
-  //setIsAppLoad,
+  setIsAppLoad,
   setIsContactOpen,
-  //setIsSetup,
+  setIsSetup,
   setIsSupportOpen,
-  //setOfflineOverride,
+  setOfflineOverride,
 } from '@services/states/app';
+import useStartup from '@features/app_start/vip/startup/useStartup';
+import useInternetChecker from '@hooks/useInternetChecker';
+import { displaySnackNotification } from '@services/states/app';
+import { IconNoConnection } from '@components/icons';
+import useAppTranslation from '@hooks/useAppTranslation';
 import { useBreakpoints } from '@hooks/index';
 import {
   congAccountConnectedState,
@@ -35,6 +40,11 @@ const useNavbar = () => {
   const isAppLoad = useAtomValue(isAppLoadState);
   const accountType = useAtomValue(accountTypeState);
 
+  const isOffline = isAppLoad ? false : !isCongAccountConnected;
+
+  const { runStartupCheck } = useStartup();
+  const { isNavigatorOnline } = useInternetChecker();
+  const { t } = useAppTranslation();
   const openMore = Boolean(anchorEl);
 
   const handleOpenMoreMenu = (e) => {
@@ -54,13 +64,26 @@ const useNavbar = () => {
     navigate(`/user-profile`);
   };
 
-  const handleReconnectAccount = () => {
-    // handleCloseMore();
+  const handleReconnectAccount = async () => {
+    handleCloseMore();
+    setIsSetup(true);
+    setIsAppLoad(true);
+    setOfflineOverride(true);
+    //await runStartupCheck();
+  };
 
-    // setOfflineOverride(true);
-    // setIsSetup(true);
-    // setIsAppLoad(true);
-    window.location.reload();
+  const handleReconnectExistingAccount = async () => {
+    handleCloseMore();
+    if (!isNavigatorOnline) {
+      displaySnackNotification({
+        header: t('tr_noInternetConnection'),
+        message: t('tr_noInternetConnectionDesc'),
+        icon: <IconNoConnection color="var(--always-white)" />,
+        severity: 'error',
+      });
+      return;
+    }
+    await runStartupCheck();
   };
 
   const handleOpenContact = async () => {
@@ -85,7 +108,7 @@ const useNavbar = () => {
 
   const handleOpenRealApp = () => {
     handleCloseMore();
-    window.open(`https://organized-app.com`, '_blank');
+    window.open(`https://scn-organized.org`, '_blank');
   };
 
   const handleDisonnectAccount = async () => {
@@ -116,9 +139,11 @@ const useNavbar = () => {
     handleGoDashboard,
     isAppLoad,
     handleReconnectAccount,
+    handleReconnectExistingAccount,
     handleOpenRealApp,
     accountType,
     handleDisonnectAccount,
+    isOffline,
   };
 };
 

@@ -31,6 +31,7 @@ import { DelegatedFieldServiceReportType } from '@definition/delegated_field_ser
 import { UpcomingEventType } from '@definition/upcoming_events';
 import { formatDate } from '@utils/date';
 import { APP_READ_ONLY_ROLES } from '@constants/index';
+import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
 
 const personIsElder = (person: PersonType) => {
   const hasActive = person?.person_data.privileges?.find(
@@ -272,6 +273,9 @@ export const dbGetMetadata = async () => {
         role === 'public_talk_schedule'
     );
 
+  const isFieldMeetingsEditor =
+    isAdmin || userRole.includes('field_service_schedule') || isElder;
+
   const isPersonViewer = isScheduleEditor || isElder;
   const isPersonMinimal = !isPersonViewer;
 
@@ -298,6 +302,14 @@ export const dbGetMetadata = async () => {
   if (isPersonMinimal) {
     delete result.sources;
     delete result.schedules;
+  }
+
+  if (isFieldMeetingsEditor) {
+    delete result.public_field_meetings;
+  }
+
+  if (!isFieldMeetingsEditor) {
+    delete result.field_service_meetings;
   }
 
   if (!isAttendanceTracker && !isLanguageGroupOverseer) {
@@ -336,6 +348,7 @@ const dbGetTableData = async () => {
   const sources = await appDb.sources.toArray();
   const meeting_attendance = await appDb.meeting_attendance.toArray();
   const upcoming_events = await appDb.upcoming_events.toArray();
+  const field_service_meetings = await appDb.field_service_meetings.toArray();
   const metadata = await appDb.metadata.get(1);
 
   const congId = speakers_congregations.find(
@@ -393,6 +406,7 @@ const dbGetTableData = async () => {
     metadata,
     delegated_field_service_reports,
     upcoming_events,
+    field_service_meetings,
   };
 };
 
@@ -727,6 +741,59 @@ const dbRestorePersons = async (
     }
   } catch (error) {
     throw new Error(`persons: ${error.message}`);
+  }
+};
+
+const dbRestoreFieldServiceMeetings = async (
+  backupData: BackupDataType,
+  accessCode: string
+) => {
+  try {
+    if (!backupData.field_service_meetings) return;
+
+    const remoteMeetings = (
+      backupData.field_service_meetings as FieldServiceMeetingDataType[]
+    ).map((meeting: FieldServiceMeetingDataType) => {
+      decryptObject({
+        data: meeting,
+        table: 'field_service_meetings',
+        accessCode,
+      });
+      // clean up keys if needed
+      if (meeting.updatedAt) {
+        meeting.meeting_data._deleted = meeting._deleted;
+        meeting.meeting_data.updatedAt = meeting.updatedAt;
+
+        delete meeting._deleted;
+        delete meeting.updatedAt;
+      }
+      return meeting;
+    });
+
+    const meetings = await appDb.field_service_meetings.toArray();
+    const meetingsToUpdate: FieldServiceMeetingDataType[] = [];
+
+    for (const remoteMeeting of remoteMeetings) {
+      const localMeeting = meetings.find(
+        (record) => record.meeting_uid === remoteMeeting.meeting_uid
+      );
+
+      if (!localMeeting) {
+        meetingsToUpdate.push(remoteMeeting);
+      }
+
+      if (localMeeting) {
+        const newMeeting = structuredClone(localMeeting);
+        syncFromRemote(newMeeting, remoteMeeting);
+        meetingsToUpdate.push(newMeeting);
+      }
+    }
+
+    if (meetingsToUpdate.length > 0) {
+      await appDb.field_service_meetings.bulkPut(meetingsToUpdate);
+    }
+  } catch (error) {
+    throw new Error(`field_service_meetings: ${error.message}`);
   }
 };
 
@@ -1550,6 +1617,8 @@ const dbRestoreFromBackup = async (
 
     await dbRestoreUpcomingEvents(backupData, accessCode);
 
+    await dbRestoreFieldServiceMeetings(backupData, accessCode);
+
     await dbRestoreUserReports(backupData, accessCode);
 
     await dbRestoreDelegatedReports(backupData, accessCode);
@@ -1568,6 +1637,13 @@ const dbRestoreFromBackup = async (
       await appDb.sources.clear();
       const data = backupData.public_sources as SourceWeekType[];
       await appDb.sources.bulkPut(data);
+    }
+
+    if (backupData.public_field_meetings) {
+      await appDb.field_service_meetings.clear();
+      const data =
+        backupData.public_field_meetings as FieldServiceMeetingDataType[];
+      await appDb.field_service_meetings.bulkPut(data);
     }
 
     await dbInsertMetadata(backupData.metadata);
@@ -1623,6 +1699,7 @@ export const dbExportDataBackup = async (backupData: BackupDataType) => {
       metadata,
       delegated_field_service_reports,
       upcoming_events,
+      field_service_meetings,
     } = await dbGetTableData();
 
     const dataSync = settings.cong_settings.data_sync.value;
@@ -1654,6 +1731,10 @@ export const dbExportDataBackup = async (backupData: BackupDataType) => {
       userRole.some(
         (role) => role === 'midweek_schedule' || role === 'weekend_schedule'
       );
+
+    const fieldServiceMeetingEditor =
+      serviceCommitteeRole ||
+      userRole.some((role) => role === 'field_service_schedule');
 
     const personEditor = serviceCommitteeRole || scheduleEditor;
 
@@ -1954,6 +2035,26 @@ export const dbExportDataBackup = async (backupData: BackupDataType) => {
 
             obj.upcoming_events = backupUpcomingEvents;
           }
+        }
+
+        // include field service meetings
+        if (
+          fieldServiceMeetingEditor &&
+          metadata.metadata.field_service_meetings?.send_local
+        ) {
+          const backupFieldServiceMeetings = field_service_meetings.map(
+            (meeting) => {
+              encryptObject({
+                data: meeting,
+                table: 'field_service_meetings',
+                accessCode,
+              });
+
+              return meeting;
+            }
+          );
+
+          obj.field_service_meetings = backupFieldServiceMeetings;
         }
 
         // include user role changes

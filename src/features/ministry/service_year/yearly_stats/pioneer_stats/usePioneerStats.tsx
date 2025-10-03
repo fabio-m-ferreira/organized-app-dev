@@ -45,28 +45,30 @@ const usePioneerStats = (year: string) => {
   }, [year]);
 
   const goal = useMemo(() => {
-    const enrollment = person!.person_data.enrollments.find((record) => {
-      if (record._deleted) return false;
+    const enrollment = Array.isArray(person?.person_data?.enrollments)
+      ? person.person_data.enrollments.find((record) => {
+          if (record._deleted) return false;
 
-      if (record.enrollment === 'FR') {
-        let startDate = formatDate(new Date(record.start_date), 'yyyy/MM');
+          if (record.enrollment === 'FR') {
+            let startDate = formatDate(new Date(record.start_date), 'yyyy/MM');
 
-        let endDate = '';
+            let endDate = '';
 
-        if (record.end_date === null) {
-          startDate = start_month;
-          endDate = end_month;
-        }
+            if (record.end_date === null) {
+              startDate = start_month;
+              endDate = end_month;
+            }
 
-        if (record.end_date) {
-          endDate = formatDate(new Date(record.end_date), 'yyyy/MM');
-        }
+            if (record.end_date) {
+              endDate = formatDate(new Date(record.end_date), 'yyyy/MM');
+            }
 
-        return startDate >= start_month && endDate <= end_month;
-      }
+            return startDate >= start_month && endDate <= end_month;
+          }
 
-      return false;
-    });
+          return false;
+        })
+      : undefined;
 
     if (!enrollment) return 0;
 

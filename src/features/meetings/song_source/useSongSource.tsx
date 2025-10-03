@@ -61,13 +61,13 @@ const useSongSource = ({
 
     let song: string = null;
 
-    if (meeting === 'midweek') {
+    if (meeting === 'midweek' && source.midweek_meeting) {
       if (type === 'opening') {
-        song = source.midweek_meeting.song_first[lang];
+        song = source.midweek_meeting.song_first?.[lang] ?? '';
       }
 
       if (type === 'middle') {
-        song = source.midweek_meeting.song_middle[lang];
+        song = source.midweek_meeting.song_middle?.[lang] ?? '';
       }
 
       if (type === 'concluding') {
@@ -80,16 +80,16 @@ const useSongSource = ({
       }
     }
 
-    if (meeting === 'weekend') {
+    if (meeting === 'weekend' && source.weekend_meeting) {
       if (type === 'opening') {
         song =
-          source.weekend_meeting.song_first.find(
+          source.weekend_meeting.song_first?.find(
             (record) => record.type === dataView
           )?.value || '';
       }
 
       if (type === 'middle') {
-        song = source.weekend_meeting.song_middle[lang];
+        song = source.weekend_meeting.song_middle?.[lang] ?? '';
       }
 
       if (type === 'concluding') {
@@ -101,11 +101,11 @@ const useSongSource = ({
         });
       }
 
-      if (type === 'outgoing') {
+      if (type === 'outgoing' && schedule?.weekend_meeting?.outgoing_talks) {
         const outgoingSchedule = schedule.weekend_meeting.outgoing_talks.find(
           (record) => record.id === schedule_id
         );
-        song = outgoingSchedule.opening_song;
+        song = outgoingSchedule?.opening_song ?? '';
       }
     }
 
