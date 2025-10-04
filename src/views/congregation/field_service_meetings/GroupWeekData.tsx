@@ -1,5 +1,6 @@
 import { FieldServiceGroupType } from '@definition/field_service_groups';
 import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
+import { Height } from '@mui/icons-material';
 import { View, Text } from '@react-pdf/renderer';
 
 export const GroupWeekData = ({
@@ -155,7 +156,9 @@ export const GroupWeekData = ({
             const cellBorder = {
               borderRightWidth: 1,
               borderRightColor: '#D5DFFD',
+              height: '100%',
             };
+            const isLast = idx === filteredGroupMeetings.length - 1;
             return (
               <View
                 key={meeting.meeting_uid || idx}
@@ -163,35 +166,87 @@ export const GroupWeekData = ({
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  borderColor: '#D5DFFD',
                   backgroundColor: isOdd ? '#F2F5FF' : undefined,
+                  borderBottomLeftRadius: isLast ? 4 : 0,
+                  borderBottomRightRadius: isLast ? 4 : 0,
                 }}
               >
-                <View style={{ flex: 0.8, padding: 4, ...cellBorder }}>
+                {/* Date cell */}
+                <View
+                  style={{
+                    flex: 0.8,
+                    padding: 4,
+                    height: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    ...cellBorder,
+                  }}
+                >
+                  <View
+                    style={{ alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    <Text style={{ fontSize: 10 }}>
+                      {formatDate(m.date, lang)}
+                    </Text>
+                    <Text style={{ fontSize: 10 }}>
+                      {formatTime(m.date, lang)}
+                    </Text>
+                  </View>
+                </View>
+                {/* Dirigente cell */}
+                <View
+                  style={{
+                    flex: 1,
+                    padding: 4,
+                    height: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    ...cellBorder,
+                  }}
+                >
+                  <Text style={{ fontSize: 10 }}>{m.conductor || '-'}</Text>
+                </View>
+                {/* Local cell */}
+                <View
+                  style={{
+                    flex: 1,
+                    padding: 4,
+                    height: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    ...cellBorder,
+                  }}
+                >
                   <Text style={{ fontSize: 10 }}>
-                    {formatDate(m.date, lang)}
-                  </Text>
-                  <Text style={{ fontSize: 10 }}>
-                    {formatTime(m.date, lang)}
+                    {m.location || 'Salão do Reino'}
                   </Text>
                 </View>
-                <Text
-                  style={{ flex: 1, fontSize: 10, padding: 4, ...cellBorder }}
+                {/* Matéria cell */}
+                <View
+                  style={{
+                    flex: 2.2,
+                    padding: 4,
+                    height: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    ...cellBorder,
+                  }}
                 >
-                  {m.conductor || '-'}
-                </Text>
-                <Text
-                  style={{ flex: 1, fontSize: 10, padding: 4, ...cellBorder }}
+                  <Text style={{ fontSize: 10 }}>{m.materials || '-'}</Text>
+                </View>
+                {/* Grupo cell */}
+                <View
+                  style={{
+                    flex: 1,
+                    padding: 4,
+                    height: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
                 >
-                  {m.location || 'Salão do Reino'}
-                </Text>
-                <Text
-                  style={{ flex: 2.2, fontSize: 10, padding: 4, ...cellBorder }}
-                >
-                  {m.materials || '-'}
-                </Text>
-                <View style={{ flex: 1, fontSize: 10, padding: 4 }}>
-                  <Text>{`${m.group}, ${otherGroupName || ''}`}</Text>
+                  <Text
+                    style={{ fontSize: 10 }}
+                  >{`${m.group}, ${otherGroupName || ''}`}</Text>
                 </View>
               </View>
             );

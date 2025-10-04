@@ -107,6 +107,15 @@ export const JointWeekData = ({
               borderRightWidth: 1,
               borderRightColor: '#D5DFFD',
             };
+            // const separator = (
+            //   <View
+            //     style={{
+            //       width: 1,
+            //       height: '60%',
+            //       backgroundColor: '#D5DFFD',
+            //     }}
+            //   />
+            // );
             return (
               <View
                 key={meeting.meeting_uid || idx}
@@ -118,27 +127,71 @@ export const JointWeekData = ({
                   backgroundColor: isOdd ? '#F2F5FF' : undefined,
                 }}
               >
-                <View style={{ flex: 0.8, padding: 4, ...cellBorder }}>
-                  <Text style={{ fontSize: 10 }}>
-                    {formatDate(m.date, lang)}
-                  </Text>
-                  <Text style={{ fontSize: 10 }}>
-                    {formatTime(m.date, lang)}
+                {/* Date cell */}
+                <View
+                  style={{
+                    flex: 0.8,
+                    padding: 4,
+                    height: '100%',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    ...cellBorder,
+                  }}
+                >
+                  <View>
+                    <Text style={{ fontSize: 10 }}>
+                      {formatDate(m.date, lang)}
+                    </Text>
+                    <Text style={{ fontSize: 10 }}>
+                      {formatTime(m.date, lang)}
+                    </Text>
+                  </View>
+                </View>
+                {/* Dirigente cell */}
+                <View
+                  style={{
+                    flex: 1,
+                    height: '100%',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    ...cellBorder,
+                  }}
+                >
+                  <Text style={{ fontSize: 10, padding: 4 }}>
+                    {m.conductor || '-'}
                   </Text>
                 </View>
-                <Text
-                  style={{ flex: 1, fontSize: 10, padding: 4, ...cellBorder }}
+                {/* Ajudante cell */}
+                <View
+                  style={{
+                    flex: 1,
+                    height: '100%',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    ...cellBorder,
+                  }}
                 >
-                  {m.conductor || '-'}
-                </Text>
-                <Text
-                  style={{ flex: 1, fontSize: 10, padding: 4, ...cellBorder }}
+                  <Text style={{ fontSize: 10, padding: 4 }}>
+                    {m.assistant || '-'}
+                  </Text>
+                </View>
+                {/* Matéria cell (no separator at end) */}
+                <View
+                  style={{
+                    flex: 2.2,
+                    height: '100%',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                  }}
                 >
-                  {m.assistant || '-'}
-                </Text>
-                <Text style={{ flex: 2.2, fontSize: 10, padding: 4 }}>
-                  {m.materials || '-'}
-                </Text>
+                  <Text style={{ fontSize: 10, padding: 4 }}>
+                    {m.materials || '-'}
+                  </Text>
+                </View>
               </View>
             );
           })

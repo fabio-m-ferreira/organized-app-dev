@@ -20,7 +20,6 @@ import saveAs from 'file-saver';
 const useScheduleExport = (onClose: ScheduleExportType['onClose']) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const meetings = useAtomValue(fieldServiceMeetingsState);
-  const congName = useAtomValue(headerForScheduleState);
   const sourceLang = useAtomValue(JWLangLocaleState);
 
   // Month selection logic
@@ -88,12 +87,12 @@ const useScheduleExport = (onClose: ScheduleExportType['onClose']) => {
         />
       ).toBlob();
 
-      // const url = URL.createObjectURL(blob);
-      // window.open(url, '_blank'); // Preview PDF in new tab
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank'); // Preview PDF in new tab
 
-      const filename = `Saídas_ao_serviço_de_campo.pdf`;
+      // const filename = `Saídas_ao_serviço_de_campo.pdf`;
 
-      saveAs(blob, filename);
+      // saveAs(blob, filename);
 
       setIsProcessing(false);
       onClose?.();

@@ -3,7 +3,6 @@ import { Document } from '@views/components';
 import { FieldServiceMeetingTemplateType } from './index.types';
 import registerFonts from '@views/registerFonts';
 import Header from './Header';
-import WeekData from './/WeekData';
 import { JointWeekData } from './JointWeekData';
 import styles from './index.styles';
 import { GroupWeekData } from './GroupWeekData';
@@ -12,7 +11,6 @@ registerFonts();
 
 const FieldServiceMeetingTemplate = ({
   data,
-  cong_name,
   lang,
   groupsList,
 }: FieldServiceMeetingTemplateType) => {

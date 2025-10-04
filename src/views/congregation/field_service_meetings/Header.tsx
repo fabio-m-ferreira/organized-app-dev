@@ -1,7 +1,7 @@
 import { useAppTranslation } from '@hooks/index';
 import { Text, View } from '@react-pdf/renderer';
 import styles from './index.styles';
-import { IconFootprint } from '@components/icons';
+import IconFootprint from '@views/components/icons/IconFootprint';
 
 const Header = () => {
   const { t } = useAppTranslation();
