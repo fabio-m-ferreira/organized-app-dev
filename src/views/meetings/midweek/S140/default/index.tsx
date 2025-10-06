@@ -33,10 +33,10 @@ const ScheduleS140 = ({ data, class_count, cong_name, lang }: S140Type) => {
     <>
       {data.length > 0 && (
         <Document
-          author="sws2apps"
+          author="SCN"
           title={t('tr_midweekMeetingPrint')}
           creator="Organized"
-          producer="sws2apps (by react-pdf)"
+          producer="SCN (by react-pdf)"
         >
           <Page size="A4" style={[styles.body, { fontFamily: font }]}>
             {/* S-140 Header */}

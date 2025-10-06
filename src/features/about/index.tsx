@@ -102,10 +102,10 @@ const About = (props: AboutProps) => {
       </Box>
 
       <Typography className="body-small-regular" color="var(--grey-350)">
-        © {currentYear} Organized (sws2apps) |{' '}
+        © {currentYear} SCN Organized |{' '}
         <Link
           className="body-small-semibold"
-          href="https://sws2apps.com/privacy"
+          href="https://scn-organized.org/#/privacy-policy"
           target="_blank"
           rel="noopener"
           sx={{ color: 'var(--accent-dark)' }}

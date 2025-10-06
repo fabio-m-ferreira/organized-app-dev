@@ -113,8 +113,6 @@ const App = ({ updatePwa }: { updatePwa: VoidFunction }) => {
             { index: true, element: <Dashboard /> },
             { path: '/user-profile', element: <MyProfile /> },
             { path: '/weekly-schedules', element: <WeeklySchedules /> },
-            { path: '/terms-of-use', element: <TermsOfServicePage /> },
-            { path: '/privacy-policy', element: <PrivacyPolicyPage /> },
             {
               path: '/activities/upcoming-events',
               element: <UpcomingEvents />,
@@ -298,6 +296,12 @@ const App = ({ updatePwa }: { updatePwa: VoidFunction }) => {
             { path: '*', element: <Dashboard /> },
           ],
         },
+      ],
+    },
+    {
+      children: [
+        { path: '/terms-of-service', element: <TermsOfServicePage /> },
+        { path: '/privacy-policy', element: <PrivacyPolicyPage /> },
       ],
     },
   ]);

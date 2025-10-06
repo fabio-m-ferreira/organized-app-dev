@@ -14,10 +14,10 @@ const TemplateS21Doc1in1 = ({ data, lang }: S21Type) => {
 
   return (
     <Document
-      author="sws2apps"
+      author="SCN"
       title="S-21"
       creator="Organized"
-      producer="sws2apps (by react-pdf)"
+      producer="SCN (by react-pdf)"
     >
       <Page size={[595.2, 419.84]} style={[styles.body, { fontFamily: font }]}>
         <CardS21 data={data} lang={lang} />
