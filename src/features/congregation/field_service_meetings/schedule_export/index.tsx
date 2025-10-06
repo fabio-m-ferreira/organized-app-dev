@@ -1,24 +1,21 @@
-import { useState } from 'react';
-import { Box, FormControlLabel, RadioGroup, Stack } from '@mui/material';
+import { Box } from '@mui/material';
 import IconLoading from '@components/icon_loading';
-import Radio from '@components/radio';
 import Button from '@components/button';
 import Dialog from '@components/dialog';
 import { useAppTranslation } from '@hooks/index';
 import Typography from '@components/typography';
-import WeekRangeSelector from '../../../meetings/week_range_selector';
+import YearContainer from '../../../meetings/schedule_publish/year_container';
 import { ScheduleExportType } from './index.types';
 import useScheduleExport from './useScheduleExport';
 
 const ScheduleExport = ({ open, onClose }: ScheduleExportType) => {
   const { t } = useAppTranslation();
-  const [selectedOption, setSelectedOption] = useState('all');
 
   const {
     isProcessing,
     handleExportSchedule,
-    handleSetEndWeek,
-    handleSetStartWeek,
+    meetingsList,
+    handleCheckedChange,
   } = useScheduleExport(onClose);
 
   return (
@@ -42,37 +39,24 @@ const ScheduleExport = ({ open, onClose }: ScheduleExportType) => {
           </Typography>
         </Box>
 
-        <Stack spacing="8px">
-          <RadioGroup
-            value={selectedOption}
-            onChange={(e) => setSelectedOption(e.target.value)}
-            sx={{ gap: '8px' }}
-          >
-            <FormControlLabel
-              sx={{ margin: 0 }}
-              value="all"
-              control={<Radio />}
-              label={<Typography>{t('tr_allGroups')}</Typography>}
-            />
-            <FormControlLabel
-              sx={{ margin: 0 }}
-              value="specific"
-              control={<Radio />}
-              label={<Typography>{t('tr_specificGroups')}</Typography>}
-            />
-            <FormControlLabel
-              sx={{ margin: 0 }}
-              value="joint"
-              control={<Radio />}
-              label={<Typography>{t('tr_jointMeetings')}</Typography>}
-            />
-          </RadioGroup>
-        </Stack>
-        <WeekRangeSelector
-          meeting="midweek"
-          onStartChange={handleSetStartWeek}
-          onEndChange={handleSetEndWeek}
-        />
+        <Box
+          sx={{ width: '100%', overflow: 'auto', display: 'flex', gap: '24px' }}
+        >
+          {meetingsList && meetingsList.length > 0 ? (
+            meetingsList.map((schedule) => (
+              <YearContainer
+                key={schedule.year}
+                data={schedule}
+                onChange={handleCheckedChange}
+                monthSeparator="-"
+              />
+            ))
+          ) : (
+            <Box sx={{ color: 'var(--grey-400)', padding: '24px' }}>
+              {t('tr_noMeetingsToExport')}
+            </Box>
+          )}
+        </Box>
       </Box>
 
       <Box
@@ -88,7 +72,7 @@ const ScheduleExport = ({ open, onClose }: ScheduleExportType) => {
           endIcon={isProcessing && <IconLoading />}
           onClick={handleExportSchedule}
         >
-          {t('tr_next')}
+          {t('tr_export')}
         </Button>
         <Button variant="secondary" onClick={onClose}>
           {t('tr_cancel')}

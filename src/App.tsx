@@ -296,6 +296,8 @@ const App = ({ updatePwa }: { updatePwa: VoidFunction }) => {
             { path: '*', element: <Dashboard /> },
           ],
         },
+        { path: '/terms-of-use', element: <TermsOfServicePage /> },
+        { path: '/privacy', element: <PrivacyPolicyPage /> },
       ],
     },
     {

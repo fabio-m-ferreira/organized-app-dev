@@ -1,8 +1,13 @@
-import { useState, Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import useFieldServiceMeetings from '@features/congregation/field_service_meetings/useFieldServiceMeetings';
 import { Box } from '@mui/material';
 import ScrollableTabs from '@components/scrollable_tabs';
-import { IconAdd, IconEventAvailable, IconInfo } from '@components/icons';
+import {
+  IconAdd,
+  IconEventAvailable,
+  IconInfo,
+  IconPrint,
+} from '@components/icons';
 import Button from '@components/button';
 import PageTitle from '@components/page_title';
 import InfoTip from '@components/info_tip';
@@ -14,6 +19,7 @@ import { getWeekDate } from '@utils/date';
 import FieldServiceMeetingForm from '@features/congregation/field_service_meetings/field_service_meeting_form/fieldServiceMeetingForm';
 import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
 import i18n from '@services/i18n';
+import ScheduleExport from '@features/congregation/field_service_meetings/schedule_export';
 import FieldMeetingsPublish from '@features/congregation/field_service_meetings/publish';
 
 const MeetingAttendance = () => {
@@ -21,6 +27,7 @@ const MeetingAttendance = () => {
   const appLocale = i18n?.language || navigator.language;
   const [filterId, setFilterId] = useState<string | null>('all');
   const [showPast, setShowPast] = useState(false);
+  const [openExport, setOpenExport] = useState(false);
 
   const { isFieldServiceEditor, my_group } = useCurrentUser();
 
@@ -75,10 +82,12 @@ const MeetingAttendance = () => {
     return true;
   }
 
-  // function openScheduleExport(event: MouseEvent<HTMLAnchorElement>): void {
-  //   event.preventDefault();
-  //   setOpenExport(true);
-  // }
+  function openScheduleExport(
+    event: React.MouseEvent<HTMLAnchorElement>
+  ): void {
+    event.preventDefault();
+    setOpenExport(true);
+  }
 
   return (
     <Box
@@ -97,19 +106,19 @@ const MeetingAttendance = () => {
         buttons={
           isFieldServiceEditor && (
             <>
-              {/* {openExport && (
+              {openExport && (
                 <ScheduleExport
                   open={openExport}
                   onClose={() => setOpenExport(false)}
                 />
-              )} */}
-              {/* <Button
+              )}
+              <Button
                 variant="secondary"
                 onClick={openScheduleExport}
                 startIcon={<IconPrint />}
               >
                 {t('tr_export')}
-              </Button> */}
+              </Button>
               <Button
                 variant="secondary"
                 onClick={handleShowAddMeetingBox}
