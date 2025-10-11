@@ -19,7 +19,7 @@ import { FieldServiceMeetingFormProps } from '@definition/field_service_meetings
 
 const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
   const { t } = useAppTranslation();
-  const { laptopDown, tabletDown } = useBreakpoints();
+  const { laptopDown } = useBreakpoints();
   const {
     localMeeting,
     errors,
@@ -45,43 +45,19 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
   const selectedGroup = localMeeting.meeting_data.group ?? '';
 
   // Get all groups and persons
-  const { groups_list, getGroupHostName } = useFieldServiceGroups();
+  const { groups_list } = useFieldServiceGroups();
   const { getAppointedBrothers } = usePersons();
   const currentMonth = formatDate(new Date(), 'yyyy/MM');
   const appointedBrothers = getAppointedBrothers(currentMonth);
 
-  let brotherOptions: string[] = [];
-  if (meetingType === 'group' && selectedGroup) {
-    const group = groups_list.find((g) => g.group_data.name === selectedGroup);
-    if (group) {
-      const groupMemberUIDs = group.group_data.members.map((m) => m.person_uid);
-      brotherOptions = appointedBrothers
-        .filter((person) => groupMemberUIDs.includes(person.person_uid))
-        .map((person) =>
-          buildPersonFullname(
-            person.person_data.person_lastname.value,
-            person.person_data.person_firstname.value
-          )
-        );
-    }
-  } else {
-    brotherOptions = appointedBrothers.map((person) =>
-      buildPersonFullname(
-        person.person_data.person_lastname.value,
-        person.person_data.person_firstname.value
-      )
-    );
-  }
+  const brotherOptions: string[] = appointedBrothers.map((person) =>
+    buildPersonFullname(
+      person.person_data.person_lastname.value,
+      person.person_data.person_firstname.value
+    )
+  );
 
   const locationValue = localMeeting.meeting_data.location ?? '';
-  if (meetingType === 'group' && selectedGroup) {
-    if (!locationValue) {
-      const hostName = getGroupHostName(selectedGroup);
-      if (hostName && brotherOptions.includes(hostName)) {
-        handleChangeLocation(null, hostName);
-      }
-    }
-  }
 
   // Prevent duplicates in conductor/assistant
   const conductorValue = localMeeting.meeting_data.conductor ?? '';

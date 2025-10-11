@@ -6,16 +6,12 @@ import { getMessageByCode } from '@services/i18n/translation';
 import { pdf } from '@react-pdf/renderer';
 import { TemplateFieldServiceMeeting } from '@views/index';
 import { useAtomValue } from 'jotai';
-import {
-  fieldWithLanguageGroupsState,
-  headerForScheduleState,
-} from '@states/field_service_groups';
+import { fieldWithLanguageGroupsState } from '@states/field_service_groups';
 import { JWLangLocaleState } from '@states/settings';
 import { fieldServiceMeetingsState } from '@states/field_service_meetings';
 import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
 
 import { getBaseList, getSchedulesList } from '../getSchedulesList';
-import saveAs from 'file-saver';
 
 const useScheduleExport = (onClose: ScheduleExportType['onClose']) => {
   const [isProcessing, setIsProcessing] = useState(false);
