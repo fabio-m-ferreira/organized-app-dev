@@ -220,7 +220,6 @@ const useUserAutoLogin = () => {
       handleLoginData();
     }
   }, [
-    t,
     accountType,
     isPendingVip,
     dataVip,
