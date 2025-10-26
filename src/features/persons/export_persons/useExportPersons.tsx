@@ -16,6 +16,8 @@ const useExportPersons = () => {
   const groups = useAtomValue(fieldWithLanguageGroupsState);
   const lng = useAtomValue(JWLangLocaleState);
 
+  console.log(persons);
+
   const [isProcessing, setIsProcessing] = useState(false);
 
   const personGetGroup = (person_uid: string) => {
@@ -40,9 +42,115 @@ const useExportPersons = () => {
         { value: t('tr_address', { lng }), fontWeight: 'bold' },
         { value: t('tr_emergencyContacts', { lng }), fontWeight: 'bold' },
         { value: t('tr_fieldServiceGroup', { lng }), fontWeight: 'bold' },
+        { value: t('tr_spiritualStatus', { lng }), fontWeight: 'bold' },
+        { value: t('tr_privileges', { lng }), fontWeight: 'bold' },
+        { value: t('tr_enrollments', { lng }), fontWeight: 'bold' },
       ];
+      function getPersonEnrollments(person) {
+        const enrollments = (person.person_data.enrollments || []).filter(
+          (e) => !e._deleted
+        );
+        const active = enrollments.find((e) => !e.endDate);
+        if (!active) return '';
+        if (active.enrollment === 'AP') return t('tr_AP', { lng });
+        if (active.enrollment === 'FR') return t('tr_FR', { lng });
+        if (active.enrollment === 'FS') return t('tr_FS', { lng });
+        if (active.enrollment === 'FMF') return t('tr_FMF', { lng });
+        return '';
+      }
+      function getPersonPrivileges(person) {
+        const privileges = (person.person_data.privileges || []).filter(
+          (p) => !p._deleted
+        );
+        const active = privileges.find((p) => !p.endDate);
+        if (!active) return '';
+        if (active.privilege === 'elder') return 'Elder';
+        if (active.privilege === 'ms') return 'Ministry Servant';
+        return '';
+      }
 
       data.push(header_row);
+
+      function getSpiritualStatus(person): string {
+        const pd = person.person_data;
+        // Helper to get last non-deleted history item
+        function getLastHistory(history) {
+          return history
+            .filter((h) => !h._deleted)
+            .sort((a, b) => {
+              const aDate = a.start_date || a.date || '';
+              const bDate = b.start_date || b.date || '';
+              return aDate > bDate ? 1 : aDate < bDate ? -1 : 0;
+            })
+            .at(-1);
+        }
+
+        const isBaptized = !!pd.publisher_baptized?.active?.value;
+        const isUnbaptized = !!pd.publisher_unbaptized?.active?.value;
+
+        // 1. Inactive Publisher (check only the relevant history)
+        if (isBaptized) {
+          const baptizedHistory = pd.publisher_baptized?.history || [];
+          const lastBaptized = getLastHistory(baptizedHistory);
+          if (
+            baptizedHistory.length === 0 ||
+            (lastBaptized && lastBaptized.end_date)
+          ) {
+            return 'Inactive Publisher';
+          }
+        } else if (isUnbaptized) {
+          const unbaptizedHistory = pd.publisher_unbaptized?.history || [];
+          const lastUnbaptized = getLastHistory(unbaptizedHistory);
+          if (
+            unbaptizedHistory.length === 0 ||
+            (lastUnbaptized && lastUnbaptized.end_date)
+          ) {
+            return 'Inactive Publisher';
+          }
+        } else {
+          // If neither, check both histories for inactivity
+          const baptizedHistory = pd.publisher_baptized?.history || [];
+          const lastBaptized = getLastHistory(baptizedHistory);
+          const unbaptizedHistory = pd.publisher_unbaptized?.history || [];
+          const lastUnbaptized = getLastHistory(unbaptizedHistory);
+          if (
+            (baptizedHistory.length === 0 ||
+              (lastBaptized && lastBaptized.end_date)) &&
+            (unbaptizedHistory.length === 0 ||
+              (lastUnbaptized && lastUnbaptized.end_date))
+          ) {
+            return 'Inactive Publisher';
+          }
+        }
+
+        // 2. Anointed
+        if (
+          pd.publisher_baptized?.active?.value &&
+          pd.publisher_baptized?.anointed?.value
+        ) {
+          return 'Anointed';
+        }
+
+        // 3. Baptized Publisher
+        if (
+          pd.publisher_baptized?.active?.value &&
+          !pd.publisher_baptized?.anointed?.value
+        ) {
+          return 'Baptized Publisher';
+        }
+
+        // 4. Unbaptized Publisher
+        if (pd.publisher_unbaptized?.active?.value) {
+          return 'Unbaptized Publisher';
+        }
+
+        // 5. Midweek Meeting Student
+        if (pd.midweek_meeting_student?.active?.value) {
+          return 'Midweek Meeting Student';
+        }
+
+        return '';
+      }
 
       const persons_row = persons
         .filter(
@@ -76,6 +184,10 @@ const useExportPersons = () => {
               return acc;
             }, []);
 
+          const spiritualStatus = getSpiritualStatus(person);
+          const personPrivileges = getPersonPrivileges(person);
+          const personEnrollments = getPersonEnrollments(person);
+
           return [
             { value: person.person_data.person_lastname.value },
             { value: person.person_data.person_firstname.value },
@@ -83,6 +195,9 @@ const useExportPersons = () => {
             { value: person.person_data.address.value },
             { value: emergencyContacts.join('; ') },
             { value: groupName },
+            { value: spiritualStatus },
+            { value: personPrivileges },
+            { value: personEnrollments },
           ] as Row;
         });
 
@@ -93,11 +208,14 @@ const useExportPersons = () => {
         stickyRowsCount: 1,
         columns: [
           { width: 30 },
-          { width: 35 },
-          { width: 45 },
-          { width: 45 },
+          { width: 30 },
+          { width: 20 },
           { width: 45 },
           { width: 25 },
+          { width: 25 },
+          { width: 30 },
+          { width: 30 },
+          { width: 30 },
         ],
       });
 
