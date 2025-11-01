@@ -212,7 +212,7 @@ export const JointWeekData = ({
   return (
     <>
       {renderTable('Saídas Congregacionais', jointMeetings)}
-      {zoomMeetings.length > 0 && renderTable('Reuniões Zoom', zoomMeetings)}
+      {zoomMeetings.length > 0 && renderTable('Saídas Zoom', zoomMeetings)}
     </>
   );
 };
