@@ -35,10 +35,10 @@ const TemplateS89Doc4in1 = ({ s89Data, lang }: S89Doc4in1Type) => {
     <>
       {s89Data.length > 0 && (
         <Document
-          author="sws2apps"
+          author="SCN"
           title="S-89"
           creator="Organized"
-          producer="sws2apps (by react-pdf)"
+          producer="SCN (by react-pdf)"
         >
           <Page
             size="A4"

@@ -12,4 +12,5 @@ export type PersonDataType = {
   name: string;
   female?: boolean;
   active?: boolean;
+  cong_name?: string;
 };

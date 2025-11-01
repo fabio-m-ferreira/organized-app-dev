@@ -6,21 +6,16 @@ import { getMessageByCode } from '@services/i18n/translation';
 import { pdf } from '@react-pdf/renderer';
 import { TemplateFieldServiceMeeting } from '@views/index';
 import { useAtomValue } from 'jotai';
-import {
-  fieldWithLanguageGroupsState,
-  headerForScheduleState,
-} from '@states/field_service_groups';
+import { fieldWithLanguageGroupsState } from '@states/field_service_groups';
 import { JWLangLocaleState } from '@states/settings';
 import { fieldServiceMeetingsState } from '@states/field_service_meetings';
 import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
 
 import { getBaseList, getSchedulesList } from '../getSchedulesList';
-import saveAs from 'file-saver';
 
 const useScheduleExport = (onClose: ScheduleExportType['onClose']) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const meetings = useAtomValue(fieldServiceMeetingsState);
-  const congName = useAtomValue(headerForScheduleState);
   const sourceLang = useAtomValue(JWLangLocaleState);
 
   // Month selection logic
@@ -88,12 +83,12 @@ const useScheduleExport = (onClose: ScheduleExportType['onClose']) => {
         />
       ).toBlob();
 
-      // const url = URL.createObjectURL(blob);
-      // window.open(url, '_blank'); // Preview PDF in new tab
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank'); // Preview PDF in new tab
 
-      const filename = `Saídas_ao_serviço_de_campo.pdf`;
+      // const filename = `Saídas_ao_serviço_de_campo.pdf`;
 
-      saveAs(blob, filename);
+      // saveAs(blob, filename);
 
       setIsProcessing(false);
       onClose?.();

@@ -20,10 +20,10 @@ const TemplateS88 = ({ attendance }: TemplateS88Props) => {
 
   return (
     <Document
-      author="sws2apps"
+      author="SCN"
       title="S-88"
       creator="Organized"
-      producer="sws2apps (by react-pdf)"
+      producer="SCN (by react-pdf)"
     >
       {attendance.data.map((data) => (
         <Page

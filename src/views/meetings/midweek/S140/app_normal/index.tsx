@@ -38,10 +38,10 @@ const TemplateS140AppNormal = ({
 
   return (
     <Document
-      author="sws2apps"
+      author="SCN"
       title={t('tr_midweekMeetingPrint')}
       creator="Organized"
-      producer="sws2apps (by react-pdf)"
+      producer="SCN (by react-pdf)"
     >
       <Page size="A4" style={[styles.page, { fontFamily: font }]}>
         <S140Header cong_name={cong_name} lang={lang} />

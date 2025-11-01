@@ -21,10 +21,10 @@ const TemplateS89 = ({ data, lang }: S89Type) => {
 
   return (
     <Document
-      author="sws2apps"
+      author="SCN"
       title="S-89"
       creator="Organized"
-      producer="sws2apps (by react-pdf)"
+      producer="SCN (by react-pdf)"
     >
       <Page size={[241.2, 319.68]} style={[styles.body, { fontFamily: font }]}>
         <View style={styles.content}>
