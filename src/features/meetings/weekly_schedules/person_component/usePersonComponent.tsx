@@ -16,6 +16,7 @@ import { AssignmentCongregation } from '@definition/schedules';
 import { personsState } from '@states/persons';
 import { personGetDisplayName, speakerGetDisplayName } from '@utils/common';
 import { incomingSpeakersState } from '@states/visiting_speakers';
+import { speakersCongregationsState } from '@states/speakers_congregations';
 
 const usePersonComponent = ({
   week,
@@ -32,6 +33,7 @@ const usePersonComponent = ({
   const coFullname = useAtomValue(COFullnameState);
   const incomingSpeakers = useAtomValue(incomingSpeakersState);
   const settings = useAtomValue(settingsState);
+  const congregations = useAtomValue(speakersCongregationsState);
 
   const mmAuxCounselorDefaultEnabled = useMemo(() => {
     return (
@@ -63,7 +65,6 @@ const usePersonComponent = ({
       active: undefined,
       female: undefined,
     };
-
     const schedule = schedules.find((record) => record.weekOf === week);
 
     if (!schedule) return result;
@@ -112,6 +113,10 @@ const usePersonComponent = ({
           (record) => record.person_uid === assigned?.value
         );
 
+        const cong = congregations.find(
+          (record) => record.id === speaker.speaker_data.cong_id
+        );
+
         if (speaker) {
           return {
             name: speakerGetDisplayName(
@@ -121,6 +126,7 @@ const usePersonComponent = ({
             ),
             female: false,
             active: false,
+            cong_name: cong?.cong_data.cong_name.value || '',
           };
         }
       }
@@ -258,6 +264,7 @@ const usePersonComponent = ({
     mmAuxCounselorDefaultEnabled,
     mmAuxCounselorDefault,
     schedule_id,
+    congregations,
   ]);
 
   return { personData };

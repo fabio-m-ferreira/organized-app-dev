@@ -16,8 +16,6 @@ const useExportPersons = () => {
   const groups = useAtomValue(fieldWithLanguageGroupsState);
   const lng = useAtomValue(JWLangLocaleState);
 
-  console.log(persons);
-
   const [isProcessing, setIsProcessing] = useState(false);
 
   const personGetGroup = (person_uid: string) => {
