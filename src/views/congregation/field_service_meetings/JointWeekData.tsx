@@ -92,7 +92,7 @@ export const JointWeekData = ({
             Dirigente
           </Text>
           {/* Only show 'Ajudante' for non-zoom tables */}
-          {title !== 'Reuniões Zoom' && (
+          {title !== 'Saídas por Zoom' && (
             <Text
               style={{ flex: 1, fontSize: 10, fontWeight: 'bold', padding: 4 }}
             >
@@ -171,7 +171,7 @@ export const JointWeekData = ({
                   </Text>
                 </View>
                 {/* Only show 'Ajudante' for non-zoom tables */}
-                {title !== 'Reuniões Zoom' && (
+                {title !== 'Saídas por Zoom' && (
                   <View
                     style={{
                       flex: 1,
@@ -212,7 +212,7 @@ export const JointWeekData = ({
   return (
     <>
       {renderTable('Saídas Congregacionais', jointMeetings)}
-      {zoomMeetings.length > 0 && renderTable('Reuniões Zoom', zoomMeetings)}
+      {zoomMeetings.length > 0 && renderTable('Saídas por Zoom', zoomMeetings)}
     </>
   );
 };

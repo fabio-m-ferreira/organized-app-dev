@@ -21,14 +21,17 @@ const FieldServiceMeetingTemplate = ({
     (m) => m.meeting_data.type === 'joint' || m.meeting_data.type === 'zoom'
   );
 
+  // Get the first meeting date for dynamic month
+  const firstMeetingDate = data[0]?.meeting_data?.date;
+
   return (
     <Document title={`Field Service Meeting Schedule (${lang})`}>
       <Page size="A4" style={[styles.page]}>
-        <Header />
+        <Header monthDate={firstMeetingDate} />
         <JointWeekData meetings={jointMeetings} lang={lang} />
       </Page>
       <Page size="A4" style={[styles.page]}>
-        <Header />
+        <Header monthDate={firstMeetingDate} />
         <GroupWeekData meetings={data} lang={lang} groupsList={groupsList} />
       </Page>
     </Document>
