@@ -25,20 +25,20 @@ const useWeeklySchedules = () => {
     if (scheduleType === 'outgoing') return 2;
   }, []);
 
-  const { isElder } = useCurrentUser();
+  const { isAppointed } = useCurrentUser();
 
   const settings = useAtomValue(settingsState);
   const dataView = useAtomValue(userDataViewState);
 
   const outgoingVisible = useMemo(() => {
-    if (isElder) return true;
+    if (isAppointed) return true;
 
     const weekend = settings.cong_settings.weekend_meeting.find(
       (record) => record.type === dataView
     );
 
     return weekend.outgoing_talks_schedule_public.value;
-  }, [isElder, settings, dataView]);
+  }, [isAppointed, settings, dataView]);
 
   const tabs = useMemo(() => {
     const result = [
