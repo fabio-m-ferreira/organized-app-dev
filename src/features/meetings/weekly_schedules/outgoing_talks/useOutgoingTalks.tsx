@@ -19,7 +19,7 @@ const useOutgoingTalks = () => {
 
     for (const schedule of recentWeeks) {
       const talkSchedules =
-        schedule.weekend_meeting?.outgoing_talks.filter(
+        schedule.weekend_meeting?.outgoing_talks?.filter(
           (record) => record.value.length > 0 && !record._deleted
         ) ?? [];
 
