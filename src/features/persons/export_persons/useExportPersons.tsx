@@ -94,7 +94,7 @@ const useExportPersons = () => {
             baptizedHistory.length === 0 ||
             (lastBaptized && lastBaptized.end_date)
           ) {
-            return 'Inactive Publisher';
+            return t('tr_inactivePublisher', { lng });
           }
         } else if (isUnbaptized) {
           const unbaptizedHistory = pd.publisher_unbaptized?.history || [];
@@ -103,7 +103,7 @@ const useExportPersons = () => {
             unbaptizedHistory.length === 0 ||
             (lastUnbaptized && lastUnbaptized.end_date)
           ) {
-            return 'Inactive Publisher';
+            return t('tr_inactivePublisher', { lng });
           }
         } else {
           // If neither, check both histories for inactivity
@@ -117,7 +117,7 @@ const useExportPersons = () => {
             (unbaptizedHistory.length === 0 ||
               (lastUnbaptized && lastUnbaptized.end_date))
           ) {
-            return 'Inactive Publisher';
+            return t('tr_inactivePublisher', { lng });
           }
         }
 
@@ -126,7 +126,7 @@ const useExportPersons = () => {
           pd.publisher_baptized?.active?.value &&
           pd.publisher_baptized?.anointed?.value
         ) {
-          return 'Anointed';
+          return t('tr_anointed', { lng });
         }
 
         // 3. Baptized Publisher
@@ -134,17 +134,17 @@ const useExportPersons = () => {
           pd.publisher_baptized?.active?.value &&
           !pd.publisher_baptized?.anointed?.value
         ) {
-          return 'Baptized Publisher';
+          return t('tr_baptizedPublisher', { lng });
         }
 
         // 4. Unbaptized Publisher
         if (pd.publisher_unbaptized?.active?.value) {
-          return 'Unbaptized Publisher';
+          return t('tr_unbaptizedPublisher', { lng });
         }
 
         // 5. Midweek Meeting Student
         if (pd.midweek_meeting_student?.active?.value) {
-          return 'Midweek Meeting Student';
+          return t('tr_midweekMeetingStudent', { lng });
         }
 
         return '';
