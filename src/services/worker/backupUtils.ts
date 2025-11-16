@@ -258,14 +258,13 @@ export const dbGetMetadata = async () => {
   const isCoordinator = userRole.includes('coordinator');
   const isAdmin = userRole.includes('admin') || isSecretary || isCoordinator;
   const isPublisher = isAdmin || userRole.includes('publisher');
-  const isGroupOverseer = isAdmin || userRole.includes('group_overseers');
   const isLanguageGroupOverseer =
     isAdmin || userRole.includes('language_group_overseers');
   const isElder =
     accountType === 'vip' && (isAdmin || userRole.includes('elder'));
   const isScheduleEditor =
     isAdmin ||
-    isGroupOverseer ||
+    isLanguageGroupOverseer ||
     userRole.some(
       (role) =>
         role === 'midweek_schedule' ||
