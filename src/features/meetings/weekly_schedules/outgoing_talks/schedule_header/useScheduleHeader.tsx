@@ -14,9 +14,11 @@ const useScheduleHeader = () => {
     const dates: string[] = [];
 
     for (const schedule of schedules) {
-      for (const talk of schedule.weekend_meeting.outgoing_talks) {
-        if (talk.updatedAt.length > 0) {
-          dates.push(talk.updatedAt);
+      if (schedule.weekend_meeting?.outgoing_talks) {
+        for (const talk of schedule.weekend_meeting.outgoing_talks) {
+          if (talk.updatedAt.length > 0) {
+            dates.push(talk.updatedAt);
+          }
         }
       }
     }
