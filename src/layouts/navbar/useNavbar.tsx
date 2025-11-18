@@ -14,7 +14,7 @@ import useInternetChecker from '@hooks/useInternetChecker';
 import { displaySnackNotification } from '@services/states/app';
 import { IconNoConnection } from '@components/icons';
 import useAppTranslation from '@hooks/useAppTranslation';
-import { useBreakpoints } from '@hooks/index';
+import { useBreakpoints, useUserAutoLogin } from '@hooks/index';
 import {
   congAccountConnectedState,
   isAppLoadState,
@@ -43,6 +43,7 @@ const useNavbar = () => {
   const isOffline = isAppLoad ? false : !isCongAccountConnected;
 
   const { runStartupCheck } = useStartup();
+  const { manualAutoLoginVip } = useUserAutoLogin();
   const { isNavigatorOnline } = useInternetChecker();
   const { t } = useAppTranslation();
   const openMore = Boolean(anchorEl);
@@ -83,7 +84,8 @@ const useNavbar = () => {
       });
       return;
     }
-    await runStartupCheck();
+    //await runStartupCheck();
+    await manualAutoLoginVip();
   };
 
   const handleOpenContact = async () => {

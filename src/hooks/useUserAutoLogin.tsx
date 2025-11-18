@@ -94,6 +94,150 @@ const useUserAutoLogin = () => {
 
   const [autoLoginStatus, setAutoLoginStatus] = useState('');
 
+  // Manual trigger for VIP auto-login
+  const manualAutoLoginVip = async () => {
+    try {
+      setAutoLoginStatus('Manual auto login process started');
+      if (isPendingVip) return;
+      if (!dataVip) return;
+      if (dataVip.status === 403) {
+        await userSignOut();
+        return;
+      }
+      if (dataVip.status === 404) {
+        await handleDeleteDatabase();
+        return;
+      }
+      if (errorVip || dataVip.result.message) {
+        const msg = errorVip?.message || dataVip.result.message;
+        logger.error('app', msg);
+        return;
+      }
+      if (dataVip.status === 200) {
+        if (congID.length > 0 && dataVip.result.cong_id !== congID) {
+          await handleDeleteDatabase();
+          return;
+        }
+        const approvedRole = dataVip.result.cong_role.some((role) =>
+          APP_ROLES.includes(role)
+        );
+        if (!approvedRole) {
+          await handleDeleteDatabase();
+          return;
+        }
+        if (approvedRole) {
+          const settings = await dbAppSettingsGet();
+          const prevRole = settings.user_settings.cong_role;
+          const checkRole = prevRole.length > 0;
+          const prevNeedMasterKey = prevRole.some((role) =>
+            VIP_ROLES.includes(role)
+          );
+          const newRole = dataVip.result.cong_role;
+          const newNeedMasterKey = newRole.some((role) =>
+            VIP_ROLES.includes(role)
+          );
+          if (checkRole && !prevNeedMasterKey && newNeedMasterKey) {
+            displaySnackNotification({
+              header: t('tr_userRoleChanged'),
+              message: t('tr_userRoleChangedDesc'),
+              icon: <IconInfo color="var(--white)" />,
+            });
+            await dbAppSettingsUpdate({
+              'cong_settings.cong_master_key': '',
+            });
+            await userSignOut();
+            setCongConnected(false);
+            setIsAppLoad(true);
+            setOfflineOverride(true);
+            setTimeout(() => {
+              setIsSetup(true);
+            }, 5000);
+            return;
+          }
+          if (prevNeedMasterKey && !newNeedMasterKey) {
+            await handleDeleteDatabase();
+            return;
+          }
+          const proceed =
+            !prevNeedMasterKey || prevNeedMasterKey === newNeedMasterKey;
+          if (proceed) {
+            await dbAppSettingsUpdateWithoutNotice({
+              'user_settings.id': dataVip.result.id,
+              'cong_settings.country_code': dataVip.result.country_code,
+              'cong_settings.cong_name': dataVip.result.cong_name,
+              'user_settings.cong_role': dataVip.result.cong_role,
+              'cong_settings.cong_id': dataVip.result.cong_id,
+            });
+            setUserID(dataVip.result.id);
+            setCongConnected(true);
+            setIsMFAEnabled(dataVip.result.mfa);
+            setCongPrefix(dataVip.result.cong_prefix);
+            worker.postMessage({
+              field: 'userID',
+              value: dataVip.result.id,
+            });
+            worker.postMessage({ field: 'accountType', value: 'vip' });
+            worker.postMessage('startWorker');
+          }
+        }
+        setAutoLoginStatus('Manual auto login process completed');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Manual trigger for Pocket auto-login
+  const manualAutoLoginPocket = async () => {
+    try {
+      if (isPendingPocket) return;
+      if (!dataPocket) return;
+      setAutoLoginStatus('auto login process started');
+      if (dataPocket.status === 403) {
+        await handleDeleteDatabase();
+        return;
+      }
+      if (errorPocket || dataPocket.result.message) {
+        const msg = errorPocket?.message || dataPocket.result.message;
+        logger.error('app', msg);
+        return;
+      }
+      if (dataPocket.status === 200) {
+        if (
+          congID.length > 0 &&
+          dataPocket.result.app_settings.cong_settings.id !== congID
+        ) {
+          await handleDeleteDatabase();
+          return;
+        }
+        const approvedRole =
+          dataPocket.result.app_settings.user_settings.cong_role.some((role) =>
+            APP_ROLES.includes(role)
+          );
+        if (!approvedRole) {
+          await handleDeleteDatabase();
+          return;
+        }
+        if (approvedRole) {
+          await dbAppSettingsUpdateWithoutNotice({
+            'user_settings.id': dataPocket.result.id,
+          });
+          setUserID(dataPocket.result.id);
+          setCongConnected(true);
+          worker.postMessage({
+            field: 'userID',
+            value: dataPocket.result.id,
+          });
+          worker.postMessage({ field: 'accountType', value: 'pocket' });
+          worker.postMessage('startWorker');
+        }
+        setAutoLoginStatus('auto login process completed');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     const handleLoginData = async () => {
       try {
@@ -314,7 +458,11 @@ const useUserAutoLogin = () => {
     congID,
   ]);
 
-  return { autoLoginStatus };
+  return {
+    autoLoginStatus,
+    manualAutoLoginVip,
+    manualAutoLoginPocket,
+  };
 };
 
 export default useUserAutoLogin;
