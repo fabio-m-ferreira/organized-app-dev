@@ -141,6 +141,14 @@ const AcceptRequest = (props: AcceptRequestProps) => {
               />
 
               <SwitchWithLabel
+                label={t('tr_fieldServiceMeetingScheduling')}
+                checked={roles.includes('field_service_schedule')}
+                onChange={(checked) =>
+                  handleRolesChange('field_service_schedule', checked)
+                }
+              />
+
+              <SwitchWithLabel
                 label={t('tr_publicTalkScheduling')}
                 checked={roles.includes('public_talk_schedule')}
                 onChange={(checked) =>
