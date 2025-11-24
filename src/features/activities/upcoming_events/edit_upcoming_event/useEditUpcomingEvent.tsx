@@ -136,65 +136,85 @@ const useEditUpcomingEvent = ({ data, onSave }: EditUpcomingEventProps) => {
 
   const handleChangeEventStartDate = useCallback((value: Date) => {
     setLocalEvent((prev) => {
-      return {
-        ...prev,
-        event_data: {
-          ...prev.event_data,
-          start: stackDatesToOne(
-            value,
-            new Date(prev.event_data.start),
-            true
-          ).toISOString(),
-        },
-      };
+      try {
+        if (!value) return prev;
+        return {
+          ...prev,
+          event_data: {
+            ...prev.event_data,
+            start: stackDatesToOne(
+              value,
+              new Date(prev.event_data.start),
+              true
+            ).toISOString(),
+          },
+        };
+      } catch (e) {
+        return prev;
+      }
     });
   }, []);
 
   const handleChangeEventStartTime = useCallback((value: Date) => {
     setLocalEvent((prev) => {
-      return {
-        ...prev,
-        event_data: {
-          ...prev.event_data,
-          start: stackDatesToOne(
-            new Date(prev.event_data.start),
-            value,
-            true
-          ).toISOString(),
-        },
-      };
+      try {
+        if (!value) return prev;
+        return {
+          ...prev,
+          event_data: {
+            ...prev.event_data,
+            start: stackDatesToOne(
+              new Date(prev.event_data.start),
+              value,
+              true
+            ).toISOString(),
+          },
+        };
+      } catch (e) {
+        return prev;
+      }
     });
   }, []);
 
   const handleChangeEventEndDate = useCallback((value: Date) => {
     setLocalEvent((prev) => {
-      return {
-        ...prev,
-        event_data: {
-          ...prev.event_data,
-          end: stackDatesToOne(
-            value,
-            new Date(prev.event_data.end),
-            true
-          ).toISOString(),
-        },
-      };
+      try {
+        if (!value) return prev;
+        return {
+          ...prev,
+          event_data: {
+            ...prev.event_data,
+            end: stackDatesToOne(
+              value,
+              new Date(prev.event_data.end),
+              true
+            ).toISOString(),
+          },
+        };
+      } catch (e) {
+        return prev;
+      }
     });
   }, []);
 
   const handleChangeEventEndTime = useCallback((value: Date) => {
     setLocalEvent((prev) => {
-      return {
-        ...prev,
-        event_data: {
-          ...prev.event_data,
-          end: stackDatesToOne(
-            new Date(prev.event_data.start),
-            value,
-            true
-          ).toISOString(),
-        },
-      };
+      try {
+        if (!value) return prev;
+        return {
+          ...prev,
+          event_data: {
+            ...prev.event_data,
+            end: stackDatesToOne(
+              new Date(prev.event_data.start),
+              value,
+              true
+            ).toISOString(),
+          },
+        };
+      } catch (e) {
+        return prev;
+      }
     });
   }, []);
 

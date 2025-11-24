@@ -1,4 +1,4 @@
-import { cloneElement } from 'react';
+import { cloneElement, useEffect } from 'react';
 import { Box } from '@mui/material';
 import { IconCheck, IconClose, IconDelete } from '@components/icons';
 import { useAppTranslation, useBreakpoints } from '@hooks/index';
@@ -39,6 +39,10 @@ const EditUpcomingEvent = (props: EditUpcomingEventProps) => {
     handleChangeEventEndDate,
     handleChangeEventEndTime,
   } = useEditUpcomingEvent(props);
+
+  useEffect(() => {
+    console.log('Local Event Updated:', localEvent.event_data.start);
+  }, [localEvent]);
 
   return (
     <Box
@@ -185,21 +189,33 @@ const EditUpcomingEvent = (props: EditUpcomingEventProps) => {
               <DatePicker
                 label={t('tr_date')}
                 onChange={handleChangeEventStartDate}
-                value={new Date(localEvent.event_data.start)}
+                value={
+                  localEvent.event_data.start === null
+                    ? null
+                    : new Date(localEvent.event_data.start)
+                }
               />
               <TimePicker
                 onChange={handleChangeEventStartTime}
                 label={t('tr_startTime')}
                 ampm={!hour24}
                 sx={{ minWidth: hour24 ? '140px' : '150px' }}
-                value={new Date(localEvent.event_data.start)}
+                value={
+                  localEvent.event_data.start == null
+                    ? null
+                    : new Date(localEvent.event_data.start)
+                }
               />
               <TimePicker
                 onChange={handleChangeEventEndTime}
                 label={t('tr_endTime')}
                 ampm={!hour24}
                 sx={{ minWidth: hour24 ? '140px' : '150px' }}
-                value={new Date(localEvent.event_data.end)}
+                value={
+                  localEvent.event_data.end == null
+                    ? null
+                    : new Date(localEvent.event_data.end)
+                }
               />
             </>
           ) : (
@@ -207,12 +223,20 @@ const EditUpcomingEvent = (props: EditUpcomingEventProps) => {
               <DatePicker
                 label={t('tr_startDate')}
                 onChange={handleChangeEventStartDate}
-                value={new Date(localEvent.event_data.start)}
+                value={
+                  localEvent.event_data.start == null
+                    ? null
+                    : new Date(localEvent.event_data.start)
+                }
               />
               <DatePicker
                 label={t('tr_endDate')}
                 onChange={handleChangeEventEndDate}
-                value={new Date(localEvent.event_data.end)}
+                value={
+                  localEvent.event_data.end == null
+                    ? null
+                    : new Date(localEvent.event_data.end)
+                }
               />
             </>
           )}

@@ -110,17 +110,23 @@ const useFieldServiceMeetingForm = ({ data, onSave }) => {
 
   // Only update date and time separately
   const handleChangeDate = useCallback((dateValue: Date) => {
-    setLocalMeeting((prev) => ({
-      ...prev,
-      meeting_data: {
-        ...prev.meeting_data,
-        date: stackDatesToOne(
-          dateValue,
-          new Date(prev.meeting_data.date),
-          true
-        ).toISOString(),
-      },
-    }));
+    setLocalMeeting((prev) => {
+      try {
+        return {
+          ...prev,
+          meeting_data: {
+            ...prev.meeting_data,
+            date: stackDatesToOne(
+              dateValue,
+              new Date(prev.meeting_data.date),
+              true
+            ).toISOString(),
+          },
+        };
+      } catch {
+        return prev;
+      }
+    });
   }, []);
 
   const handleChangeTime = useCallback((timeValue: Date) => {
