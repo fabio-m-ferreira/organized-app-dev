@@ -161,5 +161,6 @@
   "tr_material": "Material",
   "tr_time": "Time",
   "tr_house": "House",
-  "tr_location": "Location"
+  "tr_location": "Location",
+  "tr_clearCookies": "Clear Cookies"
 }

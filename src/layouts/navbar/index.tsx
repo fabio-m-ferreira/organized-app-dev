@@ -19,6 +19,7 @@ import {
   IconArrowLink,
   IconLogout,
   IconRefresh,
+  IconDelete,
 } from '@icons/index';
 import { useAppTranslation, useFirebaseAuth } from '@hooks/index';
 import { APP_ENVIRONMENT, isTest } from '@constants/index';
@@ -81,6 +82,7 @@ const NavBar = ({ isSupported }: NavBarType) => {
     congName,
     fullname,
     isOffline,
+    handleClearCookies,
   } = useNavbar();
 
   return (
@@ -397,6 +399,27 @@ const NavBar = ({ isSupported }: NavBarType) => {
                       </MenuItem>
                     )}
 
+                  <MenuItem
+                    disableRipple
+                    sx={menuStyle}
+                    onClick={handleClearCookies}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        '&.MuiListItemIcon-root': {
+                          width: '24px',
+                          minWidth: '24px !important',
+                        },
+                      }}
+                    >
+                      <IconDelete color="var(--black)" />
+                    </ListItemIcon>
+                    <ListItemText>
+                      <Typography className="body-regular">
+                        {t('tr_clearCookies')}
+                      </Typography>
+                    </ListItemText>
+                  </MenuItem>
                   {isAuthenticated && (
                     <MenuItem
                       disableRipple
