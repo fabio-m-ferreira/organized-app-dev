@@ -37,6 +37,7 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
     handleHideAddMeetingBox,
     handleShowAddMeetingBox,
     addMeetingBoxShow,
+    getPersonDisplay,
   } = useFieldServiceMeetings();
 
   const { handleDeleteMeeting } = useFieldServiceMeetingForm({
@@ -44,7 +45,7 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
     onSave: handleSaveMeeting,
   });
 
-  const { isFieldServiceEditor } = useCurrentUser();
+  const { isFieldServiceEditor, person: currentUser } = useCurrentUser();
 
   const allGroups = useAtomValue(fieldWithLanguageGroupsState);
   const groupNames = allGroups.map((g) => g.group_data.name);
@@ -236,7 +237,16 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
         >
           <Typography className="h4">
             <Box component="span" display="flex" alignItems="center" gap="4px">
-              <IconTalk color="var(--grey-400)" /> {conductor}
+              <IconTalk color="var(--grey-400)" />
+              <span
+                style={
+                  currentUser && conductor === currentUser.person_uid
+                    ? { fontWeight: 700, color: 'var(--primary-600)' }
+                    : undefined
+                }
+              >
+                {getPersonDisplay(conductor)}
+              </span>
             </Box>
           </Typography>
           {type === 'joint' && assistant && (
@@ -246,8 +256,21 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
                 display="flex"
                 alignItems="center"
                 gap="4px"
+                sx={
+                  currentUser && assistant === currentUser.person_uid
+                    ? {
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        borderRadius: 'var(--radius-s)',
+                        border: '1px solid var(--accent-click)',
+                        backgroundColor: 'var(--accent-150)',
+                        padding: '4px 8px',
+                      }
+                    : undefined
+                }
               >
-                <IconVisitors color="var(--grey-400)" /> {assistant}
+                <IconVisitors color="var(--grey-400)" />
+                <span>{getPersonDisplay(assistant)}</span>
               </Box>
             </Typography>
           )}

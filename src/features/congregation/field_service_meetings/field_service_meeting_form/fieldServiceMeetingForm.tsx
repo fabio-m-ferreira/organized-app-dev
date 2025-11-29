@@ -46,27 +46,34 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
 
   // Get all groups and persons
   const { groups_list } = useFieldServiceGroups();
+
   const { getAppointedBrothers } = usePersons();
   const currentMonth = formatDate(new Date(), 'yyyy/MM');
   const appointedBrothers = getAppointedBrothers(currentMonth);
 
-  const brotherOptions: string[] = appointedBrothers.map((person) =>
-    buildPersonFullname(
+  // Build options as { id: person_uid, label: full name }
+  const brotherOptions = appointedBrothers.map((person) => ({
+    id: person.person_uid,
+    label: buildPersonFullname(
       person.person_data.person_lastname.value,
       person.person_data.person_firstname.value
-    )
-  );
+    ),
+  }));
 
   const locationValue = localMeeting.meeting_data.location ?? '';
 
   // Prevent duplicates in conductor/assistant
-  const conductorValue = localMeeting.meeting_data.conductor ?? '';
-  const assistantValue = localMeeting.meeting_data.assistant ?? '';
+  const conductorId = localMeeting.meeting_data.conductor ?? '';
+  const assistantId = localMeeting.meeting_data.assistant ?? '';
+  const conductorValue =
+    brotherOptions.find((o) => o.id === conductorId) || null;
+  const assistantValue =
+    brotherOptions.find((o) => o.id === assistantId) || null;
   const conductorOptions = brotherOptions.filter(
-    (name) => name !== assistantValue
+    (option) => option.id !== assistantId
   );
   const assistantOptions = brotherOptions.filter(
-    (name) => name !== conductorValue
+    (option) => option.id !== conductorId
   );
 
   // Get all group names from field service groups
@@ -136,7 +143,23 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
           label={t('tr_conductor')}
           value={conductorValue}
           options={conductorOptions}
-          onChange={handleChangeConductor}
+          getOptionLabel={(option) =>
+            typeof option === 'object' && option !== null ? option.label : ''
+          }
+          isOptionEqualToValue={(option, value) =>
+            typeof option === 'object' &&
+            option !== null &&
+            typeof value === 'object' &&
+            value !== null &&
+            option.id === value.id
+          }
+          onChange={(_, value) => {
+            if (value && !Array.isArray(value) && typeof value === 'object') {
+              handleChangeConductor(null, value.id);
+            } else {
+              handleChangeConductor(null, '');
+            }
+          }}
           error={errors.conductor}
           helperText={errors.conductor && t('tr_fillRequiredField')}
           endIcon={<IconSearch />}
@@ -146,7 +169,23 @@ const FieldServiceMeetingForm = (props: FieldServiceMeetingFormProps) => {
             label={t('tr_assistant')}
             value={assistantValue}
             options={assistantOptions}
-            onChange={handleChangeAssistant}
+            getOptionLabel={(option) =>
+              typeof option === 'object' && option !== null ? option.label : ''
+            }
+            isOptionEqualToValue={(option, value) =>
+              typeof option === 'object' &&
+              option !== null &&
+              typeof value === 'object' &&
+              value !== null &&
+              option.id === value.id
+            }
+            onChange={(_, value) => {
+              if (value && !Array.isArray(value) && typeof value === 'object') {
+                handleChangeAssistant(null, value.id);
+              } else {
+                handleChangeAssistant(null, '');
+              }
+            }}
             endIcon={<IconSearch />}
           />
         )}

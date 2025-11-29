@@ -17,8 +17,8 @@ export type FieldServiceMeetingDataType = {
     date: string;
     type: MeetingType; // for each type theres a different badge
     group?: string; // Only required if type === "group"
-    conductor: string;
-    assistant?: string; // Only required if type === "joint"
+    conductor: string; // person_uid of conductor
+    assistant?: string; // person_uid of assistant, only required if type === "joint"
     location?: string; // Only required if type === "group"
     materials: string;
   };

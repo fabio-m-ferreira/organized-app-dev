@@ -11,6 +11,8 @@ import {
   currentMonthServiceYear,
 } from '@utils/date';
 import { congAccountConnectedState } from '@states/app';
+import { personsActiveState } from '@states/persons';
+import { buildPersonFullname } from '@utils/common';
 
 const useFieldServiceMeetings = () => {
   const isConnected = useAtomValue(congAccountConnectedState);
@@ -98,6 +100,21 @@ const useFieldServiceMeetings = () => {
     }
   };
 
+  const persons = useAtomValue(personsActiveState);
+
+  // Helper to get display name from person_uid or fallback to string
+  const getPersonDisplay = (value: string) => {
+    if (!value) return '';
+    const person = persons.find((p) => p.person_uid === value);
+    if (person) {
+      return buildPersonFullname(
+        person.person_data.person_lastname.value,
+        person.person_data.person_firstname.value
+      );
+    }
+    return value;
+  };
+
   return {
     monthsTab,
     handleMonthChange,
@@ -113,6 +130,7 @@ const useFieldServiceMeetings = () => {
     handleOpenPublish,
     handleClosePublish,
     isConnected,
+    getPersonDisplay,
   };
 };
 

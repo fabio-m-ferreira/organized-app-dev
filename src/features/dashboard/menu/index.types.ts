@@ -1,10 +1,10 @@
-import { ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 
 export type DashboardMenuProps = {
   icon: ReactElement;
   primaryText: string;
   secondaryText?: string;
-  badgeText?: string;
+  badgeText?: string | ReactElement;
   hoverColor?: string;
   accentHoverColor?: string;
   activeColor?: string;

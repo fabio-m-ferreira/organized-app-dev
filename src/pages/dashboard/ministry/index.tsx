@@ -1,4 +1,4 @@
-import { ListItem } from '@mui/material';
+import { Box, CircularProgress, ListItem } from '@mui/material';
 import {
   IconFootprint,
   IconMinistryReport,
@@ -44,7 +44,23 @@ const MinistryCard = () => {
       <ListItem disablePadding>
         <DashboardMenu
           icon={<IconFootprint color="var(--black)" />}
-          primaryText={t('tr_fieldServiceMeetings')}
+          primaryText={t('tr_fieldServiceMeetingsShort')}
+          badgeText={
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '2px 0px',
+              }}
+            >
+              <CircularProgress
+                size={14}
+                thickness={6}
+                sx={{ color: 'var(--accent-dark)' }}
+              />
+            </Box>
+          }
           path="/field-service-meetings"
         />
       </ListItem>

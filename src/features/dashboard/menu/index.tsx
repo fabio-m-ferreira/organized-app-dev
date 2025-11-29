@@ -86,34 +86,43 @@ const DashboardMenu = (props: DashboardMenuProps) => {
                 )}
               </Box>
               {props.actionComponent ? props.actionComponent : null}
-              {props.badgeText && props.badgeText.length > 0 && (
-                <Box
-                  className="menu-secondary"
-                  sx={{
-                    padding: '2px 12px',
-                    borderRadius: 'var(--radius-xxl)',
-                    background: isNegativeBadge
-                      ? 'var(--red-secondary)'
-                      : isGroup
+              {props.badgeText &&
+                (typeof props.badgeText === 'string'
+                  ? props.badgeText.length > 0
+                  : true) && (
+                  <Box
+                    className="menu-secondary"
+                    sx={{
+                      padding: '2px 12px',
+                      borderRadius: 'var(--radius-xxl)',
+                      background: isNegativeBadge
                         ? 'var(--red-secondary)'
-                        : 'var(--accent-150)',
-                  }}
-                >
-                  <Typography
-                    className="body-small-semibold"
-                    color={
-                      isNegativeBadge
-                        ? 'var(--red-dark)'
                         : isGroup
-                          ? 'var(--red-dark)'
-                          : 'var(--accent-dark)'
-                    }
-                    sx={{ textAlign: 'center' }}
+                          ? 'var(--red-secondary)'
+                          : 'var(--accent-150)',
+                    }}
                   >
-                    {props.badgeText}
-                  </Typography>
-                </Box>
-              )}
+                    <Typography
+                      className="body-small-semibold"
+                      color={
+                        isNegativeBadge
+                          ? 'var(--red-dark)'
+                          : isGroup
+                            ? 'var(--red-dark)'
+                            : 'var(--accent-dark)'
+                      }
+                      sx={{
+                        display: 'flex',
+                        height: '100%',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                      }}
+                    >
+                      {props.badgeText}
+                    </Typography>
+                  </Box>
+                )}
             </Box>
           }
         />

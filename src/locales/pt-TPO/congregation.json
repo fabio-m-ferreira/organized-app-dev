@@ -499,6 +499,7 @@
   "tr_setPersonToFamilyHead": "Definir esta pessoa como cabeça de família para add aos membros da família",
   "tr_personAlreadyMemberOfFamily": "Esta pessoa é membro da família <strong>{{ familyHead }}</strong>. Para editar os membros da família, aceda ao perfil do cabeça de família.",
   "tr_fieldServiceMeetings": "Saídas ao serviço de campo",
+  "tr_fieldServiceMeetingsShort": "Saídas ao campo",
   "tr_noFieldServiceMeetings": "Não existem saídas para o serviço de campo com os filtros ou mês selecionados. Tente mudar o filtro ou o mês.",
   "tr_addToCalendar": "Adicionar ao calendário",
   "tr_location": "Localização",
