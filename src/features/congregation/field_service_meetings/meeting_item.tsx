@@ -71,6 +71,15 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
     );
   }
 
+  const highlightRoleStyle = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    borderRadius: 'var(--radius-s)',
+    border: '1px solid var(--accent-click)',
+    backgroundColor: 'var(--accent-150)',
+    padding: '4px 8px',
+  };
+
   return (
     <Box
       className="meeting-item"
@@ -236,17 +245,19 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
           }}
         >
           <Typography className="h4">
-            <Box component="span" display="flex" alignItems="center" gap="4px">
+            <Box
+              component="span"
+              display="flex"
+              alignItems="center"
+              gap="4px"
+              sx={
+                currentUser && conductor === currentUser.person_uid
+                  ? highlightRoleStyle
+                  : undefined
+              }
+            >
               <IconTalk color="var(--grey-400)" />
-              <span
-                style={
-                  currentUser && conductor === currentUser.person_uid
-                    ? { fontWeight: 700, color: 'var(--primary-600)' }
-                    : undefined
-                }
-              >
-                {getPersonDisplay(conductor)}
-              </span>
+              <span>{getPersonDisplay(conductor)}</span>
             </Box>
           </Typography>
           {type === 'joint' && assistant && (
@@ -258,14 +269,7 @@ const MeetingItem = (data: FieldServiceMeetingDataType) => {
                 gap="4px"
                 sx={
                   currentUser && assistant === currentUser.person_uid
-                    ? {
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        borderRadius: 'var(--radius-s)',
-                        border: '1px solid var(--accent-click)',
-                        backgroundColor: 'var(--accent-150)',
-                        padding: '4px 8px',
-                      }
+                    ? highlightRoleStyle
                     : undefined
                 }
               >

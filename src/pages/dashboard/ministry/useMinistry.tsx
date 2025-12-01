@@ -1,5 +1,8 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useCurrentUser } from '@hooks/index';
+import { useAtomValue } from 'jotai';
+import { fieldServiceMeetingsState } from '@states/field_service_meetings';
+import { getDayDate } from '@utils/date';
 import {
   personIsAP,
   personIsFMF,
@@ -12,6 +15,41 @@ import usePioneerStats from '@features/ministry/service_year/yearly_stats/pionee
 
 const useMinistry = () => {
   const { person, enable_AP_application } = useCurrentUser();
+  const meetings = useAtomValue(fieldServiceMeetingsState);
+  // State for async field service meeting count
+  const [meetingCount, setMeetingCount] = useState<number | null>(null);
+  const [meetingCountLoading, setMeetingCountLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function calculateMeetingCount() {
+      if (!person) {
+        setMeetingCount(null);
+        setMeetingCountLoading(false);
+        return;
+      }
+      const now = getDayDate();
+      // Only count meetings today or in the future
+      const count = meetings.filter((m) => {
+        if (!m.meeting_data) return false;
+        const isUser =
+          m.meeting_data.conductor === person.person_uid ||
+          m.meeting_data.assistant === person.person_uid;
+        if (!isUser) return false;
+        const meetingDate = new Date(m.meeting_data.date.replace(/\//g, '-'));
+        return meetingDate >= now;
+      }).length;
+      if (isMounted) {
+        setMeetingCount(count);
+        setMeetingCountLoading(false);
+      }
+    }
+    setMeetingCountLoading(true);
+    calculateMeetingCount();
+    return () => {
+      isMounted = false;
+    };
+  }, [person, meetings]);
 
   const currentMonth = useMemo(() => {
     return currentMonthServiceYear();
@@ -53,6 +91,8 @@ const useMinistry = () => {
     hours,
     hours_balance: String(hours_balance),
     enable_AP_application,
+    fieldServiceMeetingCount: meetingCount,
+    fieldServiceMeetingCountLoading: meetingCountLoading,
   };
 };
 

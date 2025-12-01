@@ -14,8 +14,14 @@ import MinistryTimer from '@features/ministry/report/ministry_timer';
 const MinistryCard = () => {
   const { t } = useAppTranslation();
 
-  const { isPioneer, enable_AP_application, hours, hours_balance } =
-    useMinistry();
+  const {
+    isPioneer,
+    enable_AP_application,
+    hours,
+    hours_balance,
+    fieldServiceMeetingCount,
+    fieldServiceMeetingCountLoading,
+  } = useMinistry();
 
   return (
     <DashboardCard header={t('tr_ministry')}>
@@ -46,20 +52,24 @@ const MinistryCard = () => {
           icon={<IconFootprint color="var(--black)" />}
           primaryText={t('tr_fieldServiceMeetingsShort')}
           badgeText={
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '2px 0px',
-              }}
-            >
-              <CircularProgress
-                size={14}
-                thickness={6}
-                sx={{ color: 'var(--accent-dark)' }}
-              />
-            </Box>
+            fieldServiceMeetingCountLoading ? (
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '2px 0px',
+                }}
+              >
+                <CircularProgress
+                  size={14}
+                  thickness={6}
+                  sx={{ color: 'var(--accent-dark)' }}
+                />
+              </Box>
+            ) : fieldServiceMeetingCount && fieldServiceMeetingCount > 0 ? (
+              `${fieldServiceMeetingCount}`
+            ) : null
           }
           path="/field-service-meetings"
         />
