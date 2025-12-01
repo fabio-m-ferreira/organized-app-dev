@@ -26,13 +26,21 @@ export const JointWeekData = ({
     });
   };
 
-  // Filter meetings by type
-  const jointMeetings = meetings.filter(
-    (meeting) => meeting.meeting_data.type === 'joint'
-  );
-  const zoomMeetings = meetings.filter(
-    (meeting) => meeting.meeting_data.type === 'zoom'
-  );
+  // Filter meetings by type and sort by date
+  const jointMeetings = meetings
+    .filter((meeting) => meeting.meeting_data.type === 'joint')
+    .sort(
+      (a, b) =>
+        new Date(a.meeting_data.date).getTime() -
+        new Date(b.meeting_data.date).getTime()
+    );
+  const zoomMeetings = meetings
+    .filter((meeting) => meeting.meeting_data.type === 'zoom')
+    .sort(
+      (a, b) =>
+        new Date(a.meeting_data.date).getTime() -
+        new Date(b.meeting_data.date).getTime()
+    );
 
   // Table rendering helper
   const renderTable = (title, filteredMeetings) => (

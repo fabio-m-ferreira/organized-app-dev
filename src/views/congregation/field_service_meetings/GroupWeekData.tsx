@@ -53,7 +53,12 @@ export const GroupWeekData = ({
   // Sort each day's meetings by group order
   let groupMeetings: FieldServiceMeetingDataType[] = [];
   Object.keys(meetingsByDay)
-    .sort() // sort days ascending
+    .sort((a, b) => {
+      // Sort by actual date value, not string
+      const aDate = new Date(a);
+      const bDate = new Date(b);
+      return aDate.getTime() - bDate.getTime();
+    })
     .forEach((dayKey) => {
       const meetings = meetingsByDay[dayKey];
       meetings.sort((a, b) => {
