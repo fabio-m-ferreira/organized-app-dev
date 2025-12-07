@@ -232,7 +232,7 @@ const ScheduleItem = (props: ScheduleItemType) => {
             <TimePicker
               readOnly={schedule.synced}
               ampm={!use24hFormat}
-              label={t('tr_timerLabelTime')}
+              label={t('tr_time')}
               value={meetingTime}
               onChange={handleMeetingTimeChange}
               sx={{ flex: 0.5 }}
@@ -284,7 +284,7 @@ const ScheduleItem = (props: ScheduleItemType) => {
             <TimePicker
               readOnly={schedule.synced}
               ampm={!use24hFormat}
-              label={t('tr_timerLabelTime')}
+              label={t('tr_time')}
               value={meetingTime}
               onChange={handleMeetingTimeChange}
             />
