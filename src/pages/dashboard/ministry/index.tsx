@@ -53,20 +53,17 @@ const MinistryCard = () => {
           primaryText={t('tr_fieldServiceMeetingsShort')}
           badgeText={
             fieldServiceMeetingCountLoading ? (
-              <Box
+              <CircularProgress
+                size={14}
+                thickness={6}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   padding: '2px 0px',
+                  color: 'var(--accent-dark)',
                 }}
-              >
-                <CircularProgress
-                  size={14}
-                  thickness={6}
-                  sx={{ color: 'var(--accent-dark)' }}
-                />
-              </Box>
+              />
             ) : fieldServiceMeetingCount && fieldServiceMeetingCount > 0 ? (
               `${fieldServiceMeetingCount}`
             ) : null
