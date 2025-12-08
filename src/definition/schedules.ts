@@ -8,6 +8,7 @@ export type S89TemplateType = 'S89_1x1' | 'S89_4x1';
 export type AssignmentCongregation = {
   type: string;
   name: string;
+  congregation_name?: string;
   value: string;
   updatedAt: string;
   solo?: boolean;

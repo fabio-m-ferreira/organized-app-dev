@@ -113,11 +113,11 @@ const usePersonComponent = ({
           (record) => record.person_uid === assigned?.value
         );
 
-        const cong = congregations.find(
-          (record) => record.id === speaker.speaker_data.cong_id
-        );
-
         if (speaker) {
+          const cong = congregations.find(
+            (record) => record.id === speaker.speaker_data.cong_id
+          );
+
           return {
             name: speakerGetDisplayName(
               speaker,
@@ -129,6 +129,12 @@ const usePersonComponent = ({
             cong_name: cong?.cong_data.cong_name.value || '',
           };
         }
+        return {
+          name: assigned.name,
+          female: false,
+          active: false,
+          cong_name: assigned.congregation_name,
+        };
       }
 
       const person = persons.find(

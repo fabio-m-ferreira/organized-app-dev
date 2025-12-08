@@ -1,4 +1,4 @@
-import { Box, CircularProgress, ListItem } from '@mui/material';
+import { CircularProgress, ListItem } from '@mui/material';
 import {
   IconFootprint,
   IconMinistryReport,

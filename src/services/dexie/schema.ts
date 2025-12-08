@@ -175,7 +175,15 @@ export const scheduleSchema: SchedWeekType = {
     opening_prayer: [{ type: 'main', value: '', name: '', updatedAt: '' }],
     public_talk_type: [{ type: 'main', value: 'localSpeaker', updatedAt: '' }],
     speaker: {
-      part_1: [{ type: 'main', value: '', name: '', updatedAt: '' }],
+      part_1: [
+        {
+          type: 'main',
+          value: '',
+          name: '',
+          congregation_name: '',
+          updatedAt: '',
+        },
+      ],
       part_2: [{ type: 'main', value: '', name: '', updatedAt: '' }],
       substitute: [{ type: 'main', value: '', name: '', updatedAt: '' }],
     },

@@ -233,6 +233,11 @@ const useSchedulePublish = ({ type, onClose }: SchedulePublishProps) => {
             const speaker = incomingSpeakers.find(
               (record) => record.person_uid === speakerSchedule.value
             );
+
+            const congregation = congregations.find(
+              (record) => record.id === speaker?.speaker_data.cong_id
+            );
+
             speakerSchedule.name = !speaker
               ? ''
               : speakerGetDisplayName(
@@ -240,6 +245,10 @@ const useSchedulePublish = ({ type, onClose }: SchedulePublishProps) => {
                   displayNameEnabled,
                   fullnameOption
                 );
+
+            speakerSchedule.congregation_name = congregation
+              ? congregation.cong_data.cong_name.value
+              : '';
           }
         }
       }
@@ -306,7 +315,7 @@ const useSchedulePublish = ({ type, onClose }: SchedulePublishProps) => {
         (record) => record.id === speaker?.speaker_data.cong_id
       );
 
-      if (congregation?.cong_data.cong_id.length > 0) {
+      if (congregation?.id.length > 0) {
         const source = sources.find(
           (record) => record.weekOf === schedule.weekOf
         );
@@ -315,7 +324,7 @@ const useSchedulePublish = ({ type, onClose }: SchedulePublishProps) => {
 
         obj.weekOf = schedule.weekOf;
         obj.sender = congID;
-        obj.recipient = congregation.cong_data.cong_id;
+        obj.recipient = congregation.id;
         obj._deleted = false;
         obj.id = assigned.value;
         obj.opening_song = getUserDataView(
@@ -347,7 +356,6 @@ const useSchedulePublish = ({ type, onClose }: SchedulePublishProps) => {
         talks.push(obj);
       }
     }
-
     return talks;
   };
 
@@ -404,7 +412,6 @@ const useSchedulePublish = ({ type, onClose }: SchedulePublishProps) => {
           schedulesPublish = handleFilterOutgoingTalks(schedulesPrePublish);
           talksPublish = handleGetIncomingTalks(schedulesPublish);
         }
-
         const { status, message } = await apiPublishSchedule(
           sourcesPublish,
           schedulesPublish,
