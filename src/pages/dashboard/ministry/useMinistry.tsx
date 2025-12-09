@@ -30,15 +30,24 @@ const useMinistry = () => {
       }
       const now = getDayDate();
       // Only count meetings today or in the future
-      const count = meetings.filter((m) => {
-        if (!m.meeting_data) return false;
+      let groupCount = 0;
+      let normalCount = 0;
+      meetings.forEach((m) => {
+        if (!m.meeting_data) return;
         const isUser =
           m.meeting_data.conductor === person.person_uid ||
           m.meeting_data.assistant === person.person_uid;
-        if (!isUser) return false;
+        if (!isUser) return;
         const meetingDate = new Date(m.meeting_data.date.replace(/\//g, '-'));
-        return meetingDate >= now;
-      }).length;
+        if (meetingDate < now) return;
+        if (m.meeting_data.type === 'group') {
+          groupCount++;
+        } else {
+          normalCount++;
+        }
+      });
+      // Divide group meetings by 2 to avoid double counting
+      const count = normalCount + Math.floor(groupCount / 2);
       if (isMounted) {
         setMeetingCount(count);
         setMeetingCountLoading(false);
