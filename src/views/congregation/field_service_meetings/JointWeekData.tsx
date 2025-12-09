@@ -4,9 +4,11 @@ import { View, Text } from '@react-pdf/renderer';
 export const JointWeekData = ({
   meetings,
   lang,
+  getPersonDisplay,
 }: {
   meetings: FieldServiceMeetingDataType[];
   lang: string;
+  getPersonDisplay: (value: string) => string;
 }) => {
   const formatDate = (dateStr, lang) => {
     const dateObj = new Date(dateStr);
@@ -175,7 +177,7 @@ export const JointWeekData = ({
                   }}
                 >
                   <Text style={{ fontSize: 10, padding: 4 }}>
-                    {m.conductor || '-'}
+                    {getPersonDisplay(m.conductor) || m.conductor || '-'}
                   </Text>
                 </View>
                 {/* Only show 'Ajudante' for non-zoom tables */}
@@ -191,7 +193,7 @@ export const JointWeekData = ({
                     }}
                   >
                     <Text style={{ fontSize: 10, padding: 4 }}>
-                      {m.assistant || '-'}
+                      {getPersonDisplay(m.assistant) || m.assistant || '-'}
                     </Text>
                   </View>
                 )}

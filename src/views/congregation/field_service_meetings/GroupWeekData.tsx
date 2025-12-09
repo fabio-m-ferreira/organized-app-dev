@@ -6,10 +6,12 @@ export const GroupWeekData = ({
   meetings,
   lang,
   groupsList,
+  getPersonDisplay,
 }: {
   meetings: FieldServiceMeetingDataType[];
   lang: string;
   groupsList: FieldServiceGroupType[];
+  getPersonDisplay: (value: string) => string;
 }) => {
   const allGroups = groupsList;
   // Get group names from global state
@@ -204,7 +206,9 @@ export const GroupWeekData = ({
                     ...cellBorder,
                   }}
                 >
-                  <Text style={{ fontSize: 10 }}>{m.conductor || '-'}</Text>
+                  <Text style={{ fontSize: 10 }}>
+                    {getPersonDisplay(m.conductor) || m.conductor || '-'}
+                  </Text>
                 </View>
                 {/* Local cell */}
                 <View

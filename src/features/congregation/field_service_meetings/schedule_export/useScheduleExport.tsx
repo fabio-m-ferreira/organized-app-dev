@@ -10,6 +10,8 @@ import { fieldWithLanguageGroupsState } from '@states/field_service_groups';
 import { JWLangLocaleState } from '@states/settings';
 import { fieldServiceMeetingsState } from '@states/field_service_meetings';
 import { FieldServiceMeetingDataType } from '@definition/field_service_meetings';
+import { personsActiveState } from '@states/persons';
+import { buildPersonFullname } from '@utils/common';
 
 import { getBaseList, getSchedulesList } from '../getSchedulesList';
 import saveAs from 'file-saver';
@@ -29,6 +31,20 @@ const useScheduleExport = (onClose: ScheduleExportType['onClose']) => {
   });
 
   const allGroups = useAtomValue(fieldWithLanguageGroupsState);
+  const persons = useAtomValue(personsActiveState);
+
+  // Helper to get display name from person_uid or fallback to string
+  const getPersonDisplay = (value: string) => {
+    if (!value) return '';
+    const person = persons.find((p) => p.person_uid === value);
+    if (person) {
+      return buildPersonFullname(
+        person.person_data.person_lastname.value,
+        person.person_data.person_firstname.value
+      );
+    }
+    return value;
+  };
   // Selection logic (same as publish)
   const handleCheckedChange = (checked: boolean, value: string) => {
     if (isProcessing) return;
@@ -81,6 +97,7 @@ const useScheduleExport = (onClose: ScheduleExportType['onClose']) => {
           data={meetingData}
           lang={sourceLang}
           groupsList={allGroups}
+          getPersonDisplay={getPersonDisplay}
         />
       ).toBlob();
 

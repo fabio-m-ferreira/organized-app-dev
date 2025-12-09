@@ -13,7 +13,10 @@ const FieldServiceMeetingTemplate = ({
   data,
   lang,
   groupsList,
-}: FieldServiceMeetingTemplateType) => {
+  getPersonDisplay,
+}: FieldServiceMeetingTemplateType & {
+  getPersonDisplay: (value: string) => string;
+}) => {
   if (!Array.isArray(data) || data.length === 0) return null;
 
   // Separate meetings
@@ -28,11 +31,20 @@ const FieldServiceMeetingTemplate = ({
     <Document title={`Field Service Meeting Schedule (${lang})`}>
       <Page size="A4" style={[styles.page]}>
         <Header monthDate={firstMeetingDate} />
-        <JointWeekData meetings={jointMeetings} lang={lang} />
+        <JointWeekData
+          meetings={jointMeetings}
+          lang={lang}
+          getPersonDisplay={getPersonDisplay}
+        />
       </Page>
       <Page size="A4" style={[styles.page]}>
         <Header monthDate={firstMeetingDate} />
-        <GroupWeekData meetings={data} lang={lang} groupsList={groupsList} />
+        <GroupWeekData
+          meetings={data}
+          lang={lang}
+          groupsList={groupsList}
+          getPersonDisplay={getPersonDisplay}
+        />
       </Page>
     </Document>
   );
