@@ -129,15 +129,16 @@ export const GroupWeekData = ({
           >
             Dirigente
           </Text>
-          <Text
-            style={{ flex: 1, fontSize: 10, fontWeight: 'bold', padding: 4 }}
-          >
-            Local
-          </Text>
+
           <Text
             style={{ flex: 2.2, fontSize: 10, fontWeight: 'bold', padding: 4 }}
           >
             Matéria
+          </Text>
+          <Text
+            style={{ flex: 1, fontSize: 10, fontWeight: 'bold', padding: 4 }}
+          >
+            Local
           </Text>
           <Text
             style={{ flex: 1, fontSize: 10, fontWeight: 'bold', padding: 4 }}
@@ -210,6 +211,19 @@ export const GroupWeekData = ({
                     {getPersonDisplay(m.conductor) || m.conductor || '-'}
                   </Text>
                 </View>
+
+                {/* Matéria cell */}
+                <View
+                  style={{
+                    flex: 2.2,
+                    padding: 4,
+                    height: '100%',
+                    justifyContent: 'center',
+                    ...cellBorder,
+                  }}
+                >
+                  <Text style={{ fontSize: 10 }}>{m.materials || '-'}</Text>
+                </View>
                 {/* Local cell */}
                 <View
                   style={{
@@ -223,18 +237,6 @@ export const GroupWeekData = ({
                   <Text style={{ fontSize: 10 }}>
                     {m.location || 'Salão do Reino'}
                   </Text>
-                </View>
-                {/* Matéria cell */}
-                <View
-                  style={{
-                    flex: 2.2,
-                    padding: 4,
-                    height: '100%',
-                    justifyContent: 'center',
-                    ...cellBorder,
-                  }}
-                >
-                  <Text style={{ fontSize: 10 }}>{m.materials || '-'}</Text>
                 </View>
                 {/* Grupo cell */}
                 <View
