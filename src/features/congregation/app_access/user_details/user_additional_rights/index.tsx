@@ -21,6 +21,8 @@ const UserAdditionalRights = () => {
     handleToggleWeekend,
     isFieldService,
     handleToggleFieldService,
+    isDuties,
+    handleToggleDuties,
   } = useUserAdditionalRights();
 
   return (
@@ -60,6 +62,13 @@ const UserAdditionalRights = () => {
           readOnly={isProcessing}
           checked={isPublicTalk}
           onChange={handleTogglePublicTalk}
+        />
+
+        <SwitchWithLabel
+          label={t('tr_meetingDutiesScheduling')}
+          readOnly={isProcessing}
+          checked={isDuties}
+          onChange={handleToggleDuties}
         />
 
         <SwitchWithLabel

@@ -168,7 +168,9 @@ const useMeetingPart = ({ week, type, dataView }: MeetingPartType) => {
       current.value = secondaryOverwrite;
 
       await dbSourcesUpdate(week, {
-        'midweek_meeting.lc_part2.desc.override': lcPartDesc,
+        // Replace with the correct property path as defined in UpdateSpec<SourceWeekType>
+        // For example, if the correct path is 'midweek_meeting.lc_part2.descOverride':
+        'midweek_meeting.lc_part2.descOverride': lcPartDesc,
       });
     }
 

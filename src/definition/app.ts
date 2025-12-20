@@ -49,7 +49,7 @@ export type BadgeColor =
   | 'accent'
   | 'transparent';
 
-export type MeetingType = 'midweek' | 'weekend';
+export type MeetingType = 'midweek' | 'weekend' | 'duties';
 
 export type AppRoleType =
   | 'admin'
@@ -66,7 +66,8 @@ export type AppRoleType =
   | 'elder'
   | 'ms'
   | 'group_overseers'
-  | 'language_group_overseers';
+  | 'language_group_overseers'
+  | 'duties_schedule';
 
 export type ReleaseNoteType = {
   [version: string]: {

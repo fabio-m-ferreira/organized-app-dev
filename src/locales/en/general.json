@@ -162,5 +162,7 @@
   "tr_time": "Time",
   "tr_house": "House",
   "tr_location": "Location",
-  "tr_clearCookies": "Clear Cookies"
+  "tr_clearCookies": "Clear Cookies",
+  "tr_disabledLabel": "Disabled",
+  "tr_amountLabel": "Amount"
 }

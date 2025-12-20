@@ -60,7 +60,9 @@ const BrotherSelector = (props: PersonSelectorType) => {
         endIcon={props.endIcon}
         inputValue={inputValue}
         onInputChange={(_, value) => handleValueChange(value)}
-        onChange={(_, value: PersonOptionsType) => handleSaveAssignment(value)}
+        onChange={(_, value: PersonOptionsType) => {
+          handleSaveAssignment(value);
+        }}
         fullWidth={true}
         slots={{
           popper(props) {

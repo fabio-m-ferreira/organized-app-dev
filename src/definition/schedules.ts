@@ -105,6 +105,11 @@ export type SchedWeekType = {
     circuit_overseer: AssignmentCongregation;
     aux_fsg?: { value: string; updatedAt: string };
     week_type: WeekTypeCongregation[];
+    duties_audio: AssignmentCongregation[];
+    duties_video: AssignmentCongregation[];
+    duties_stage: AssignmentCongregation[];
+    duties_auditorium_attendant: AssignmentCongregation[];
+    duties_entrance_attendant: AssignmentCongregation[];
   };
   weekend_meeting: {
     chairman: AssignmentCongregation[];
@@ -123,6 +128,11 @@ export type SchedWeekType = {
     circuit_overseer: AssignmentCongregation;
     week_type: WeekTypeCongregation[];
     outgoing_talks: OutgoingTalkScheduleType[];
+    duties_audio: AssignmentCongregation[];
+    duties_video: AssignmentCongregation[];
+    duties_stage: AssignmentCongregation[];
+    duties_auditorium_attendant: AssignmentCongregation[];
+    duties_entrance_attendant: AssignmentCongregation[];
   };
 };
 
